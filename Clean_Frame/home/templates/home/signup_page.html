@@ -48,7 +48,7 @@
             </form>
             {% endifequal %} {% ifequal phase 3 %}
             <h5 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull, You will be able to Signin once your account gets verified.</h5>
-            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; color: firebrick;">Go to Home?</a> {% endifequal %}
+            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go to Home?</a> {% endifequal %}
 
             <form id="register" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
                 <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
@@ -85,7 +85,7 @@
             </form>
             {% endifequal %} {% ifequal phase 23 %}
             <h5 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull, You will be able to Signin once your account gets verified.</h5>
-            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.1rem; color: firebrick;">Go back to Home?</a> {% endifequal %}
+            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go back to Home?</a> {% endifequal %}
 
             <form id="register" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
                 <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
