@@ -75,12 +75,6 @@
     transition: .5s;
 }
 
-.input-group {
-    top: 180px;
-    position: absolute;
-    width: 280px;
-    transition: .5s;
-}
 
 .input-field {
     width: 100%;
@@ -93,6 +87,7 @@
     outline: none;
     background: transparent;
     font-family: Sriracha;
+    font-size: 1rem;
 }
 
 .submit-btn {
@@ -123,5 +118,9 @@ span {
 }
 
 #login {
-    left: 50px;
+  top: 160px;
+  position: absolute;
+  width: 280px;
+  transition: .5s;
+  left: 50px;
 }
