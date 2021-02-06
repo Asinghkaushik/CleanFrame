@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sriracha|Lato|Lobster|Ubuntu|Sacramento|Merriweather|Audiowide|Sofia|Trirong">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <title>CleanFrame Login Page</title>
+</head>
+
+<body>
+    <div class="hero">
+        <div class="form-box">
+            <div class="button-box">
+                <button type="button" class="toggle-btn" onclick="login()">LogIn</button>
+            </div>
+            <h4 id="message" style="text-align: center; color: red;">{{error}}</h4>
+            <form id="login" class="input-group" action="{% url 'login_request' %}" method="POST">
+                {% csrf_token %} {% if useremail %}
+                <input type="text" class="input-field" value={{useremail}} placeholder="Username / Email" name="user_email" required /> {% else %}
+                <input type="text" class="input-field" placeholder="Username / Email" name="user_email" required /> {% endif %}
+                <input type="password" class="input-field" name="password" placeholder="Password" required />
+                <input type="checkbox" class="check-box" /><span>Remember me</span>
+                <button type="submit" class="submit-btn">LogIn</button>
+
+            </form>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/timer.js' %}"></script>
+</body>
+
+</html>

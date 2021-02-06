@@ -1,0 +1,1 @@
+web: python manage.py collectstatic --no-input; gunicorn Clean_Frame.wsgi --log-file - --log-level debug

@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sriracha|Lato|Lobster|Ubuntu|Sacramento|Merriweather|Audiowide|Sofia|Trirong">
+    <link rel="stylesheet" href="{% static 'css/signup_style.css' %}">
+    <title>CleanFrame Signup Page</title>
+</head>
+
+<body>
+    <div class="hero">
+        <div class="form-box">
+            <div class="button-box">
+                <div id="btn"></div>
+                <button type="button" class="toggle-btn" onclick="login()">
+                    {% if stu %}Student{% else %}Company{% endif %}</button>
+                <button type="button" class="toggle-btn" onclick="register()">
+                    {% if stu %}Company{% else %}Student{% endif %}</button>
+            </div>
+
+            {% if stu %} {% ifequal phase 1 %}
+            <!--To make just next heading in its position-->
+            <h5 id="message" style="text-align: center; color: red;">{{error}}</h5>
+            <form id="login" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
+                <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
+                <input type="text" class="input-field1" name="username" placeholder="Username" required />
+                <input type="text" class="input-field1" name="first_name" {% if error %} value={{f_name}} {% endif %} placeholder="First Name" required />
+                <input type="text" class="input-field1" name="last_name" {% if error %} value={{l_name}} {% endif %} placeholder="Last Name" required />
+                <input type="password" class="input-field1" id="password3" name="password1" placeholder="Password" required />
+                <input type="password" class="input-field1" id="password4" name="password2" placeholder="Confirm Password" required />
+                <input type="checkbox" class="check-box" required/><span id="span1">I agree to not indulge in unfair means</span>
+                <button type="submit" class="submit-btn">SignUp</button>
+            </form>
+            {% endifequal %} {% ifequal phase 2 %}
+            <h5 id="message" style="text-align: center; color: red;">
+                {% if invalid_otp %} Invalid OTP, Try Again {% endif %} {% if time_limit_reached %} Time limit exceeded, otp has been expired, we have sent a new otp at {{email}}, check it and re-enter {% endif %}
+            </h5>
+            <form id="login" class="input-group1" action="{% url 'signup_student_verify_otp' %}" method="POST"> {% csrf_token %}
+                <input type="text" class="input-field1" style="margin-top: 40%; margin-bottom: 40px" name="otp" placeholder="Enter OTP sent to {{email}}" required />
+                <input type="hidden" name="email" value={{email}}>
+                <button type="submit" class="submit-btn">Verify</button>
+                <a href="{% url 'signup_student_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
+            </form>
+            {% endifequal %} {% ifequal phase 3 %}
+            <h5 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull, if you have entered correct details and didn't any violated rule then, you will get email regarding your new account.</h5>
+            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; color: firebrick;">Go to Home?</a> {% endifequal %}
+
+            <form id="register" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
+                <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
+                <input type="text" class="input-field1" name="username" placeholder="Username" required />
+                <input type="text" class="input-field1" name="first_name" placeholder="Company Name" required />
+                <input type="hidden" name="last_name" value="This_is_a_company_Associated_account" required>
+                <input type="password" class="input-field1" id="password1" name="password1" placeholder="Password" required />
+                <input type="password" class="input-field1" id="password2" name="password2" placeholder="Confirm Password" required />
+                <input type="checkbox" class="check-box" required/><span id="span1">I agree to be fair in recruitement process</span>
+                <button type="submit" class="submit-btn">SignUp</button>
+            </form>
+            {% else %} {% ifequal phase 21 %}
+            <h5 id="message" style="text-align: center; color: red;">{{error}}</h5>
+            <form id="login" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
+                <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
+                <input type="text" class="input-field1" name="username" placeholder="Username" required />
+                <input type="text" class="input-field1" name="first_name" {% if error %} value={{f_name}} {% endif %} placeholder="Company Name" required />
+                <input type="hidden" name="last_name" value="This_is_a_company_Associated_account" required>
+                <input type="password" class="input-field1" id="password1" name="password1" placeholder="Password" required />
+                <input type="password" class="input-field1" id="password2" name="password2" placeholder="Confirm Password" required />
+                <input type="checkbox" class="check-box" required/><span id="span1">I agree to be fair in recruitement process</span>
+                <button type="submit" class="submit-btn">SignUp</button>
+            </form>
+            {% endifequal %} {% ifequal phase 22 %}
+            <!--To make just next heading in its position-->
+            <h5 id="message" style="text-align: center; color: red;">
+                {% if invalid_otp %} Invalid OTP, Try Again {% endif %} {% if time_limit_reached %} Time limit exceeded, otp has been expired, we have sent a new otp at {{email}}, check it and re-enter {% endif %}
+            </h5>
+            <form id="login" class="input-group1" action="{% url 'signup_company_verify_otp' %}" method="POST"> {% csrf_token %}
+                <input type="text" class="input-field1" style="margin-top: 40%; margin-bottom: 40px" name="otp" placeholder="Enter OTP sent to {{email}}" required />
+                <input type="hidden" name="email" value={{email}}>
+                <button type="submit" class="submit-btn">Verify</button>
+                <a href="{% url 'signup_company_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
+            </form>
+            {% endifequal %} {% ifequal phase 23 %}
+            <h5 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull, if you have entered correct details and didn't any violated rule then, you will get email regarding your new account.</h5>
+            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; color: firebrick;">Go to Home?</a> {% endifequal %}
+
+            <form id="register" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
+                <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
+                <input type="text" class="input-field1" name="username" placeholder="Username" required />
+                <input type="text" class="input-field1" name="first_name" placeholder="First Name" required />
+                <input type="text" class="input-field1" name="last_name" placeholder="Last Name" required />
+                <input type="password" class="input-field1" id="password3" name="password1" placeholder="Password" required />
+                <input type="password" class="input-field1" id="password4" name="password2" placeholder="Confirm Password" required />
+                <input type="checkbox" class="check-box" required/><span id="span1">I agree to not indulge in unfair means</span>
+                <button type="submit" class="submit-btn">SignUp</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/timer.js' %}"></script>
+    <script src="{% static 'js/signup_app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/signup.js' %}"></script>
+
+</body>
+
+</html>
