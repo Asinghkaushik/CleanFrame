@@ -25,6 +25,9 @@
 
             {% if stu %} {% ifequal phase 1 %}
             <!--To make just next heading in its position-->
+            <h5 id="email_error" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="pass_error3" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="pass_error4" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <h5 id="message" style="text-align: center; color: red;">{{error}}</h5>
             <form id="login" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
                 <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
@@ -50,6 +53,8 @@
             <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Signin once your account gets verified.</h4>
             <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go to Home?</a> {% endifequal %}
 
+            <h5 id="pass_error1" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="pass_error2" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <form id="register" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
                 <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
                 <input type="text" class="input-field1" name="username" placeholder="Username" required />
@@ -61,6 +66,8 @@
                 <button type="submit" class="submit-btn">SignUp</button>
             </form>
             {% else %} {% ifequal phase 21 %}
+            <h5 id="pass_error1" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="pass_error2" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <h5 id="message" style="text-align: center; color: red;">{{error}}</h5>
             <form id="login" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
                 <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
@@ -84,20 +91,23 @@
                 <a href="{% url 'signup_company_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
             </form>
             {% endifequal %} {% ifequal phase 23 %}
+            <h5 id="email_error" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="pass_error3" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="pass_error3" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Signin once your account gets verified.</h5>
-            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go back to Home?</a> {% endifequal %}
+                <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go back to Home?</a> {% endifequal %}
 
-            <form id="register" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
-                <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
-                <input type="text" class="input-field1" name="username" placeholder="Username" required />
-                <input type="text" class="input-field1" name="first_name" placeholder="First Name" required />
-                <input type="text" class="input-field1" name="last_name" placeholder="Last Name" required />
-                <input type="password" class="input-field1" id="password3" name="password1" placeholder="Password" required />
-                <input type="password" class="input-field1" id="password4" name="password2" placeholder="Confirm Password" required />
-                <input type="checkbox" class="check-box" required/><span id="span1">I agree to not indulge in unfair means</span>
-                <button type="submit" class="submit-btn">SignUp</button>
-            </form>
-            {% endif %}
+                <form id="register" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
+                    <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
+                    <input type="text" class="input-field1" name="username" placeholder="Username" required />
+                    <input type="text" class="input-field1" name="first_name" placeholder="First Name" required />
+                    <input type="text" class="input-field1" name="last_name" placeholder="Last Name" required />
+                    <input type="password" class="input-field1" id="password3" name="password1" placeholder="Password" required />
+                    <input type="password" class="input-field1" id="password4" name="password2" placeholder="Confirm Password" required />
+                    <input type="checkbox" class="check-box" required/><span id="span1">I agree to not indulge in unfair means</span>
+                    <button type="submit" class="submit-btn">SignUp</button>
+                </form>
+                {% endif %}
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
