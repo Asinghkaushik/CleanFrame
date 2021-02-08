@@ -19,7 +19,7 @@ function validate() {
     } else {
         var val = passwordchecker(password1)
         if (!val) {
-            document.getElementById("myerror").innerHTML = "Password length must be min 8 with digits and special characters";
+            document.getElementById("myerror").innerHTML = "Password must have atleast 8 characters with digits, letters and special characters";
             $('#myerror').fadeIn();
             $('#myerror').delay(4000).fadeOut(4000);
             return false
@@ -41,7 +41,7 @@ function validate_passwords() {
     } else {
         var val = passwordchecker(password1)
         if (!val) {
-            document.getElementById("myerror").innerHTML = "Password length must be min 8 with digits and special characters";
+            document.getElementById("myerror").innerHTML = "Password must have atleast 8 characters with digits, letters and special characters";
             $('#myerror').fadeIn();
             $('#myerror').delay(4000).fadeOut(4000);
             return false
@@ -52,8 +52,7 @@ function validate_passwords() {
 }
 
 function passwordchecker(str) {
-    if (str.match(/[a-z]/g) && str.match(
-            /[A-Z]/g) && str.match(
+    if ((str.match(/[a-z]/g) || str.match(/[A-Z]/g)) && str.match(
             /[0-9]/g) && str.match(
             /[^a-zA-Z\d]/g) && str.length >= 8)
         return true;
