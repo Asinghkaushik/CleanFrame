@@ -22,7 +22,7 @@
                 <button type="button" class="toggle-btn" onclick="register()">
                     {% if stu %}Company{% else %}Student{% endif %}</button>
             </div>
-
+            <label id="mytimercountdown" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick; display: none;"></label>
             {% if stu %} {% ifequal phase 1 %}
             <!--To make just next heading in its position-->
             <h5 id="myerror" style="text-align: center; color: red; margin-top: 10px;"></h5>
@@ -45,7 +45,7 @@
                 <input type="text" class="input-field1" style="margin-top: 40%; margin-bottom: 40px" name="otp" placeholder="Enter OTP sent to {{email}}" required />
                 <input type="hidden" name="email" value={{email}}>
                 <button type="submit" id="idnois1" class="submit-btn">Verify</button>
-                <a href="{% url 'signup_student_resend_otp' email=email %}" id="resend_ootp" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
+                <a href="{% url 'signup_student_resend_otp' email=email %}" id="resend_ootp" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;" onclick="return checktimersettings()">Resend OTP</a>
             </form>
             {% endifequal %} {% ifequal phase 3 %}
             <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Login once your account gets verified.</h4>
@@ -84,7 +84,7 @@
                 <input type="text" class="input-field1" style="margin-top: 40%; margin-bottom: 40px" name="otp" placeholder="Enter OTP sent to {{email}}" required />
                 <input type="hidden" name="email" value={{email}}>
                 <button type="submit" id="idnois2" class="submit-btn">Verify</button>
-                <a href="{% url 'signup_company_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
+                <a href="{% url 'signup_company_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;" onclick="return checktimersettings()">Resend OTP</a>
             </form>
             {% endifequal %} {% ifequal phase 23 %}
             <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Login once your account gets verified.</h5>

@@ -64,3 +64,19 @@ function disablemybutton(MY_ID) {
     document.getElementById(MY_ID).disabled = true;
     return true;
 }
+
+function checktimersettings(){
+    current_date=new Date()
+    prev=document.getElementById("mytimercountdown").innerHTML
+    prev_date=new Date(prev)
+    if((current_date-prev_date)>=90000){
+        document.getElementById("mytimercountdown").innerHTML=new Date();
+        return true;
+    }
+    var seconds=(90000 - (current_date-prev_date))/1000;
+    var error = "You can resend OTP after : " + seconds + " seconds"
+    document.getElementById("myerror").innerHTML = error;
+    $('#myerror').fadeIn();
+    $('#myerror').delay(2000).fadeOut(2000);
+    return false;
+}
