@@ -25,9 +25,7 @@
 
             {% if stu %} {% ifequal phase 1 %}
             <!--To make just next heading in its position-->
-            <h5 id="email_error" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h5 id="pass_error3" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h5 id="pass_error4" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="myerror" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <h5 id="message" style="text-align: center; color: red;">{{error}}</h5>
             <form id="login" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
                 <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
@@ -37,24 +35,23 @@
                 <input type="password" class="input-field1" id="password3" name="password1" placeholder="Password" required />
                 <input type="password" class="input-field1" id="password4" name="password2" placeholder="Confirm Password" required />
                 <input type="checkbox" class="check-box" required/><span id="span1">I agree to not indulge in unfair means</span>
-                <button type="submit" class="submit-btn">SignUp</button>
+                <button type="submit" id="button1" class="submit-btn">SignUp</button>
             </form>
             {% endifequal %} {% ifequal phase 2 %}
             <h4 id="message" style="text-align: center; color: red;">
                 {% if invalid_otp %} Invalid OTP, Please Try Again {% endif %} {% if time_limit_reached %} OTP has expired, A new OTP has been sent at {{email}}, check it and re-enter {% endif %}
             </h4>
-            <form id="login" class="input-group1" action="{% url 'signup_student_verify_otp' %}" method="POST"> {% csrf_token %}
+            <form id="login" class="input-group1" action="{% url 'signup_student_verify_otp' %}" method="POST" onsubmit="return disablemybutton('idnois1')"> {% csrf_token %}
                 <input type="text" class="input-field1" style="margin-top: 40%; margin-bottom: 40px" name="otp" placeholder="Enter OTP sent to {{email}}" required />
                 <input type="hidden" name="email" value={{email}}>
-                <button type="submit" class="submit-btn">Verify</button>
-                <a href="{% url 'signup_student_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
+                <button type="submit" id="idnois1" class="submit-btn">Verify</button>
+                <a href="{% url 'signup_student_resend_otp' email=email %}" id="resend_ootp" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
             </form>
             {% endifequal %} {% ifequal phase 3 %}
-            <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Signin once your account gets verified.</h4>
+            <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Login once your account gets verified.</h4>
             <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go to Home?</a> {% endifequal %}
 
-            <h5 id="pass_error1" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h5 id="pass_error2" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="myerror" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <form id="register" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
                 <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
                 <input type="text" class="input-field1" name="username" placeholder="Username" required />
@@ -63,11 +60,10 @@
                 <input type="password" class="input-field1" id="password1" name="password1" placeholder="Password" required />
                 <input type="password" class="input-field1" id="password2" name="password2" placeholder="Confirm Password" required />
                 <input type="checkbox" class="check-box" required/><span id="span1">I agree to be fair in recruitement process</span>
-                <button type="submit" class="submit-btn">SignUp</button>
+                <button type="submit" id="button2" class="submit-btn">SignUp</button>
             </form>
             {% else %} {% ifequal phase 21 %}
-            <h5 id="pass_error1" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h5 id="pass_error2" style="text-align: center; color: red; margin-top: 10px;"></h5>
+            <h5 id="myerror" style="text-align: center; color: red; margin-top: 10px;"></h5>
             <h5 id="message" style="text-align: center; color: red;">{{error}}</h5>
             <form id="login" class="input-group1" action="{% url 'signup_company_verify' %}" method="POST" onsubmit="return validate_passwords()"> {% csrf_token %}
                 <input type="email" class="input-field1" name="email" placeholder="Company Email Id" required />
@@ -77,26 +73,24 @@
                 <input type="password" class="input-field1" id="password1" name="password1" placeholder="Password" required />
                 <input type="password" class="input-field1" id="password2" name="password2" placeholder="Confirm Password" required />
                 <input type="checkbox" class="check-box" required/><span id="span1">I agree to be fair in recruitement process</span>
-                <button type="submit" class="submit-btn">SignUp</button>
+                <button type="submit" id="button2" class="submit-btn">SignUp</button>
             </form>
             {% endifequal %} {% ifequal phase 22 %}
             <!--To make just next heading in its position-->
             <h4 id="message" style="text-align: center; color: red;">
                 {% if invalid_otp %} Invalid OTP, Please Try Again {% endif %} {% if time_limit_reached %} OTP has expired, A new OTP has been sent at {{email}}, check it and re-enter {% endif %}
             </h4>
-            <form id="login" class="input-group1" action="{% url 'signup_company_verify_otp' %}" method="POST"> {% csrf_token %}
+            <form id="login" class="input-group1" action="{% url 'signup_company_verify_otp' %}" method="POST" onsubmit="return disablemybutton('idnois2')"> {% csrf_token %}
                 <input type="text" class="input-field1" style="margin-top: 40%; margin-bottom: 40px" name="otp" placeholder="Enter OTP sent to {{email}}" required />
                 <input type="hidden" name="email" value={{email}}>
-                <button type="submit" class="submit-btn">Verify</button>
+                <button type="submit" id="idnois2" class="submit-btn">Verify</button>
                 <a href="{% url 'signup_company_resend_otp' email=email %}" style="float: right; margin-top: 20%; text-decoration: none; font-size:1.1rem; color: firebrick;">Resend OTP</a>
             </form>
             {% endifequal %} {% ifequal phase 23 %}
-            <h5 id="email_error" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h5 id="pass_error3" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h5 id="pass_error3" style="text-align: center; color: red; margin-top: 10px;"></h5>
-            <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Signin once your account gets verified.</h5>
+            <h4 id="message" style="text-align: center; color: darkgreen;">OTP Verification is succesfull.<br />You will be able to Login once your account gets verified.</h5>
                 <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 50%; text-decoration: none; font-size: 1.5rem; color: firebrick;">Go back to Home?</a> {% endifequal %}
 
+                <h5 id="myerror" style="text-align: center; color: red; margin-top: 10px;"></h5>
                 <form id="register" class="input-group1" action="{% url 'signup_student_verify' %}" method="POST" onsubmit="return validate()"> {% csrf_token %}
                     <input type="email" class="input-field1" id="email" name="email" placeholder="College Email Id" required />
                     <input type="text" class="input-field1" name="username" placeholder="Username" required />
@@ -105,7 +99,7 @@
                     <input type="password" class="input-field1" id="password3" name="password1" placeholder="Password" required />
                     <input type="password" class="input-field1" id="password4" name="password2" placeholder="Confirm Password" required />
                     <input type="checkbox" class="check-box" required/><span id="span1">I agree to not indulge in unfair means</span>
-                    <button type="submit" class="submit-btn">SignUp</button>
+                    <button type="submit" id="button1" class="submit-btn">SignUp</button>
                 </form>
                 {% endif %}
         </div>
