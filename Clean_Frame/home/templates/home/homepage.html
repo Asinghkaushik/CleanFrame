@@ -1,11 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Clean Frame Home Page</title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type = "image/x-icon"> 
 </head>
 
 <body>
+    <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" style="height: 105px; width: 150px;"></a>
     <h1>HOME PAGE OF CLEAN FRAME</h1>
     <br><br>
     <a href="{% url 'signup_student' %}">Signup as student</a>

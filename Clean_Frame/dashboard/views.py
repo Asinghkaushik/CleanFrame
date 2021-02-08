@@ -9,13 +9,27 @@ from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 
 # Create your views here.
+def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
+    client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
+    message = client.messages.create(
+                        body=str(message),
+                        from_= settings.PHONE_NUMBER_TWILIO,
+                        to=str(country_code)+str(mobile_number)
+                    )
+
+def generate_otp():
+    digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    OTP = "" 
+    for i in range(7) : 
+        OTP += digits[math.floor(random.random() * 62)] 
+    return OTP
+
 def dashboard(request):
     if error_detection(request,1)==False:
-        return HttpResponse('Dashboard')
+        return HttpResponse('Aa hii gaye aakhir ghum phir ke mere pas, itna kya lagav hai mujhse??, saalo timne hamare jaise pro kabhi dekha hai zindgi mai??🤩🤩🤩')
     return error_detection(request,1)
 
 def error_detection(request,id):
-    print(request.user.is_authenticated)
     if request.user.is_authenticated==False:
         return redirect('home')
     if request.user.is_staff or request.user.is_superuser:
@@ -43,5 +57,216 @@ def error_detection(request,id):
 
 def profile(request):
     if error_detection(request,2)==False:
-        return render(request,'dashboard/profile.html',context={})
-    return error_detection(request,2)
+        return profile_i(request,'')
+    return error_detection(request,2,False)
+
+def profile_i(request,error):
+    contact_given=True
+    try:
+        p=StudentProfile.objects.get(user=request.user)
+        contact_given=p.profile_filled
+    except:
+        try:
+            p=CompanyProfile.objects.get(user=request.user)
+            contact_given=p.profile_filled
+        except:
+            p={}
+    return render(request,'dashboard/profile.html',context={"contact_given": contact_given, "phase": 1, "data": p, "error": error})
+
+def send_otp_to_phone_stu(request):
+    if request.user.is_authenticated:
+        if request.method=="POST":
+            phone_number=request.POST.get('contact_number')
+            address=request.POST.get('address')
+            gender=request.POST.get('gender')
+            if StudentProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+                return profile_i(request,'Account with given mobile number already exists')
+            if CompanyProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+                return profile_i(request,'Account with given mobile number already exists')
+            if(otp_sender_to_student(request, phone_number)==False):
+                return redirect('dashboard')
+            try:
+                p=StudentProfile.objects.get(user=request.user)
+                p.contact_number=int(phone_number)
+                p.complete_address=address
+                if str(gender)=='1':
+                    p.gender='Male'
+                elif str(gender)=='2':
+                    p.gender='Female'
+                else:
+                    p.gender='Transgender'
+                p.save()
+                return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number})
+            except:
+                return redirect('dashboard')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('home')
+
+
+
+def otp_sender_to_student(request, phone_number):
+    try:
+        user=User.objects.get(email=request.user.email)
+    except:
+        return False
+    otp=str(generate_otp())
+    SEND_OTP_TO_PHONE(phone_number,'+91',"OTP to verify phone number for the student account in Clean Frame is : " + str(otp) + ".\nDo not share it with anyone. It will expire in 15 minutes.\nThanks")
+    try:
+        u=StudentProfile.objects.get(user=user)
+        u.otp=str(otp)
+        u.otp_time=datetime.datetime.now()
+        u.save()
+    except:
+        return False
+    return True
+
+def verify_otp_phone_stu(request):
+    if request.user.is_authenticated:
+        if request.method=="POST":
+            otp=request.POST.get('otp')
+            try:
+                user=request.user
+                u=StudentProfile.objects.get(user=user)
+                phone_number=u.contact_number
+                if str(otp)==str(u.otp):
+                    prev_time=u.otp_time
+                    u.otp_time=datetime.datetime.now()
+                    u.save()
+                    u=StudentProfile.objects.get(user=user)
+                    new_time=u.otp_time                
+                    time_delta = (new_time-prev_time)
+                    minutes = (time_delta.total_seconds())/60
+                    if minutes<settings.OTP_EXPIRE_TIME:
+                        try:
+                            u=StudentProfile.objects.get(user=user)
+                            u.otp='NULL_akad_bakad_bambe_bo'
+                            if u.profile_filled==False:
+                                u.profile_created=datetime.datetime.now()
+                            u.profile_filled=True
+                            u.save()
+                            return render(request,'dashboard/profile.html',context={"phase": 3,})
+                        except:
+                            return redirect('dashboard')
+                    else:
+                        if(otp_sender_to_student(request, phone_number)==False):
+                            return redirect('dashboard')
+                        return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP has been expired, we have sent a new OTP to phone number"})
+                else:
+                    return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "Invalid OTP"})
+            except:
+                return redirect('dashboard')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('home')
+
+def resend_otp_to_phone_stu(request):
+    if request.user.is_authenticated:
+        try:
+            user=request.user
+            u=StudentProfile.objects.get(user=user)
+            phone_number=u.contact_number    
+            if(otp_sender_to_student(request, phone_number)==False):
+                return redirect('dashboard')
+            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP sent again"})
+        except:
+            return redirect('dashboard')
+    else:
+        return redirect('home')
+        
+def send_otp_to_phone_com(request):
+    if request.user.is_authenticated:
+        if request.method=="POST":
+            phone_number=request.POST.get('contact_number')
+            address=request.POST.get('address')
+            if StudentProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+                return profile_i(request,'Account with given mobile number already exists')
+            if CompanyProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+                return profile_i(request,'Account with given mobile number already exists')
+            if(otp_sender_to_company(request, phone_number)==False):
+                return redirect('dashboard')
+            try:
+                p=CompanyProfile.objects.get(user=request.user)
+                p.contact_number=int(phone_number)
+                p.complete_address=address
+                p.save()
+                return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number})
+            except:
+                return redirect('dashboard')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('home')
+
+def otp_sender_to_company(request, phone_number):
+    try:
+        user=User.objects.get(email=request.user.email)
+    except:
+        return False
+    otp=str(generate_otp())
+    SEND_OTP_TO_PHONE(phone_number,'+91',"OTP to verify phone number for the student account in Clean Frame is : " + str(otp) + ".\nDo not share it with anyone. It will expire in 15 minutes.\nThanks")
+    try:
+        u=CompanyProfile.objects.get(user=user)
+        u.otp=str(otp)
+        u.otp_time=datetime.datetime.now()
+        u.save()
+    except:
+        return False
+    return True
+
+
+def verify_otp_phone_com(request):
+    if request.user.is_authenticated:
+        if request.method=="POST":
+            otp=request.POST.get('otp')
+            try:
+                user=request.user
+                u=CompanyProfile.objects.get(user=user)
+                phone_number=u.contact_number
+                if str(otp)==str(u.otp):
+                    prev_time=u.otp_time
+                    u.otp_time=datetime.datetime.now()
+                    u.save()
+                    u=CompanyProfile.objects.get(user=user)
+                    new_time=u.otp_time                
+                    time_delta = (new_time-prev_time)
+                    minutes = (time_delta.total_seconds())/60
+                    if minutes<settings.OTP_EXPIRE_TIME:
+                        try:
+                            u=CompanyProfile.objects.get(user=user)
+                            u.otp='NULL_akad_bakad_bambe_bo'
+                            if u.profile_filled==False:
+                                u.profile_created=datetime.datetime.now()
+                            u.profile_filled=True
+                            u.save()
+                            return render(request,'dashboard/profile.html',context={"phase": 3,})
+                        except:
+                            return redirect('dashboard')
+                    else:
+                        if(otp_sender_to_company(request, phone_number)==False):
+                            return redirect('dashboard')
+                        return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP has been expired, we have sent a new OTP to phone number"})
+                else:
+                    return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "Invalid OTP"})
+            except:
+                return redirect('dashboard')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('home')
+
+def resend_otp_to_phone_com(request):
+    if request.user.is_authenticated:
+        try:
+            user=request.user
+            u=CompanyProfile.objects.get(user=user)
+            phone_number=u.contact_number    
+            if(otp_sender_to_company(request, phone_number)==False):
+                return redirect('dashboard')
+            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP sent again"})
+        except:
+            return redirect('dashboard')
+    else:
+        return redirect('home')

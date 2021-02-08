@@ -9,11 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sriracha|Lato|Lobster|Ubuntu|Sacramento|Merriweather|Audiowide|Sofia|Trirong">
     <link rel="stylesheet" href="{% static 'css/signup_style.css' %}">
+    <link rel="icon" href="{% static 'img/logo.png' %}" type = "image/x-icon"> 
     <title>CleanFrame Signup Page</title>
 </head>
 
 <body>
     <div class="hero">
+        <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" style="height: 105px; width: 150px;"></a>
         <div class="form-box">
             <div class="button-box">
                 <div id="btn"></div>
