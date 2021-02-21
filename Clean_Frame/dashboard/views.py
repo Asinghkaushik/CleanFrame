@@ -26,7 +26,7 @@ def generate_otp():
 
 def dashboard(request):
     if error_detection(request,1)==False:
-        return HttpResponse('Aa hii gaye aakhir ghum phir ke mere pas, itna kya lagav hai mujhse??, saalo timne hamare jaise pro kabhi dekha hai zindgi mai??🤩🤩🤩')
+        return render(request,'dashboard/dashboard.html',context={})
     return error_detection(request,1)
 
 def error_detection(request,id):
@@ -281,6 +281,35 @@ def staff_profile(request):
             u.save()
             return redirect('profile')
         else:
-            return redirect('home')
+            return redirect('dashboard')
     else:
-        return redirect('home')
+        return redirect('dashboard')
+
+def student_profile_3(request):
+    if request.user.is_authenticated :
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            first_name=request.POST.get('first_name')
+            last_name=request.POST.get('last_name')
+            u=User.objects.get(username=request.user)
+            u.first_name=first_name
+            u.last_name=last_name
+            u.save()
+            address=request.POST.get('address')
+            gender=request.POST.get('gender')
+            try:
+                p=StudentProfile.objects.get(user=request.user)
+                p.complete_address=address
+                if str(gender)=='1':
+                    p.gender='Male'
+                elif str(gender)=='2':
+                    p.gender='Female'
+                else:
+                    p.gender='Transgender'
+                p.save()
+                return redirect('profile')
+            except:
+                return redirect('profile')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('dashboard')

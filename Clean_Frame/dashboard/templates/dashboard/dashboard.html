@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard {{request.user.email}}</title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type = "image/x-icon"> 
+</head>
+
+<body>
+    <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" style="height: 105px; width: 150px;"></a>
+    <h1>Logged in as {{request.user}}</h1>
+    <br><br>
+    <a href="{% url 'profile' %}">Profile</a>
+    <br>
+    <a href="{% url 'logout_request' %}">Logout</a>
+</body>
+
+</html>

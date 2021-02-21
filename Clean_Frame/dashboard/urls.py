@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile
+from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3
 
 urlpatterns = [
     path('',dashboard,name="dashboard"),
@@ -11,6 +11,7 @@ urlpatterns = [
     path('send/otp/phone/compnay/verify/',verify_otp_phone_com,name="verify_otp_phone_com"),
     path('resend/otp/phone/company/',resend_otp_to_phone_com,name="resend_otp_to_phone_com"),
     path('profile/upload/staff/',staff_profile,name="staff_profile"),
+    path('profile/upload/student/3/',student_profile_3,name="student_profile_3")
 
 
 ]
