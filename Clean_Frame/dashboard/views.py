@@ -51,14 +51,13 @@ def error_detection(request,id):
     if p.account_banned_temporary:
         return HttpResponse("Account has been for a short span of time, suggested to login again")
     if p.profile_filled==False and id==1:
-        return redirect('profile')
-        pass    
+        return redirect('profile')  
     return False
 
 def profile(request):
     if error_detection(request,2)==False:
         return profile_i(request,'')
-    return error_detection(request,2,False)
+    return error_detection(request,2)
 
 def profile_i(request,error):
     contact_given=True
