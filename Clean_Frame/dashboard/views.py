@@ -269,3 +269,18 @@ def resend_otp_to_phone_com(request):
             return redirect('dashboard')
     else:
         return redirect('home')
+
+def staff_profile(request):
+    if request.user.is_authenticated and request.user.is_staff :
+        if request.method=="POST":
+            first_name=request.POST.get('first_name')
+            last_name=request.POST.get('last_name')
+            u=User.objects.get(username=request.user)
+            u.first_name=first_name
+            u.last_name=last_name
+            u.save()
+            return redirect('profile')
+        else:
+            return redirect('home')
+    else:
+        return redirect('home')
