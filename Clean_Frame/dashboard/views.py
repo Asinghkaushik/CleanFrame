@@ -384,3 +384,29 @@ def student_profile_1(request):
             return redirect('dashboard')
     else:
         return redirect('dashboard')
+
+def student_company_number(request):
+    if request.user.is_authenticated:
+        if request.method=="POST":
+            phone_number=request.POST.get('contact_number')
+            if StudentProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+                return profile_i(request,'Account with given mobile number already exists')
+            if CompanyProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+                return profile_i(request,'Account with given mobile number already exists')
+            u=User.objects.get(username=request.user)
+            if u.first_name==settings.COMPANY_MESSAGE:
+                if(otp_sender_to_company(request, phone_number)==False):
+                    return redirect('dashboard')
+                p=CompanyProfile.objects.get(user=request.user)
+            else:
+                if(otp_sender_to_student(request, phone_number)==False):
+                    return redirect('dashboard')
+                p=StudentProfile.objects.get(user=request.user)
+            p.contact_number=int(phone_number)
+            p.profile_filled=False
+            p.save()
+            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number})
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('home')

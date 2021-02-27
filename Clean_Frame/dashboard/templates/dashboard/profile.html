@@ -27,8 +27,15 @@
             {% else %}
                 <!--Profile Update for students and company -->
                 <!--PHONE NUMBER SECTION WOULD BE COMMON BETWEEN THE TWO-->
-                
-
+                <h3>Change Contact Number</h3>
+                <h6>{{error}}</h6>
+                <form method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                    {% csrf_token %}
+                    <label>Enter indian contact number:</label>
+                    <input type="number" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
+                    <br>
+                    <input type="submit" id="mybutton" value="Send OTP to phone">
+                </form>
                 <br><hr><hr><br>
                 {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
                     <!--GO FOR COMPANY PHASE 2-->
@@ -75,7 +82,7 @@
                         <input type="submit" value="Upload image">
                     </form>
                     <br><hr><br>
-                    <!--PHASE 3, two more to go-->
+                    <!--PHASE 3, BASIC DETAILS-->
                     <form action="{% url 'student_profile_3' %}" method="POST">
                         {% csrf_token %}
                         <label>Email: </label>
