@@ -313,3 +313,35 @@ def student_profile_3(request):
             return redirect('dashboard')
     else:
         return redirect('dashboard')
+
+def company_profile_2(request):
+    if request.user.is_authenticated :
+        if request.user.last_name==settings.COMPANY_MESSAGE:
+            com_name=request.POST.get('company_name')
+            u=User.objects.get(username=request.user)
+            u.first_name=com_name
+            u.save()
+            address=request.POST.get('address')
+            duration=request.POST.get('duration')
+            no_stu=request.POST.get('number_of_students')
+            intern_pos=request.POST.get('internship_position')
+            min_cgpa=request.POST.get('minimum_cgpa')
+            stipend=request.POST.get('stipend')
+            pre=request.POST.get('pre')
+            try:
+                p=CompanyProfile.objects.get(user=request.user)
+                p.complete_address=address
+                p.internship_duration=int(duration)
+                p.students_required=int(no_stu)
+                p.internship_position=intern_pos
+                p.minimum_cgpa=float(min_cgpa)
+                p.stipend=float(stipend)
+                p.prerequisite=pre
+                p.save()
+                return redirect('profile')
+            except:
+                return redirect('profile')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('dashboard')

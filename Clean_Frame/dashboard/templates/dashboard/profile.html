@@ -28,6 +28,30 @@
                 <!--Profile Update for students and company -->
                 {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
                     <!--GO FOR COMPANY-->
+                    <form action="{% url 'company_profile_2' %}" method="POST">
+                        {% csrf_token %}
+                        <label>Email: </label>
+                        <input type="text" value="{{request.user.email}}" readonly><br>
+                        <label for="company_name">Company Name: </label>
+                        <input type="text" name="company_name" value="{{request.user.first_name}}" placeholder="Enter company name" required><br>
+                        <label for="address">Complete Address: </label>
+                        <input type="text" name="address" value="{{data.complete_address}}" placeholder="Enter your address" required><br>
+                        <h4>Internship Details</h4>
+                        <label for="duration">Internship Duration(days): </label>
+                        <input type="number" name="duration" value="{{data.internship_duration}}" placeholder="Enter duration of internship" required><br>
+                        <label for="number_of_students">Students required: </label>
+                        <input type="number" name="number_of_students" value="{{data.students_required}}" placeholder="Enter students required " required><br>
+                        <label for="internship_position">Highest Position of Internship: </label>
+                        <input type="text" name="internship_position" value="{{data.internship_position}}" placeholder="Enter highest position of internship offered" required><br>
+                        <label for="minimum_cgpa">Minimum CGPA Required (out of 10.0): </label>
+                        <input type="text" name="minimum_cgpa" value="{{data.minimum_cgpa}}" placeholder="Enter minimum cgpa required" required><br>
+                        <label for="stipend">Maximum Stipend offered (in Rs.): </label>
+                        <input type="text" name="stipend" value="{{data.stipend}}" placeholder="Enter maximum stipend" required><br>
+                        <label for="pre1">Prerequisite(optional, use ** to separate 2 prerequisites): </label>
+                        <input type="text" name="pre" value="{{data.prerequisite}}" placeholder="Enter prerequisites"><br>                      
+                        <br><br>
+                        <input type="submit" value="Upload Changes">
+                    </form>
                 {% else %}
                     <!--PHASE 3, two more to go-->
                     <form action="{% url 'student_profile_3' %}" method="POST">
