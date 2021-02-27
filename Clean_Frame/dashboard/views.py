@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
+from .forms import StudentPhotoForm,StudentCVForm
 
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
@@ -340,6 +341,44 @@ def company_profile_2(request):
                 p.save()
                 return redirect('profile')
             except:
+                return redirect('profile')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('dashboard')
+
+def student_profile_2(request):
+    if request.user.is_authenticated :
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            form = StudentPhotoForm(request.POST,request.FILES)
+            if form.is_valid():
+                try:
+                    profile=StudentProfile.objects.get(user=request.user)
+                    profile.image=form.cleaned_data.get("image")
+                    profile.save()
+                    return redirect('dashboard')
+                except:
+                    return redirect('profile')
+            else:
+                return redirect('profile')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('dashboard')
+
+def student_profile_1(request):
+    if request.user.is_authenticated :
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            form = StudentCVForm(request.POST,request.FILES)
+            if form.is_valid():
+                try:
+                    profile=StudentProfile.objects.get(user=request.user)
+                    profile.cv=form.cleaned_data.get("cv")
+                    profile.save()
+                    return redirect('dashboard')
+                except:
+                    return redirect('profile')
+            else:
                 return redirect('profile')
         else:
             return redirect('dashboard')

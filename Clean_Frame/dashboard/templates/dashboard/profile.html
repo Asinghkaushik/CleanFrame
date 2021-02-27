@@ -26,8 +26,12 @@
                 </form>
             {% else %}
                 <!--Profile Update for students and company -->
+                <!--PHONE NUMBER SECTION WOULD BE COMMON BETWEEN THE TWO-->
+                
+
+                <br><hr><hr><br>
                 {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
-                    <!--GO FOR COMPANY-->
+                    <!--GO FOR COMPANY PHASE 2-->
                     <form action="{% url 'company_profile_2' %}" method="POST">
                         {% csrf_token %}
                         <label>Email: </label>
@@ -53,6 +57,24 @@
                         <input type="submit" value="Upload Changes">
                     </form>
                 {% else %}
+                <h3>Upload your CV</h3>
+                <!--PHASE 1, CV-->
+                <form method="POST" action="{% url 'student_profile_1' %}"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="cv"><br>
+                    <br>
+                    <input type="submit" value="Upload CV">
+                </form>
+                <br><hr><br>
+                    <h3>upload your photo</h3>
+                    <!--PHASE 2, PHOTO-->
+                    <form method="POST" action="{% url 'student_profile_2' %}"  enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="image"><br>
+                        <br>
+                        <input type="submit" value="Upload image">
+                    </form>
+                    <br><hr><br>
                     <!--PHASE 3, two more to go-->
                     <form action="{% url 'student_profile_3' %}" method="POST">
                         {% csrf_token %}
