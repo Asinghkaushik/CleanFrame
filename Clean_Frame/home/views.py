@@ -396,8 +396,11 @@ def forgot_password_verify_otp(request):
         email=request.POST.get('email')
         otp=request.POST.get('otp')
         try:
+            print("@@@@@@@@@@@@@@@@@!1")
             user=User.objects.get(email=email)
             u=user_type_checker(request, user, email)
+            print("@@@@@@@@@@@@@@@@@!12")
+            print(u)
             if str(u.otp) == str(otp):
                 prev_time=u.otp_time
                 u.otp_time=datetime.datetime.now()
@@ -432,8 +435,8 @@ def user_type_checker(request, user, email):
         try:
             u=StudentProfile.objects.get(user=user)
         except:
-                return render(request, 'home/forgot_password_page.html', context={'phase': 1, 'error': "Getting error in searching this account profile in database. Contact Administrator", 'email': email})
-        return u
+            return render(request, 'home/forgot_password_page.html', context={'phase': 1, 'error': "Getting error in searching this account profile in database. Contact Administrator", 'email': email})
+    return u
 
 def forgot_password_resend_otp(request, email):
     email=str(email)

@@ -13,11 +13,10 @@
     <div class="sidebar-menu">
       <ul>
         <li>
-          <a href="{% url 'dashboard' %}" class="active"><span class="las la-igloo"></span>
+          <a href="" class="active" id="first"><span class="las la-igloo"></span>
             <span>Dashboard</span>
           </a>
         </li>
-        <hr>
         <li>
           <a href="{% url 'profile' %}" class=""><span class="las la-user-graduate"></span>
             <span>Profile</span>
@@ -99,11 +98,29 @@
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-    <a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Dashboard</a>
+    
 {% endblock %}
 
 <!--For the user details displayed at the top right-->
-
+{% block user_details %}
+  <img src="{% static 'dashboard/img/us_ma.png' %}" width="40px" height="40px" alt="">
+  <div>
+    <h5>{{request.user}}</h5>
+    {% if request.user.is_superuser %}
+    <small>Administrator</small>
+    {% else %}
+      {% if request.user.is_staff %}
+      <small>Staff</small>
+      {% else %}
+        {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        <small>Company</small>
+        {% else %}
+        <small>Student</small>
+        {% endifequal %}
+      {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}
 
 <!--For the main section : 3-->
 {% block section_main %}
