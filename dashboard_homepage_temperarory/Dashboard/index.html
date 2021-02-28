@@ -10,9 +10,11 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
   <title>CleanFrame</title>
 </head>
 
@@ -50,6 +52,61 @@
             <span>Add Staff</span>
           </a>
         </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href=""><span class="las la-users"></span>
+            <span>Add Staff</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -61,10 +118,10 @@
         </label>
         Dashboard
       </h2>
-      <div class="search-wrapper">
+      <!-- <div class="search-wrapper">
         <span class="las la-search"></span>
         <input type="search" placeholder="Search here">
-      </div>
+      </div> -->
       <div class="user-wrapper">
         <img src="img/banner.jpg" width="40px" height="40px" alt="">
         <div>
@@ -116,17 +173,25 @@
         <div class="projects">
           <div class="card">
             <div class="card-header">
-              <h3>Users</h3>
-              <button type="button" name="See all">See all <span class="las la-arrow-right"></span></button>
+              <h3 style="margin-left: 40%;">Users</h3>
+              <!-- <div id="myTable_filter" class="search-wrapper1">
+                <span class="las la-search"></span>
+                <input type="search" aria-controls="myTable" placeholder="Search User">
+              </div> -->
+              <!-- <button type="button" name="See all">See all <span class="las la-arrow-right"></span></button> -->
             </div>
             <div class="card-body">
-              <div class="table-responsive">
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <td>Name</td>
-                      <td>Position</td>
-                      <td>Status</td>
+              <div class="table-responsive container">
+                <!-- <div id="myTable_filter" class="search-wrapper1 dataTables_filter">
+                  <span class="las la-search"></span>
+                  <input type="search" aria-controls="myTable" placeholder="Search User">
+                </div> -->
+                <table id="myTable">
+                  <thead id="thead">
+                    <tr id="tr1">
+                      <td id="td1">Name</td>
+                      <td id="td2">Position</td>
+                      <td id="td3">Status</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -134,40 +199,36 @@
                       <td>Ram</td>
                       <td>Student</td>
                       <td>
-                        <span class="status green"></span>
-                        verified
+                        <span class="statusss green">verified</span>
                       </td>
                     </tr>
                     <tr>
                       <td>Mukesh</td>
                       <td>Google Representative</td>
                       <td>
-                        <span class="status orange"></span>
-                        unverified
+                        <span class="statusss orange">unverified</span>
                       </td>
                     </tr>
                     <tr>
                       <td>Shyam</td>
                       <td>Student</td>
                       <td>
-                        <span class="status pink"></span>
-                        temperary banned
+                        <span class="statusss pink">temperary banned</span>
                       </td>
                     </tr>
                     <tr>
                       <td>Ghanshyam</td>
                       <td>D. E. Shaw Representative</td>
                       <td>
-                        <span class="status red"></span>
-                        permanently banned
+                        <span class="statusss purple">permanently banned</span>
+
                       </td>
                     </tr>
                     <tr>
                       <td>ABCD</td>
                       <td>Student</td>
                       <td>
-                        <span class="status purple"></span>
-                        Suspicous
+                        <span class="statusss red">Suspicous</span>
                       </td>
                     </tr>
                   </tbody>
@@ -210,7 +271,8 @@
                   <span class="las la-comment"></span>
                   <span class="las la-phone"></span>
                 </div>
-              </div><div class="customer">
+              </div>
+              <div class="customer">
                 <div class="info">
                   <img src="img/us_ma.png" width="40px" height="40px" alt="">
                   <div>
@@ -223,7 +285,8 @@
                   <span class="las la-comment"></span>
                   <span class="las la-phone"></span>
                 </div>
-              </div><div class="customer">
+              </div>
+              <div class="customer">
                 <div class="info">
                   <img src="img/us_ma.png" width="40px" height="40px" alt="">
                   <div>
@@ -236,7 +299,8 @@
                   <span class="las la-comment"></span>
                   <span class="las la-phone"></span>
                 </div>
-              </div><div class="customer">
+              </div>
+              <div class="customer">
                 <div class="info">
                   <img src="img/us_ma.png" width="40px" height="40px" alt="">
                   <div>
@@ -249,7 +313,8 @@
                   <span class="las la-comment"></span>
                   <span class="las la-phone"></span>
                 </div>
-              </div><div class="customer">
+              </div>
+              <div class="customer">
                 <div class="info">
                   <img src="img/us_fe.png" width="40px" height="40px" alt="">
                   <div>
@@ -262,7 +327,8 @@
                   <span class="las la-comment"></span>
                   <span class="las la-phone"></span>
                 </div>
-              </div><div class="customer">
+              </div>
+              <div class="customer">
                 <div class="info">
                   <img src="img/us_fe.png" width="40px" height="40px" alt="">
                   <div>
@@ -277,20 +343,60 @@
                 </div>
               </div>
             </div>
+          </div>
         </div>
-      </div>
     </main>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous"></script>
   <script src="js/app.js"></script>
   <script type="text/javascript">
-    $(window).scroll(function(){
+    $(window).scroll(function() {
       var scroll = $(window).scrollTop(),
-      dh = $(document).height(),
-      wh = $(window).height();
-      scrollPercent = (scroll / (dh-wh)) * 100;
+        dh = $(document).height(),
+        wh = $(window).height();
+      scrollPercent = (scroll / (dh - wh)) * 100;
       $('#progressbar').css('height', scrollPercent + '%');
     })
+    $(window).scroll(function() {
+      var scroll = $(window).scrollTop(),
+        dh = $(document).height();
+      $('.sidebar').css('height', dh + 'px');
+    })
+    // $(document).ready(function() {
+    //   $('#myTable').dataTable();
+    // });
+    // $(document).ready(function() {
+    //   $('#myTable').dataTable({
+    //     'sDom': '"top"i'
+    //   });
+    // });
+    $("#myTable").DataTable({
+      "paging": true,
+      "ordering": true,
+      "searching": true
+    });
+
+    function myFunction() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 1; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
   </script>
 </body>
 

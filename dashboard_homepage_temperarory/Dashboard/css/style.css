@@ -35,10 +35,10 @@
 }
 .sidebar{
   width: 345px;
-  position: fixed;
+  position: absolute;
   left:0;
   top: 0;
-  height: 100%;
+  /* height: 100vh; */
   background: var(--main-color1);
   z-index: 100;
   transition: width 300ms;
@@ -129,6 +129,26 @@ header h2{
 header label span{
   font-size: 1.7rem;
   padding-right: 1rem;
+}
+.search-wrapper1{
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  width: 200px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  overflow-x: hidden;
+}
+.search-wrapper1 span{
+  display: inline-block;
+  padding: 0rem 1rem;
+  font-size: 1.5rem;
+}
+.search-wrapper1 input{
+  height: 100%;
+  padding: .5rem;
+  border: none;
+  outline: none;
 }
 .search-wrapper{
   border: 1px solid #ccc;
@@ -231,14 +251,14 @@ main{
   padding: .5rem 1rem;
   border: 1px solid var(--main-color);
 }
-table {
+#mytable {
   border-collapse: collapse;
 }
-thead tr{
+#tr1{
   border-top: 1px solid #f0f0f0;
   border-bottom: 2px solid #f0f0f0;
 }
-thead td{
+#thead td{
   font-weight: 700;
 }
 td{
@@ -246,36 +266,40 @@ td{
   font-size: .9rem;
   color: #222;
 }
-td .status{
+/* td .statuss{
   display: inline-block;
   height: 10px;
   width: 10px;
   border-radius: 50%;
   margin: 1rem;
+} */
+td .statusss{
+  margin-bottom: 10px;
+  padding-right: 10px;
 }
 tr td:last-child{
   display: flex;
   align-items: center;
 }
-.status.purple{
-  background: rebeccapurple;
+.statusss.purple{
+  color: rebeccapurple;
 }
-.status.pink{
-  background: deeppink;
+.statusss.pink{
+  color: deeppink;
 }
-.status.orange{
-  background: orangered;
+.statusss.orange{
+  color: orangered;
 }
-.status.red{
-  background: red;
+.statusss.red{
+  color: red;
 }
-.status.green{
-  background: green;
+.statusss.green{
+  color: green;
 }
-.table-responsive{
+/* .table-responsive{
   width: 100%;
   overflow-x: auto;
-}
+} */
 .customer{
   display: flex;
   justify-content: space-between;
