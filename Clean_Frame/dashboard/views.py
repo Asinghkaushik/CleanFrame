@@ -27,7 +27,15 @@ def generate_otp():
 
 def dashboard(request):
     if error_detection(request,1)==False:
-        return render(request,'dashboard/dashboard.html',context={})
+        data={}
+        try:
+            data=StudentProfile.objects.get(user=request.user)
+        except:
+            try:
+                data=CompanyProfile.objects.get(user=request.user)
+            except:
+                data={}
+        return render(request,'dashboard/dashboard.html',context={"data": data})
     return error_detection(request,1)
 
 def error_detection(request,id):
