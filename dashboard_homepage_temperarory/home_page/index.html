@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster|Ubuntu|Sacramento|Merriweather|Audiowide|Sofia|Trirong">
+  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <title>CleanFrame</title>
+</head>
+
+<body>
+  <div id="progressbar"></div>
+  <section class="home section1">
+    <nav class="navbar navbar-expand-lg navigationbar">
+      <div class="container-fluid">
+        <div class="comp1"><span class="lab la-accusoft myicon"></span></div>
+        <a class="navbar-brand" id="companyname" href="#home"><div class="comp1"><span id="companyname1">CleanFrame</span></div></a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon" id="ham"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto navigationitems">
+            <li class="nav-item navigationlist">
+              <a class="nav-link" href="#About">About</a>
+            </li>
+            <li class="nav-item navigationlist">
+              <a class="nav-link" href="#Review">Review</a>
+            </li>
+
+            <li class="nav-item navigationlist">
+              <a class="nav-link" href="#Contact">Contact</a>
+            </li>
+          </ul>
+          <div class="btn-group" id="log_btn">
+            <button type="button" class="btn" id="mybtn"><a href="../login/login.html" id="mybtnlink">Login</a></button>
+          </div>
+          <div class="btn-group dropdown">
+            <button type="button" class="btn" data-toggle="dropdown" id="mybtn"><a href="../signup/signup.html" id="mybtnlink">SignUp <span class="las la-caret-down"></span></a>
+            </button>
+            <ul class="dropdown-menu" id="mydrop">
+              <li><a href="#" id="stud">Student</a></li>
+              <li><a href="#" id="comp">Company</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="intro">
+      <div class="intro-text">
+        <h1 class="hide">
+          <span class="text">
+            Helping Our
+          </span>
+        </h1>
+        <h1 class="hide">
+          <span class="text">
+            Students Reaching
+          </span>
+        </h1>
+        <h1 class="hide">
+          <span class="text">
+            Great Height
+          </span>
+        </h1>
+      </div>
+    </div>
+    <div class="slider"></div>
+  </section>
+  <section class="About">
+  </section>
+  <section class="Review">
+  </section>
+  <section class="Contact">
+  </section>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous"></script>
+  <script src="js/app.js"></script>
+  <script type="text/javascript">
+    $(window).scroll(function() {
+      var scroll = $(window).scrollTop(),
+        dh = $(document).height(),
+        wh = $(window).height();
+      scrollPercent = (scroll / (dh - wh)) * 100;
+      $('#progressbar').css('height', scrollPercent + '%');
+    })
+  </script>
+</body>
+
+</html>
