@@ -8,6 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm
+from .models import StaffPermissions
 
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
@@ -35,8 +36,20 @@ def dashboard(request):
                 data=CompanyProfile.objects.get(user=request.user)
             except:
                 data={}
-        return render(request,'dashboard/dashboard.html',context={"data": data})
+        staff = User.objects.filter(is_staff=True,is_superuser=False).count()
+        admin = User.objects.filter(is_staff=True,is_superuser=True).count()
+        company = User.objects.filter(is_staff=False,is_superuser=False,last_name=settings.COMPANY_MESSAGE).count()
+        student = User.objects.filter(is_staff=False,is_superuser=False).count() - int(company)
+        return render(request,'dashboard/dashboard.html',context={"data": data, "staff_count": staff, "admin_count": admin, "company_count": company, "student_count": student, "permissions": get_permissions(request)})
     return error_detection(request,1)
+
+def get_permissions(request):
+    try:
+        permissions = StaffPermissions.objects.get(user=request.user)
+    except:
+        StaffPermissions.objects.create(user=request.user)
+        permissions = StaffPermissions.objects.get(user=request.user)
+    return permissions
 
 def error_code(request, message):
     return render(request,"home/error_code.html",context={"error": message})
@@ -85,7 +98,7 @@ def profile_i(request,error):
             contact_given=p.profile_filled
         except:
             p={}
-    return render(request,'dashboard/profile.html',context={"contact_given": contact_given, "phase": 1, "data": p, "error": error})
+    return render(request,'dashboard/profile.html',context={"contact_given": contact_given, "phase": 1, "data": p, "error": error, "permissions": get_permissions(request)})
 
 def send_otp_to_phone_stu(request):
     if request.user.is_authenticated:
@@ -110,7 +123,7 @@ def send_otp_to_phone_stu(request):
                 else:
                     p.gender='Transgender'
                 p.save()
-                return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number})
+                return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "permissions": get_permissions(request)})
             except:
                 return redirect('dashboard')
         else:
@@ -160,15 +173,15 @@ def verify_otp_phone_stu(request):
                                 u.profile_created=datetime.datetime.now()
                             u.profile_filled=True
                             u.save()
-                            return render(request,'dashboard/profile.html',context={"phase": 3,})
+                            return render(request,'dashboard/profile.html',context={"phase": 3, "permissions": get_permissions(request)})
                         except:
                             return redirect('dashboard')
                     else:
                         if(otp_sender_to_student(request, phone_number)==False):
                             return redirect('dashboard')
-                        return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP has been expired, we have sent a new OTP to phone number"})
+                        return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP has been expired, we have sent a new OTP to phone number", "permissions": get_permissions(request)})
                 else:
-                    return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "Invalid OTP"})
+                    return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "Invalid OTP", "permissions": get_permissions(request)})
             except:
                 return redirect('dashboard')
         else:
@@ -184,7 +197,7 @@ def resend_otp_to_phone_stu(request):
             phone_number=u.contact_number    
             if(otp_sender_to_student(request, phone_number)==False):
                 return redirect('dashboard')
-            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP sent again"})
+            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP sent again", "permissions": get_permissions(request)})
         except:
             return redirect('dashboard')
     else:
@@ -206,7 +219,7 @@ def send_otp_to_phone_com(request):
                 p.contact_number=int(phone_number)
                 p.complete_address=address
                 p.save()
-                return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number})
+                return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "permissions": get_permissions(request)})
             except:
                 return redirect('dashboard')
         else:
@@ -255,15 +268,15 @@ def verify_otp_phone_com(request):
                                 u.profile_created=datetime.datetime.now()
                             u.profile_filled=True
                             u.save()
-                            return render(request,'dashboard/profile.html',context={"phase": 3,})
+                            return render(request,'dashboard/profile.html',context={"phase": 3, "permissions": get_permissions(request)})
                         except:
                             return redirect('dashboard')
                     else:
                         if(otp_sender_to_company(request, phone_number)==False):
                             return redirect('dashboard')
-                        return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP has been expired, we have sent a new OTP to phone number"})
+                        return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP has been expired, we have sent a new OTP to phone number", "permissions": get_permissions(request)})
                 else:
-                    return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "Invalid OTP"})
+                    return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "Invalid OTP",  "permissions": get_permissions(request)})
             except:
                 return redirect('dashboard')
         else:
@@ -279,7 +292,7 @@ def resend_otp_to_phone_com(request):
             phone_number=u.contact_number    
             if(otp_sender_to_company(request, phone_number)==False):
                 return redirect('dashboard')
-            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP sent again"})
+            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "error": "OTP sent again", "permissions": get_permissions(request)})
         except:
             return redirect('dashboard')
     else:
@@ -419,7 +432,7 @@ def student_company_number(request):
             p.contact_number=int(phone_number)
             p.profile_filled=False
             p.save()
-            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number})
+            return render(request,'dashboard/profile.html',context={"phase": 2, "phone": phone_number, "permissions": get_permissions(request)})
         else:
             return redirect('dashboard')
     else:
@@ -428,5 +441,108 @@ def student_company_number(request):
 
 def change_password(request):
     if error_detection(request,1)==False:
-        return render(request,'dashboard/change_password.html',context={})
+        return render(request,'dashboard/change_password.html',context={ "permissions": get_permissions(request)})
     return error_detection(request,1)
+
+def student_account_signup_permit(request):
+    if error_detection(request,1)==False:
+        permissions=get_permissions(request)
+        if permissions.can_access_student_inactive_accounts==False:
+            return redirect('dashboard')
+        data=StudentProfile.objects.filter(verified=False, account_banned_permanent=False,  account_banned_temporary=False).order_by('signup_date')
+        return render(request,'dashboard/student_accounts.html',context={ "permissions": get_permissions(request), "data": data})
+    return error_detection(request,1)
+
+def student_account_signup_action(request,type,item):
+    if error_detection(request,1)==False:
+        permissions=get_permissions(request)
+        if permissions.can_access_student_inactive_accounts==False:
+            return redirect('dashboard')
+        message__=""
+        subject = 'Action taken on your signup request'
+        code=0
+        if type=="1":
+            try:
+                details=StudentProfile.objects.get(id=int(item))
+                email=details.user.email
+                if details.verified==True:
+                    code=3
+                else:
+                    details.verified=True
+                    details.save()
+                    code=1
+                    message = f'Hi user, your request for creating the account has been successfully met. You can login and register for internships\nThanks'
+                    SENDMAIL(subject,message,email)
+            except:
+                code=0
+        elif type=="2":
+            try:
+                details=StudentProfile.objects.get(id=int(item))
+                u=User.objects.get(username=details.user)
+                email=details.user.email
+                if details.verified==True:
+                    code=4
+                else:
+                    u.delete()
+                    code=2
+                    message = f'Hi user, your request for creating the account has been blocked and your account has been deleted. This may due to some inapropriate data given in the signup form.\nYou can register again on the clean frame. Be sure this time, you give correct details, otherwise the email can be blocked permanently.\nThanks'
+                    SENDMAIL(subject,message,email)
+            except:
+                code=0
+        data=StudentProfile.objects.filter(verified=False, account_banned_permanent=False,  account_banned_temporary=False).order_by('signup_date')
+        return render(request,'dashboard/student_accounts.html',context={ "permissions": get_permissions(request), "data": data, "code": code})
+    return error_detection(request,1)
+
+def company_account_signup_permit(request):
+    if error_detection(request,1)==False:
+        permissions=get_permissions(request)
+        if permissions.can_access_company_inactive_accounts==False:
+            return redirect('dashboard')
+        data=CompanyProfile.objects.filter(verified=False, account_banned_permanent=False,  account_banned_temporary=False).order_by('signup_date')
+        return render(request,'dashboard/company_accounts.html',context={ "permissions": get_permissions(request), "data": data})
+    return error_detection(request,1)
+
+def company_account_signup_action(request,type,item):
+    if error_detection(request,1)==False:
+        permissions=get_permissions(request)
+        if permissions.can_access_company_inactive_accounts==False:
+            return redirect('dashboard')
+        message__=""
+        subject = 'Action taken on your signup request'
+        code=0
+        if type=="1":
+            try:
+                details=CompanyProfile.objects.get(id=int(item))
+                email=details.user.email
+                if details.verified==True:
+                    code=3
+                else:
+                    details.verified=True
+                    details.save()
+                    code=1
+                    message = f'Hi user, your request for creating the account has been successfully met. You can login and register for internships\nThanks'
+                    SENDMAIL(subject,message,email)
+            except:
+                code=0
+        elif type=="2":
+            try:
+                details=CompanyProfile.objects.get(id=int(item))
+                u=User.objects.get(username=details.user)
+                email=details.user.email
+                if details.verified==True:
+                    code=4
+                else:
+                    u.delete()
+                    code=2
+                    message = f'Hi user, your request for creating the account has been blocked and your account has been deleted. This may due to some inapropriate data given in the signup form.\nYou can register again on the clean frame. Be sure this time, you give correct details, otherwise the email can be blocked permanently.\nThanks'
+                    SENDMAIL(subject,message,email)
+            except:
+                code=0
+        data=CompanyProfile.objects.filter(verified=False, account_banned_permanent=False,  account_banned_temporary=False).order_by('signup_date')
+        return render(request,'dashboard/company_accounts.html',context={ "permissions": get_permissions(request), "data": data, "code": code})
+    return error_detection(request,1)
+
+def SENDMAIL(subject, message, email):
+    email_from = settings.EMAIL_HOST_USER 
+    recipient_list = [email, ] 
+    send_mail( subject, message, email_from, recipient_list )

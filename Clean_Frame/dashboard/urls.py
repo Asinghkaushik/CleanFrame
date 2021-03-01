@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3,company_profile_2, student_profile_2,student_profile_1,student_company_number,change_password
+from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3,company_profile_2, student_profile_2,student_profile_1,student_company_number,change_password,student_account_signup_permit,student_account_signup_action,company_account_signup_permit,company_account_signup_action
+
 
 urlpatterns = [
     path('',dashboard,name="dashboard"),
@@ -17,5 +18,10 @@ urlpatterns = [
     path('profile/upload/student/1/',student_profile_1,name="student_profile_1"),
     path('profile/upload/phone_number/',student_company_number,name="student_company_number"),
     path('profile/changepassword/',change_password,name="change_password"),
+    path('permit/signup_request/student/',student_account_signup_permit,name="student_account_signup_permit"),
+    path('permit/signup_request/student/<str:type>/<str:item>',student_account_signup_action,name="student_account_signup_action"),
+    path('permit/signup_request/company/',company_account_signup_permit,name="company_account_signup_permit"),
+    path('permit/signup_request/company/<str:type>/<str:item>',company_account_signup_action,name="company_account_signup_action"),
+    
 
 ]
