@@ -38,23 +38,26 @@ def dashboard(request):
         return render(request,'dashboard/dashboard.html',context={"data": data})
     return error_detection(request,1)
 
+def error(request, message):
+    return render(request,"home/error.html",context={"error": message})
+
 def error_detection(request,id):
     if request.user.is_authenticated==False:
         return redirect('home')
     if request.user.is_staff or request.user.is_superuser:
         return False
     if request.user.is_active==False:
-        return HttpResponse("Account's associated email is not otp verified")
+        return error(request,"500")
     if request.user.last_name==settings.COMPANY_MESSAGE:
         try:
             p=CompanyProfile.objects.get(user=request.user)
         except:
-            return HttpResponse("Profile not found")
+            return error(request,"400")
     else:
         try:
             p=StudentProfile.objects.get(user=request.user)
         except:
-            return HttpResponse("Profile not found")
+            return error(request,"400")
     if p.account_banned_permanent:
         return HttpResponse("Account has been permanently")
     if p.account_banned_temporary:

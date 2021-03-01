@@ -396,11 +396,8 @@ def forgot_password_verify_otp(request):
         email=request.POST.get('email')
         otp=request.POST.get('otp')
         try:
-            print("@@@@@@@@@@@@@@@@@!1")
             user=User.objects.get(email=email)
             u=user_type_checker(request, user, email)
-            print("@@@@@@@@@@@@@@@@@!12")
-            print(u)
             if str(u.otp) == str(otp):
                 prev_time=u.otp_time
                 u.otp_time=datetime.datetime.now()
@@ -465,3 +462,6 @@ def reset_password(request):
         return render(request, 'home/forgot_password_page.html', context={'phase': 4})
     else:
         return redirect('forgot_password')
+
+def error(request, message):
+    return render(request,"home/error.html",context={"error": message})

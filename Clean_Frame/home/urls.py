@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, signup_student, signup_student_verify, signup_student_verify_otp,signup_student_resend_otp,signup_company,signup_company_verify,signup_company_verify_otp, signup_company_resend_otp,logout_request, login_request, forgot_password, forgot_password_verify_otp, forgot_password_resend_otp, reset_password
+from .views import home, signup_student, signup_student_verify, signup_student_verify_otp,signup_student_resend_otp,signup_company,signup_company_verify,signup_company_verify_otp, signup_company_resend_otp,logout_request, login_request, forgot_password, forgot_password_verify_otp, forgot_password_resend_otp, reset_password,error
 
 urlpatterns = [
     path('',home,name='home'),
@@ -17,5 +17,6 @@ urlpatterns = [
     path('password/forgot/verify/otp/',forgot_password_verify_otp, name="forgot_password_verify_otp"),
     path('password/forgot/resend/otp/<str:email>', forgot_password_resend_otp, name='forgot_password_resend_otp'),
     path('password/forgot/change/',reset_password, name='reset_password'),
+    path('error/<str:message>',error,name="error"),
 
 ]
