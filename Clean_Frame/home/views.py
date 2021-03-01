@@ -464,4 +464,4 @@ def reset_password(request):
         return redirect('forgot_password')
 
 def error(request, message):
-    return render(request,"home/error.html",context={"error": message})
+    return render(request,"home/error_code.html",context={"error": message})

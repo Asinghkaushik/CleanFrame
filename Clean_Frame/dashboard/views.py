@@ -38,8 +38,11 @@ def dashboard(request):
         return render(request,'dashboard/dashboard.html',context={"data": data})
     return error_detection(request,1)
 
-def error(request, message):
-    return render(request,"home/error.html",context={"error": message})
+def error_code(request, message):
+    return render(request,"home/error_code.html",context={"error": message})
+
+def error_message(request, message):
+    return render(request,"home/error_message.html",context={"error": message})
 
 def error_detection(request,id):
     if request.user.is_authenticated==False:
@@ -47,21 +50,21 @@ def error_detection(request,id):
     if request.user.is_staff or request.user.is_superuser:
         return False
     if request.user.is_active==False:
-        return error(request,"500")
+        return error_code(request,"500")
     if request.user.last_name==settings.COMPANY_MESSAGE:
         try:
             p=CompanyProfile.objects.get(user=request.user)
         except:
-            return error(request,"400")
+            return error_message(request,"Profile Not Found")
     else:
         try:
             p=StudentProfile.objects.get(user=request.user)
         except:
-            return error(request,"400")
+            return error_message(request,"Profile Not Found")
     if p.account_banned_permanent:
-        return HttpResponse("Account has been permanently")
+        return error_message(request,"Your account is banned permanently")
     if p.account_banned_temporary:
-        return HttpResponse("Account has been for a short span of time, suggested to login again")
+        return error_message(request,"Your account is banned temporarily, login again")
     if p.profile_filled==False and id==1:
         return redirect('profile')  
     return False
