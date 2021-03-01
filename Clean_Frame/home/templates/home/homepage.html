@@ -43,6 +43,9 @@
           </ul>
           {% if request.user.is_authenticated %}
           <div class="btn-group" id="log_btn">
+            <button type="button" class="btn" id="mybtn"><a href="{% url 'dashboard' %}" id="mybtnlink">Dashboard</a></button>
+          </div>
+          <div class="btn-group" id="log_btn">
             <button type="button" class="btn" id="mybtn"><a href="{% url 'logout_request' %}" id="mybtnlink">Logout</a></button>
           </div>
           {% else %}
