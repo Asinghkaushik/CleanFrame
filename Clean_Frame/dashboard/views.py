@@ -424,3 +424,9 @@ def student_company_number(request):
             return redirect('dashboard')
     else:
         return redirect('home')
+
+
+def change_password(request):
+    if error_detection(request,1)==False:
+        return render(request,'dashboard/change_password.html',context={})
+    return error_detection(request,1)
