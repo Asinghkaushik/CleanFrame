@@ -362,6 +362,28 @@ tr td:last-child{
   .recent-grid{
     grid-template-columns: 60% 40%;
   }
+  #nav-toggle:checked + .sidebar{
+    left: 0 !important;
+    z-index: 100;
+    width: 345px;
+  }
+  #nav-toggle:checked + .sidebar .sidebar-brand,
+  #nav-toggle:checked + .sidebar li{
+    padding-left: 2rem;
+    text-align: left;
+  }
+  #nav-toggle:checked + .sidebar li a{
+    padding-left: 1rem;
+  }
+  #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+  #nav-toggle:checked + .sidebar li a span:last-child{
+    display: inline;
+  }
+  #nav-toggle:checked ~ .main-content header{
+    margin-left: 0rem !important;
+    width: 100% !important;
+    left: 0px !important;
+  }
 }
 @media only screen and (max-width: 768px) {
   .cards{
