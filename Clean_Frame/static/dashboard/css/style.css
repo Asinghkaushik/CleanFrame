@@ -228,6 +228,11 @@ main{
   grid-gap: 2rem;
   grid-template-columns: 65% auto;
 }
+.recent-grid1{
+  margin-top: 3.5rem;
+  display: grid;
+  grid-gap: 2rem;
+}
 .card{
   background: #fff;
   border-radius: 5px;
@@ -362,6 +367,9 @@ tr td:last-child{
   .recent-grid{
     grid-template-columns: 60% 40%;
   }
+  .recent-grid1{
+    grid-template-columns: 100%;
+  }
   #nav-toggle:checked + .sidebar{
     left: 0 !important;
     z-index: 100;
@@ -390,6 +398,9 @@ tr td:last-child{
     grid-template-columns: repeat(2, 1fr);
   }
   .recent-grid{
+    grid-template-columns: 100%;
+  }
+  .recent-grid1{
     grid-template-columns: 100%;
   }
   .search-wrapper{
