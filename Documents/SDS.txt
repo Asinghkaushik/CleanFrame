@@ -1,0 +1,468 @@
+﻿Software Design Specification
+By  CleanFrame
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Table of Contents
+Table of Contents
+	ii
+	1. Introduction
+	1
+	1.1 Document Outline
+	1
+	1.2 Document Description
+	1
+	1.3 Scope
+	1
+	2. Design Considerations
+	2
+	2.1 Assumptions and Dependencies
+	2
+	2.2 User Interface Issues
+	2
+	2.3 General Constraints
+	3
+	2.4 Goals and Guidelines
+	3
+	3. Architectural Strategies and System Architecture
+	3
+	4. Data Flow Model
+	4
+	4.1  Level 0 Data Flow Model 
+	4
+	4.2  Level 1 Data Flow Model
+	5
+	4.3  Level 2 Data Flow Model
+	6
+	5. Sequence Diagram
+	7
+	5.1  Sequence Diagram For Student 
+	7
+	5.2  Sequence Diagram For Company Professional 
+	8
+	5.3  Sequence Diagram For Administrator
+	9
+	5.4  Sequence Diagram For Supervisor
+	10
+	6. Entity Relationship Diagram
+	11
+	7. State Diagram
+	12
+	7.1  StateDiagram For applying for internship and rollback application
+	12
+	7.2  StateDiagram For announcements by company professionals
+	13
+	7.3  StateDiagram For student/company professional dashboard facilities
+	14
+	7.4  StateDiagram For supervisor/admin dashboard facilities
+	15
+	7.5  StateDiagram For admin roles
+	16
+	7.6  StateDiagram For login
+	17
+	7.7  StateDiagram For registration
+	18
+	8. Activity Diagram
+	19
+	8.1  Login
+	19
+	8.2  Signup
+	20
+	8.3  Forgot Password
+	21
+	8.4 Technical Support
+	22
+	8.5 Update Profile
+	23
+	8.6 Apply for Internship
+	24
+	8.7 Delete Account
+	25
+	8.8 Company Announcement
+	26
+	8.9 Create/ view notifications and Add blogs 
+	27
+	8.10 Manage Staff Account
+	28
+	8.11 Account Prohibition
+	29
+	9. Explanation for Data Flow Model
+	30
+	9.1 Level 0 Data Flow Model
+	30
+	9.2 Level 1 Data Flow Model
+	30
+	9.3 Level 2 Data Flow Model
+	31
+	10. Explanation for Sequence Diagram
+	33
+	10.1 Web page display
+	33
+	10.2 Registration
+	33
+	10.3 Login
+	33
+	10.4 Change Password
+	33
+	10.5 Upload portfolio/CV
+	34
+	10.6 Fill application form/profile details
+	34
+	10.7 Uploading Interview Results
+	34
+	10.8 Viewing Applicant Details
+	34
+	10.9 Student/Company Verification
+	34
+	10.10 Notification/Announcement creation
+	34
+	10.11 Reviews
+	34
+	10.12 Update User Details
+	34
+	11.  Entity’s and their Relationship in ER Diagram
+	35
+	11.1 User
+	35
+	11.2 Student
+	35
+	11.3 Portfolio Reviews
+	35
+	11.4 Company
+	36
+	11.5 Result
+	36
+	11.6 Admin
+	36
+	11.7 Blogs
+	37
+	12. Explanation for State Diagram
+	37
+	12.1 Rollback Application Form
+	37
+	12.2 Applying For Internship
+	37
+	12.3 Announcement Creation By Company Professionals
+	38
+	12.4 Technical Support and Response
+	38
+	12.5 Forgot Password
+	38
+	12.6 Profile Updation
+	38
+	12.7 Account Deletion
+	38
+	12.8 Notifications
+	39
+	12.9 Blogs
+	39
+	12.10 Prohibition of a low level user
+	39
+	12.11 Maintenance
+	39
+	12.12 Creation/Deletion of Staff Accounts
+	39
+	12.13 Login
+	40
+	12.14 Registration
+	40
+	12.15 Responding to Queries
+	40
+	13. Explanation for Activity Diagram
+	41
+	13.1  Login
+	41
+	13.2  Signup
+	41
+	13.3  Forgot Password
+	41
+	13.4 Technical Support
+	42
+	13.5 Update Profile
+	42
+	13.6 Apply for Internship
+	42
+	13.7 Delete Account
+	43
+	13.8 Company Announcement
+	43
+	13.9 Create/ view notifications and Add blogs 
+	43
+	13.10 Manage Staff Account
+	44
+	13.11 Account Prohibition
+	45
+	14. Traceability Matrix
+	46
+	Reference Table
+	47
+	15. PseudoCode
+	49
+	15.1 Redirect To Home Page
+	49
+	15.2 Generate OTP
+	49
+	15.3 Send OTP to Email
+	49
+	15.4 Send OTP to Phone
+	50
+	15.5 Login
+	51
+	15.6 Logout
+	52
+	15.7 Signup
+	52
+	15.8 Forgot Password
+	54
+	15.9 Resend OTP to Email
+	57
+	15.10 User Identification
+	57
+	15.11 Dashboard Redirection Error Check
+	58
+	15.12 Redirect To Dashboard Page
+	59
+	15.13 Redirect to Profile Page
+	59
+	15.14 Resend OTP to Phone
+	60
+	15.15 Profile Verification
+	60
+	1. Introduction
+Software Design Document provides documentation which would aid and serve as a basis in software development by providing the key implementation details which the software must comprise of. It also helps us to recognise the regulations with which the software must comply with. Software Design Document comprises various models and diagrams.
+This documentation is created to identify the key aspects which would be playing a crucial role during the development phase of the application. And would help the developers to know how this application was developed.
+
+
+1.1 Document Outline
+This document involves all the technical aspects and overviews over all the diagrams needed to design the web-based application portal for internship applicants and company professionals to be aided and this process of recruitment to be streamlined and transparency to be increased.
+This document involves all the design considerations, architectural strategies and System Architecture which was kept in mind while designing the software’s features and outlines all the things kept in mind to benefit the user experience.
+This document involves Data Flow diagrams over various levels for the ease of reading which tells how the data flows over the database and devices, Sequence Diagrams for understanding the sequence of flow of features that have been applied in the software and State diagrams to tell the various states the users/stakeholders would find themselves in while using the software, Entity-Relationship diagram for understanding how the database works behind the scenes.
+In the later part of this document the explanation of various components of various diagrams and models have been given so that any developer is fully able to understand the diagrams and model. Also Pseudocodes have also been provided to give an overview of how these key components would be implemented.
+
+
+1.2 Document Description
+Later on the explanation of every feature and design is provided in the detailed description from the start of the documentation. Every design consideration has been documented here, the architectural constraints and strategies have been explained.
+The diagrams have been explained in detail in the further portion of this document describing all the nuances and every possible query has been explained along the flow of this document.
+
+
+1.3 Scope
+We will describe what features are in the scope of the application and what will be out of scope of the application which is to be developed by CleanFrame.
+* In Scope
+   * Company/Students would be able to create their account in order to take part in the internship process.
+   * Users of the application will be able to get technical support incase of any query.
+   * Company Professionals will be able to create announcements regarding any vacancy or the results of the interview.
+* Out of Scope
+   * Selection process information or platform will not be available on the application as it would be varying from company to company.
+   * There will not be much interaction between the company and the Institute through this application.
+
+
+
+
+2. Design Considerations
+Design considerations part involves all the aspects where the design has been involved all  across the software and solve the issues or give a general guidance towards solving those issues. And makes users comfortable with all the data manipulation done in the code of the software for the ease of use for the user.  
+Design has to be made user friendly in order to make every stakeholder comfortable with the software and use it to its full potential.
+
+
+     2.1 Assumptions and Dependencies
+Here we shall be discussing the various assumptions made while developing the software design:
+1. It is implied that the person using the software shall be equipped with a device with a stable internet connection.
+2. The device shall be optimized for running web browsers.
+3. It is recommended that every user operating the software should practise ethical ways for providing information over the portal to maintain trust between the stakeholders.
+4. Windows xp and above, android 6 and above,etc. Operating system is recommended for a smooth experience.
+
+
+The dependencies over which the software lays it’s foundation are implicit but are very important to be kept in mind:
+1. The notifications shall be checked from time to time to keep track of them over the portal.
+2. The technical support can take some time to resolve the issue and patience is demanded from the reporter over such an unfortunate event. 
+3. Permanent ban shall be done to the users not following the instructions over a defined period of time.
+
+
+     2.2 User Interface Issues  
+User interface has been defined keeping in mind the needs of both the parties involved and following are the key highlights:
+1. Company Reviews and Blogs has been created for applicants to get a better glance at the past records of the companies enlisted.
+2. A notification center has been created for applicants to get notified and a nice and tidy way for company professionals to post them.
+3. A technical support system has been created for the help of both.
+
+
+Possible User interface Issues and their addressal:
+1. Suppose a User ‘A’ is new to the environment, so a tutorial would be posted at the introduction page for curbing that issue.
+2. Suppose a User ‘B’ is facing an issue already asked by some other user, then this issue can be solved from a blog posted by the technical support.
+
+
+2.3 General Constraints
+1. Users can’t login/ create accounts without indian number and google verified email.
+2. Once banned can appeal for an unban within 2 days of ban. After 2 days, an unbanned request can’t be made.
+
+
+2.4 Goals and Guidelines 
+1. User must be used to the dashboard as he is using his mobile phone.
+2. Login / Signup System should be as simple as possible.
+3. In continuation to above point, this system must be fully secured
+4. New updates in a few months with different themes and more feasibility.
+5. In the new update the ban removal appeal deadline to extend (at least upto 1 week).
+3. Architectural Strategies
+Basically the system architecture depends on the various API’s used while dealing with the project code. Basic API’s used in the project:
+* Using Twilio API for sending OTP to phone number
+* Using Django SEND MAIL API for sending OTP to emails.
+* Using Rest Framework to create our own API’s
+Now since we are using some API so the user needs the following to create a account: 
+* Must have a valid Indian Phone Number
+* Must have an google verified email address
+* If email is provided with the IIITA then a student is allowed to create a student account.
+* In continuation to the above point, no other gmail account or account related to another college should be allowed to register as a student.
+4.  Data Flow Model
+4.1 Level 0 Data Model
+  
+
+
+
+
+
+
+
+4.2 Level 1 Data Model
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+4.3 Level 2 Data Model
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+5. Sequence Diagram
+5.1 Sequence Diagram for Student
+
+
+  
+
+5.2 Sequence Diagram For Company Professional 
+  5.3 Sequence Diagram For Administrator
+
+
+  
+
+5.4 Sequence Diagram For Supervisor
+
+
+  
+
+
+
+
+
+6. Entity Relationship Diagram
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+7. State Diagram
+7.1  StateDiagram For applying for internship and rollback application
+
+
+
+
+
+
+
+
+  
+________________
+
+
+
+7.2  StateDiagram For announcements by company professionals
+
+
+  
+________________
+
+7.3 StateDiagram For student/company professional dashboard facilities
+
+
+
+
+
+
+  
+________________
+
+7.4  StateDiagram For supervisor/admin dashboard facilities
+
+
+
+
+
+
+
+
+  
+
+7.5  StateDiagram For admin roles
+  7.6  StateDiagram For login
+  
+
+
+
+7.7  StateDiagram For registration
+
+
+  
+
