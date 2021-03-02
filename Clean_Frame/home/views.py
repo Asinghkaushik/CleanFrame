@@ -4,14 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import (login,authenticate,logout)
 from django.conf import settings 
 from django.core.mail import send_mail 
-import math,random,string,datetime,array,secrets
+import math,random,string,datetime
 from twilio.rest import Client
 from .forms import UserForm
 from .models import StudentProfile, CompanyProfile
 from dashboard.views import dashboard
-import math,random,string,array,secrets
-from os import urandom
-from random import choice
 
 # Create your views here.
 def home(request):
@@ -468,25 +465,3 @@ def reset_password(request):
 
 def error(request, message):
     return render(request,"home/error_code.html",context={"error": message})
-
-def generate_password():
-    alphabet = string.ascii_letters + string.digits
-    password = ''.join(secrets.choice(alphabet) for i in range(20))
-    password = password + 'Pa12'
-    return password
-
-def change_staff_only(request,email,username):
-    try:
-        user=User.objects.get(email=email, username=username)
-        if user.is_staff==True:
-            new_password=generate_password()
-            user.set_password(new_password)
-            user.save()
-            subject = 'Password Changed in Clean Frame'
-            message = f'Hi user, recently password has been changed.\nNew Password is : ' + new_password + '\nNote: This is auto generated password you are suggested to reset the password from dashboard section of the clean frame with link as https://clean-frame.herokuapp.com/.\nIf you had not given the request then click the following link to reset it again.\nLink to reset password: https://clean-frame.herokuapp.com/changepassword/iamastaff/' + email + '/' + username +'/\nThanks'
-            SENDMAIL(subject,message,email)
-        else:
-            pass
-    except:
-        pass
-    return render(request,"home/success_message.html",context={"message": "If correct credentials have been entered then new password would be sent to the registered email."})
