@@ -11,90 +11,95 @@
 
 <!--Make the class active for the link you want-->
 {% block sidebar_menu %}
-<div class="sidebar-menu">
-  <ul>
-    <li>
-      <a href="{% url 'dashboard' %}"><span class="las la-igloo"></span>
-        <span>Dashboard</span>
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'profile' %}" class="active"><span class="las la-user-graduate"></span>
-        <span>Profile</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-briefcase"></span>
-        <span>Company</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-user-tie"></span>
-        <span>Verify User</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
-        <span>Add Staff</span>
-      </a>
-    </li>
-  </ul>
-</div>
+  <div class="sidebar-menu">
+    <ul>
+      <li>
+        <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <hr>
+      <li>
+        <a href="{% url 'profile' %}" class="active"><span class="las la-id-card"></span>
+          <span>Profile</span>
+        </a>
+      </li>
+      {% if permissions.can_access_student_inactive_accounts %}
+      <li>
+        <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
+          <span>Student Accounts</span>
+        </a>
+      </li>
+      {% endif %}
+      {% if permissions.can_access_company_inactive_accounts %}
+      <li>
+        <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-tie"></span>
+          <span>Company Accounts</span>
+        </a>
+      </li>
+      {% endif %}
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+      <li>
+        <a href=""><span class="las la-users"></span>
+          <span>Add Staff</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 {% endblock %}
 
 

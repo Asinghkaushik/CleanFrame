@@ -8,7 +8,9 @@ $(window).scroll(function() {
   $(window).scroll(function() {
     var scroll = $(window).scrollTop(),
       dh = $(document).height();
-    $('.sidebar').css('height', dh + 'px');
+      wh = $(window).height();
+      gh = Math.max(dh,wh);
+    $('.sidebar').css('height', gh + 'px');
   })
   // $(document).ready(function() {
   //   $('#myTable').dataTable();
