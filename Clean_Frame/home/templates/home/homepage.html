@@ -40,58 +40,14 @@
             <li class="nav-item navigationlist">
               <a class="nav-link" href="#Contact">Contact</a>
             </li>
-            <li class="nav-item navigationlist">
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </li>
-            <li class="nav-item navigationlist">
-              <div class="action">
-                <div class="profile" onclick="menuToggle();">
-                  {% if data.image %}
-                    <img src="{{data.image.url}}" alt="">
-                  {% else %}
-                    <img src="{% static 'dashboard/img/us_ma.png' %}" alt="">
-                  {% endif %}
-                  <!-- <img src="img/img.jpg" alt=""> -->
-                </div>
-                <div class="menu">
-                  <h3 id="img_drp">{{request.user}}<br>
-                    {% if request.user.is_superuser %}
-                    <span>Administrator</span>
-                    {% else %}
-                      {% if request.user.is_staff %}
-                      <span>Staff</span>
-                      {% else %}
-                        {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
-                        <span>Company</span>
-                        {% else %}
-                        <span>Student</span>
-                        {% endifequal %}
-                      {% endif %}
-                    {% endif %}
-                  </h3>
-                    <ul>
-                      <li> <a href="{% url 'dashboard' %}"><img src="{% static 'dashboard/img/dashboard.png' %}" alt="">Dashboard</a> </li>
-                      {% if request.user.is_staff %}
-                      {% else %}
-                        <li> <a href="#"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a> </li>
-                      {% endif %}
-                      <li> <a href="#"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a> </li>
-                      <li> <a href="#"><img src="{% static 'dashboard/img/settings.png' %}" alt=""> Settings</a> </li>
-                      <li> <a href="#"><img src="{% static 'dashboard/img/support.png' %}" alt=""> Support</a> </li>
-                      <li> <a href="{% url 'logout_request' %}"><img src="{% static 'dashboard/img/logout.png' %}" alt="">Logout</a> </li>
-                    </ul>
-                </div>
-              </div>
-            </li>
           </ul>
           {% if request.user.is_authenticated %}
-          <!-- <div class="btn-group" id="log_btn">
+          <div class="btn-group" id="log_btn">
             <button type="button" class="btn" id="mybtn"><a href="{% url 'dashboard' %}" id="mybtnlink">Dashboard</a></button>
-          </div> -->
-          <!-- <div class="btn-group" id="log_btn">
-
-          </div> -->
-
+          </div>
+          <div class="btn-group" id="log_btn">
+            <button type="button" class="btn" id="mybtn"><a href="{% url 'logout_request' %}" id="mybtnlink">Logout</a></button>
+          </div>
           {% else %}
           <div class="btn-group" id="log_btn">
             <button type="button" class="btn" id="mybtn"><a href="{% url 'login_request' %}" id="mybtnlink">Login</a></button>
