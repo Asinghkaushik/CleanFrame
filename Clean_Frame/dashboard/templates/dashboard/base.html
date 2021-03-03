@@ -97,7 +97,7 @@
                     <li> <a href="#"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a> </li>
                   {% endif %}
                   <li> <a href="#"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a> </li>
-                  <li> <a href="#"><img src="{% static 'dashboard/img/settings.png' %}" alt=""> Settings</a> </li>
+                  <li> <a href="{% url 'settings_home' %}"><img src="{% static 'dashboard/img/settings.png' %}" alt=""> Settings</a> </li>
                   <li> <a href="#"><img src="{% static 'dashboard/img/support.png' %}" alt=""> Support</a> </li>
                   <li> <a href="{% url 'logout_request' %}"><img src="{% static 'dashboard/img/logout.png' %}" alt="">Logout</a> </li>
                 </ul>
