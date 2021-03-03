@@ -2,8 +2,8 @@ from django.shortcuts import render,HttpResponse,redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import (login,authenticate,logout)
-from django.conf import settings 
-from django.core.mail import send_mail 
+from django.conf import settings
+from django.core.mail import send_mail
 import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
@@ -21,9 +21,9 @@ def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
 
 def generate_otp():
     digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    OTP = "" 
-    for i in range(7) : 
-        OTP += digits[math.floor(random.random() * 62)] 
+    OTP = ""
+    for i in range(7) :
+        OTP += digits[math.floor(random.random() * 62)]
     return OTP
 
 def get_my_profile(request):
@@ -83,7 +83,7 @@ def error_detection(request,id):
     if p.account_banned_temporary:
         return error_message(request,"Your account is banned temporarily, login again")
     if p.profile_filled==False and id==1:
-        return redirect('profile')  
+        return redirect('profile')
     return False
 
 def profile(request):
@@ -167,7 +167,7 @@ def verify_otp_phone_stu(request):
                     u.otp_time=datetime.datetime.now()
                     u.save()
                     u=StudentProfile.objects.get(user=user)
-                    new_time=u.otp_time                
+                    new_time=u.otp_time
                     time_delta = (new_time-prev_time)
                     minutes = (time_delta.total_seconds())/60
                     if minutes<settings.OTP_EXPIRE_TIME:
@@ -199,7 +199,7 @@ def resend_otp_to_phone_stu(request):
         try:
             user=request.user
             u=StudentProfile.objects.get(user=user)
-            phone_number=u.contact_number    
+            phone_number=u.contact_number
             if(otp_sender_to_student(request, phone_number)==False):
                 return redirect('dashboard')
             data=get_my_profile(request)
@@ -208,7 +208,7 @@ def resend_otp_to_phone_stu(request):
             return redirect('dashboard')
     else:
         return redirect('home')
-        
+
 def send_otp_to_phone_com(request):
     if request.user.is_authenticated:
         if request.method=="POST":
@@ -265,7 +265,7 @@ def verify_otp_phone_com(request):
                     u.otp_time=datetime.datetime.now()
                     u.save()
                     u=CompanyProfile.objects.get(user=user)
-                    new_time=u.otp_time                
+                    new_time=u.otp_time
                     time_delta = (new_time-prev_time)
                     minutes = (time_delta.total_seconds())/60
                     if minutes<settings.OTP_EXPIRE_TIME:
@@ -297,7 +297,7 @@ def resend_otp_to_phone_com(request):
         try:
             user=request.user
             u=CompanyProfile.objects.get(user=user)
-            phone_number=u.contact_number    
+            phone_number=u.contact_number
             if(otp_sender_to_company(request, phone_number)==False):
                 return redirect('dashboard')
             data=get_my_profile(request)
@@ -556,6 +556,6 @@ def company_account_signup_action(request,type,item):
     return error_detection(request,1)
 
 def SENDMAIL(subject, message, email):
-    email_from = settings.EMAIL_HOST_USER 
-    recipient_list = [email, ] 
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email, ]
     send_mail( subject, message, email_from, recipient_list )

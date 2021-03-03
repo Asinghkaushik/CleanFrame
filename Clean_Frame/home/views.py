@@ -2,8 +2,8 @@ from django.shortcuts import render,HttpResponse,redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import (login,authenticate,logout)
-from django.conf import settings 
-from django.core.mail import send_mail 
+from django.conf import settings
+from django.core.mail import send_mail
 import math,random,string,datetime,array,secrets
 from twilio.rest import Client
 from .forms import UserForm
@@ -19,9 +19,19 @@ def home(request):
     return home_(request)
 
 def home_(request):
-    data={}
-    return render(request, 'home/homepage.html', context=data)
+    data=get_my_profile(request)
+    return render(request, 'home/homepage.html', context={"data": data})
 
+def get_my_profile(request):
+    data={}
+    try:
+        data=StudentProfile.objects.get(user=request.user)
+    except:
+        try:
+            data=CompanyProfile.objects.get(user=request.user)
+        except:
+            data={}
+    return data
 
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -32,14 +42,14 @@ def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
                     )
 
 def SENDMAIL(subject, message, email):
-    email_from = settings.EMAIL_HOST_USER 
-    recipient_list = [email, ] 
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email, ]
     send_mail( subject, message, email_from, recipient_list )
 
 def signup_student(request):
     if request.user.is_authenticated != True:
         return render(request, 'home/signup_page.html', context={'phase': 1, 'stu': True})
-    else:   
+    else:
         return take_me_to_backend(request)
 
 def signup_student_verify(request):
@@ -81,7 +91,7 @@ def signup_student_verify_otp(request):
                 u.otp_time=datetime.datetime.now()
                 u.save()
                 u=StudentProfile.objects.get(user=user)
-                new_time=u.otp_time                
+                new_time=u.otp_time
                 time_delta = (new_time-prev_time)
                 minutes = (time_delta.total_seconds())/60
                 if minutes<settings.OTP_EXPIRE_TIME:
@@ -102,7 +112,7 @@ def signup_student_verify_otp(request):
                 else:
                     if signup_student_send_otp(email)==False:
                         return redirect('signup_student')
-                    return render(request, 'home/signup_page.html', context={"phase": 2, "email": email, "time_limit_reached": True, 'stu': True})   
+                    return render(request, 'home/signup_page.html', context={"phase": 2, "email": email, "time_limit_reached": True, 'stu': True})
             else:
                 return render(request, 'home/signup_page.html', context={"phase": 2, "email": email, "invalid_otp": True, 'stu': True})
         except:
@@ -145,9 +155,9 @@ def signup_student_resend_otp(request,email):
 
 def generate_otp():
     digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    OTP = "" 
-    for i in range(7) : 
-        OTP += digits[math.floor(random.random() * 62)] 
+    OTP = ""
+    for i in range(7) :
+        OTP += digits[math.floor(random.random() * 62)]
     return OTP
 
 def email_in_use(email):
@@ -171,7 +181,7 @@ def take_me_to_backend(request):
 def signup_company(request):
     if request.user.is_authenticated != True:
         return render(request, 'home/signup_page.html', context={'phase': 21})
-    else:   
+    else:
         return take_me_to_backend(request)
 
 def signup_company_verify(request):
@@ -212,7 +222,7 @@ def signup_company_verify_otp(request):
                 u.otp_time=datetime.datetime.now()
                 u.save()
                 u=CompanyProfile.objects.get(user=user)
-                new_time=u.otp_time                
+                new_time=u.otp_time
                 time_delta = (new_time-prev_time)
                 minutes = (time_delta.total_seconds())/60
                 if minutes<settings.OTP_EXPIRE_TIME:
@@ -233,7 +243,7 @@ def signup_company_verify_otp(request):
                 else:
                     if signup_company_send_otp(email)==False:
                         return redirect('signup_company')
-                    return render(request, 'home/signup_page.html', context={"phase": 22, "email": email, "time_limit_reached": True})   
+                    return render(request, 'home/signup_page.html', context={"phase": 22, "email": email, "time_limit_reached": True})
             else:
                 return render(request, 'home/signup_page.html', context={"phase": 22, "email": email, "invalid_otp": True})
         except:
@@ -406,7 +416,7 @@ def forgot_password_verify_otp(request):
                 u.otp_time=datetime.datetime.now()
                 u.save()
                 u=user_type_checker(request, user, email)
-                new_time=u.otp_time                
+                new_time=u.otp_time
                 time_delta = (new_time-prev_time)
                 minutes = (time_delta.total_seconds())/60
                 if minutes<settings.OTP_EXPIRE_TIME:
