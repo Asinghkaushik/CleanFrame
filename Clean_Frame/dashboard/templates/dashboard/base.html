@@ -43,7 +43,7 @@
         <input type="search" placeholder="Search here">
       </div> -->
       <div class="user-wrapper">
-        {% if data.image %}
+        <!-- {% if data.image %}
         <img src="{{data.image.url}}" width="40px" height="40px" alt="">
         {% else %}
         <img src="{% static 'dashboard/img/us_ma.png' %}" width="40px" height="40px" alt="">
@@ -64,7 +64,47 @@
             {% endif %}
           {% endif %}
         </div>
-          <a href="{% url 'logout_request' %}"><i class="las la-sign-out-alt fa-2x" style="margin-left: 10px;"></i></a>
+          <a href="{% url 'logout_request' %}"><i class="las la-sign-out-alt fa-2x" style="margin-left: 10px;"></i></a> -->
+          <div class="action">
+            <div class="profile" onclick="menuToggle();">
+              {% if data.image %}
+                <img src="{{data.image.url}}" alt="">
+              {% else %}
+                <img src="{% static 'dashboard/img/us_ma.png' %}" alt="">
+              {% endif %}
+              <!-- <img src="img/img.jpg" alt=""> -->
+            </div>
+            <div class="menu">
+              <h3>{{request.user}}<br>
+                {% if request.user.is_superuser %}
+                <span>Administrator</span>
+                {% else %}
+                  {% if request.user.is_staff %}
+                  <span>Staff</span>
+                  {% else %}
+                    {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                    <span>Company</span>
+                    {% else %}
+                    <span>Student</span>
+                    {% endifequal %}
+                  {% endif %}
+                {% endif %}
+              </h3>
+              {% if request.user.is_authenticated %}
+                <ul>
+                  {% if request.user.is_staff %}
+                  {% else %}
+                    <li> <a href="#"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a> </li>
+                  {% endif %}
+                  <li> <a href="#"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a> </li>
+                  <li> <a href="#"><img src="{% static 'dashboard/img/settings.png' %}" alt=""> Settings</a> </li>
+                  <li> <a href="#"><img src="{% static 'dashboard/img/support.png' %}" alt=""> Support</a> </li>
+                  <li> <a href="{% url 'logout_request' %}"><img src="{% static 'dashboard/img/logout.png' %}" alt="">Logout</a> </li>
+                </ul>
+              {% else %}
+              {% endif %}
+            </div>
+          </div>
       </div>
     </header>
     {% block section_main %}{% endblock %}

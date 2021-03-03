@@ -8,3 +8,7 @@
 //         $("body").toggleClass("sb-sidenav-toggled");
 //     });
 // });
+function menuToggle(){
+  const togglemenu = document.querySelector('.menu');
+  togglemenu.classList.toggle('active');
+}
