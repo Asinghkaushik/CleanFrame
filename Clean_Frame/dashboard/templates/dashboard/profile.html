@@ -115,7 +115,7 @@ Profile
 {% endblock %}
 
 {% block section_main %}
-  <main>
+  <main id="main1">
     {% if request.user.is_authenticated %}
         {% ifequal phase 1 %}
             {% if contact_given %}
@@ -123,36 +123,58 @@ Profile
                 <!--Profile Update for staffs (bichare sirf first and last name change kar sakte)-->
                 <!-- this form is for admin and staff profile to edit only & there is no other form for them -->
                 <!-- single appearence -->
-                <form class="is-readonly" action="{% url 'staff_profile' %}" method="POST">
-                    {% csrf_token %}
-                    <label>Email: </label>
-                    <input type="text" class="input-field" value="{{request.user.email}}" readonly disabled><br>
-                    <label for="first_name">First Name: </label>
-                    <input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" disabled><br>
-                    <label for="last_name">Last Name: </label>
-                    <input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" disabled><br><br>
-                    <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
-                    <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
-                </form>
+                <div class="cards_form" id="cr1">
+                  <form class="is-readonly" id="f1" action="{% url 'staff_profile' %}" method="POST">
+                      {% csrf_token %}
+                      <table class="my_table">
+                        <tbody>
+                          <tr>
+                            <td><label>Email: </label></td>
+                            <td><input type="text" class="input-field" value="{{request.user.email}}" readonly disabled></td>
+                          </tr>
+                          <tr>
+                            <td><label for="first_name">First Name: </label></td>
+                            <td><input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" disabled></td>
+                          </tr>
+                          <tr>
+                            <td><label for="last_name">Last Name: </label></td>
+                            <td><input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" disabled></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
+                      <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
+                  </form>
+                </div>
             {% else %}
                 <!--Profile Update for students and company -->
                 <!--PHONE NUMBER SECTION WOULD BE COMMON BETWEEN THE TWO-->
                 <!-- not single appearence, will appear with other forms of different users -->
                 <!-- form 1 -->
                 <!-- <h3>Change Contact Number</h3> -->
-                <h6>{{error}}</h6>
+                <!-- <h6>{{error}}</h6>
                 <form class="is-readonly" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
                     {% csrf_token %}
-                    <!-- <i class="fas fa-phone-square-alt myicon"></i> -->
                     <label>Phone :</label>
                     <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
-                    <!-- <input type="submit" class="mybutton" value="Send OTP to phone"> -->
-                    <!-- <button class="profile_save_changes_btn1 submit-btn" type="submit">Send OTP</button> -->
                     <input class="submit-btn profile_save_changes_btn1 btn-save" type="submit" value="Send OTP">
                     <button class="profile_save_changes_btn1 btn-edit js-edit" type="button">Change</button>
-                </form>
+                </form> -->
                 <!-- <br><hr><hr><br> -->
                 {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                    <!--COPY OF PHONE VERIFICATION FORM-->
+                    <h6>{{error}}</h6>
+                    <form class="is-readonly" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                        {% csrf_token %}
+                        <!-- <i class="fas fa-phone-square-alt myicon"></i> -->
+                        <label>Phone :</label>
+                        <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
+                        <!-- <input type="submit" class="mybutton" value="Send OTP to phone"> -->
+                        <!-- <button class="profile_save_changes_btn1 submit-btn" type="submit">Send OTP</button> -->
+                        <input class="submit-btn profile_save_changes_btn1 btn-save" type="submit" value="Send OTP">
+                        <button class="profile_save_changes_btn1 btn-edit js-edit" type="button">Change</button>
+                    </form>
+                
                     <!--GO FOR COMPANY PHASE 2-->
                     <!-- only for company, it includes editing basic profile details -->
                     <!-- form C2 -->
@@ -170,19 +192,33 @@ Profile
                         <input type="number" id="duration" class="input-field" name="duration" value="{{data.internship_duration}}" placeholder="Enter duration of internship"  disabled><br>
                         <label for="number_of_students">Students required: </label>
                         <input type="number" id="number_of_students" class="input-field" name="number_of_students" value="{{data.students_required}}" placeholder="Enter students required "  disabled><br>
-                        <label for="internship_position">Highest Position of Internship: </label>
+                        <label for="internship_position">Position Offered: </label>
                         <input type="text" id="internship_position" class="input-field" name="internship_position" value="{{data.internship_position}}" placeholder="Enter highest position of internship offered"  disabled><br>
-                        <label for="minimum_cgpa">Minimum CGPA Required (out of 10.0): </label>
+                        <label for="minimum_cgpa">Min. CGPA: </label>
+                        <!-- (out of 10.0) -->
                         <input type="text" id="minimum_cgpa" class="input-field" name="minimum_cgpa" value="{{data.minimum_cgpa}}" placeholder="Enter minimum cgpa required"  disabled><br>
-                        <label for="stipend">Maximum Stipend offered (in Rs.): </label>
+                        <label for="stipend">Max. Stipend: </label>
                         <input type="text" id="stipend" class="input-field" name="stipend" value="{{data.stipend}}" placeholder="Enter maximum stipend"  disabled><br>
-                        <label for="pre1">Prerequisite(optional, use ** to separate 2 prerequisites): </label>
+                        <label for="pre1">Prerequisite </label>
+                        <!-- (optional, use ** to separate 2 prerequisites): -->
                         <input type="text" class="input-field" name="pre" value="{{data.prerequisite}}" placeholder="Enter prerequisites" disabled><br>
                         <br><br>
                         <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
                         <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
                     </form>
                 {% else %}
+                <!--COPY OF PHONE VERIFICATION FORM-->
+                <h6>{{error}}</h6>
+                <form class="is-readonly" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                    {% csrf_token %}
+                    <!-- <i class="fas fa-phone-square-alt myicon"></i> -->
+                    <label>Phone :</label>
+                    <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
+                    <!-- <input type="submit" class="mybutton" value="Send OTP to phone"> -->
+                    <!-- <button class="profile_save_changes_btn1 submit-btn" type="submit">Send OTP</button> -->
+                    <input class="submit-btn profile_save_changes_btn1 btn-save" type="submit" value="Send OTP">
+                    <button class="profile_save_changes_btn1 btn-edit js-edit" type="button">Change</button>
+                </form>
                 <!-- <h3>Upload your CV</h3> -->
                 <!--PHASE 1, CV-->
                 <!-- for student only -->

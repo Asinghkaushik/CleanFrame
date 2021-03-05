@@ -6,6 +6,21 @@
 // 	});
 //  });
 $(document).ready(function(){
+	var element = document.getElementById("main1");
+	var positioninfo = element.getBoundingClientRect();
+	var width = positioninfo.width;
+	var element1 = document.getElementById("cr1");
+	var positioninfo1 = element1.getBoundingClientRect();
+	var width1 = positioninfo1.width;
+	var req_w = (width - width1)*(0.45);
+	var e = width1 - 40;
+	$('#f1').css('width', e + 'px');
+	var f2=(e-200)/2;
+	$('.profile_save_changes_btn').css('margin-left', f2 + 'px');
+	$('.cards_form').css('margin-left', req_w + 'px');
+	$('.cards_form').css('margin-right', req_w + 'px');
+});
+$(document).ready(function(){
 	$('.js-edit, .js-save').on('click', function(){
   	var $form = $(this).closest('form');
   	$form.toggleClass('is-readonly is-editing');

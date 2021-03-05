@@ -9,7 +9,8 @@
   padding: 10px 30px;
   cursor: pointer;
   display: block;
-  margin: 10px auto;
+  width: 200px;
+  /* margin: 10px 145px; */
   background: linear-gradient(to right, #ff105f, #ffad06);
   border: 0;
   outline: none;
@@ -17,6 +18,27 @@
   font-family: Poppins;
   font-weight: bold;
   font-size: 1.2rem;
+}
+.cards_form{
+  background: #fff;
+  border-radius: 30px;
+  padding: 20px 20px;
+  margin-top: 10%;
+  width: 500px;
+}
+@media only screen and (max-width: 500px) {
+  .cards_form{
+    width: 350px;
+    margin-left: 0px !important;
+  }
+  .input-field{
+    width: 180px !important;
+    padding-right: 5px !important;
+  }
+  table tr td{
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 /* form{
   display: inline-block;
@@ -106,12 +128,22 @@ label{
 input{
   width : unset !important;
 }
+.my_table{
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+}
+form{
+  display: inline-block !important;
+  align-items: center;
+  justify-content: center;
+}
 .input-field {
     padding: 8px 15px;
     margin: 5px 5px;
-    border: 2px solid #999;
+    border: 2px solid #0000003c;
     outline: none;
-    background: white;
+    background: #cccccc3c;
     font-family: Poppins;
     font-size: 1rem;
     border-radius: 30px;
