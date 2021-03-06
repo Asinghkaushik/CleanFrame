@@ -1,0 +1,306 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+<!--Write the title of the page-->
+{% block title %}
+<title>Dashboard {{request.user.email}}</title>
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'dashboard/css/profile_css.css' %}">
+{% endblock %}
+
+
+<!--Make the class active for the link you want-->
+{% block sidebar_menu %}
+<div class="sidebar-menu">
+  <ul>
+    <li>
+      <a href="{% url 'dashboard' %}"><span class="las la-igloo"></span>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'profile' %}" class="active"><span class="las la-user-graduate"></span>
+        <span>Profile</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-briefcase"></span>
+        <span>Company</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-user-tie"></span>
+        <span>Verify User</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+  </ul>
+</div>
+{% endblock %}
+
+
+<!-- multiple appearence
+        form 1, c2
+        form 1, s2, s3, s4
+-->
+
+
+<!--For the text at the top of panel 2-->
+{% block dashboard_title %}
+Profile
+{% endblock %}
+
+{% block section_main %}
+  <main>
+    {% if request.user.is_authenticated %}
+        {% ifequal phase 1 %}
+            {% if contact_given %}
+            {% if request.user.is_staff %}
+                <!--Profile Update for staffs (bichare sirf first and last name change kar sakte)-->
+                <!-- this form is for admin and staff profile to edit only & there is no other form for them -->
+                <!-- single appearence -->
+                <form action="{% url 'staff_profile' %}" method="POST">
+                    {% csrf_token %}
+                    <label>Email: </label>
+                    <input type="text" class="input-field" value="{{request.user.email}}" readonly><br>
+                    <label for="first_name">First Name: </label>
+                    <input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" required><br>
+                    <label for="last_name">Last Name: </label>
+                    <input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" required><br><br>
+                    <button class="submit-btn profile_save_changes_btn" type="submit">Save Changes</button>
+                </form>
+            {% else %}
+                <!--Profile Update for students and company -->
+                <!--PHONE NUMBER SECTION WOULD BE COMMON BETWEEN THE TWO-->
+                <!-- not single appearence, will appear with other forms of different users -->
+                <!-- form 1 -->
+                <!-- <h3>Change Contact Number</h3> -->
+                <h6>{{error}}</h6>
+                <form method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                    {% csrf_token %}
+                    <!-- <i class="fas fa-phone-square-alt myicon"></i> -->
+                    <label>Phone :</label>
+                    <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
+                    <!-- <input type="submit" class="mybutton" value="Send OTP to phone"> -->
+                    <button class="profile_save_changes_btn1 submit-btn" type="submit">Send OTP</button>
+                </form>
+                <!-- <br><hr><hr><br> -->
+                {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                    <!--GO FOR COMPANY PHASE 2-->
+                    <!-- only for company, it includes editing basic profile details -->
+                    <!-- form C2 -->
+                    <form action="{% url 'company_profile_2' %}" method="POST">
+                        {% csrf_token %}
+                        <label>Email: </label>
+                        <input type="text" class="input-field" value="{{request.user.email}}" readonly><br>
+                        <label for="company_name">Company Name: </label>
+                        <input type="text" class="input-field" name="company_name" value="{{request.user.first_name}}" placeholder="Enter company name" required><br>
+                        <label for="address">Complete Address: </label>
+                        <input type="text" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address" required><br>
+                        <h4>Internship Details</h4>
+                        <label for="duration">Internship Duration(days): </label>
+                        <input type="number" class="input-field" name="duration" value="{{data.internship_duration}}" placeholder="Enter duration of internship" required><br>
+                        <label for="number_of_students">Students required: </label>
+                        <input type="number" class="input-field" name="number_of_students" value="{{data.students_required}}" placeholder="Enter students required " required><br>
+                        <label for="internship_position">Highest Position of Internship: </label>
+                        <input type="text" class="input-field" name="internship_position" value="{{data.internship_position}}" placeholder="Enter highest position of internship offered" required><br>
+                        <label for="minimum_cgpa">Minimum CGPA Required (out of 10.0): </label>
+                        <input type="text" class="input-field" name="minimum_cgpa" value="{{data.minimum_cgpa}}" placeholder="Enter minimum cgpa required" required><br>
+                        <label for="stipend">Maximum Stipend offered (in Rs.): </label>
+                        <input type="text" class="input-field" name="stipend" value="{{data.stipend}}" placeholder="Enter maximum stipend" required><br>
+                        <label for="pre1">Prerequisite(optional, use ** to separate 2 prerequisites): </label>
+                        <input type="text" class="input-field" name="pre" value="{{data.prerequisite}}" placeholder="Enter prerequisites"><br>
+                        <br><br>
+                        <button class="submit-btn profile_save_changes_btn" type="submit">Save Changes</button>
+                    </form>
+                {% else %}
+                <h3>Upload your CV</h3>
+                <!--PHASE 1, CV-->
+                <!-- for student only -->
+                <!-- form S2 -->
+                <form method="POST" action="{% url 'student_profile_1' %}"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- <div class="upload-btn-wrapper12">
+                      <button class="btn12">Upload a file</button>
+                      <input type="file" name="cv" >
+                    </div> -->
+                    <input type="file" name="cv"><br>
+                    <br>
+                    <input type="submit" value="Upload CV">
+                </form>
+                <!-- <br><hr><br> -->
+                    <h3>upload your photo</h3>
+                    <!--PHASE 2, PHOTO-->
+                    <!-- for student only -->
+                    <!-- form S3 -->
+                    <form method="POST" action="{% url 'student_profile_2' %}"  enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="image"><br>
+                        <br>
+                        <input type="submit" value="Upload image">
+                    </form>
+                    <!-- <br><hr><br> -->
+                    <!--PHASE 3, BASIC DETAILS-->
+                    <!-- for student only -->
+                    <!-- form S4 -->
+                    <form action="{% url 'student_profile_3' %}" method="POST">
+                        {% csrf_token %}
+                        <!-- <i class="fas fa-envelope"></i> -->
+                        <label>Email: </label>
+                        <input type="text" class="input-field" value="{{request.user.email}}" readonly><br>
+                        <label for="first_name">First Name: </label>
+                        <input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" required><br>
+                        <label for="last_name">Last Name: </label>
+                        <input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" required><br>
+                        <!-- <i class="fas fa-address-card"></i> -->
+                        <label for="address">Complete Address: </label>
+                        <input type="text" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address" required><br>
+                        <label>Gender:</label>
+                        <select class="input-field" name="gender" required>
+                            <option id="male" value="1">Male</option>
+                            <option id="female" value="2">Female</option>
+                            <option id="transgender" value="3">Transgender</option>
+                        </select>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Now gender according to the database is : {{data.gender}}
+                        <!-- <br><br> -->
+                        <button class="submit-btn profile_save_changes_btn" type="submit">Save Changes</button>
+                    </form>
+                {% endifequal %}
+            {% endif %}
+            <!-- <hr> -->
+            {% else %}
+                <h2>Your minimum profile requirements are pending, please fill them to proceed to dashboard.</h2>
+            <br>{{error}}
+            <!-- <hr> -->
+            {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+            <!-- for company only, it would be displayed until phone number is verified for the first time -->
+            <!-- single appearence -->
+            <form action="{% url 'send_otp_to_phone_com' %}" method="POST" onsubmit="return validate_number()">
+                {% csrf_token %}
+                <label>Enter indian contact number:</label>
+                <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
+                <br>
+                <label>Enter complete address:</label>
+                <input type="text" class="input-field" name="address" {% if data.complete_address %} value="{{data.complete_address}}" {% endif %} placeholder="Enter your complete address" required>
+                <br>
+                <input type="submit" id="mybutton" value="Send OTP to phone">
+            </form>
+            {% else %}
+            <form action="{% url 'send_otp_to_phone_stu' %}" method="POST" onsubmit="return validate_number()">
+              <!-- for student only, it would be displayed until phone number is verified for the first time -->
+              <!-- single appearence -->
+                {% csrf_token %}
+                <label>Enter indian contact number:</label>
+                <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
+                <br>
+                <label>Enter complete address:</label>
+                <input type="text" class="input-field" name="address" {% if data.complete_address %} value="{{data.complete_address}}" {% endif %} placeholder="Enter your complete address" required>
+                <br>
+                <label>Choose gender:</label>
+                <select name="gender" required>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                        <option value="3">Transgender</option>
+                </select>
+                <br>
+                <input type="submit" id="mybutton" value="Send OTP to phone">
+            </form>
+            {% endifequal %}
+            {% endif %}
+        {% endifequal %}
+<!--####################################################################-->
+        {% ifequal phase 2 %}
+            <h2>Enter the otp sent to {{phone}}</h2>
+            <br>{{error}}
+            <!-- <hr> -->
+            {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+            <!-- otp verification for company only -->
+            <form action="{% url 'verify_otp_phone_com' %}" method="POST" onsubmit="return disable_button()">
+                {% csrf_token %}
+                <input type="text" class="input-field" name="otp" placeholder="Enter otp sent to {{phone}}" style="width: 300px;" required>
+                <br>
+                <input type="submit" id="mybutton" value="Verify OTP">
+            </form><br>
+            <a href="{% url 'resend_otp_to_phone_com' %}">Resend OTP?</a>
+            {% else %}
+            <!-- otp verification for student only -->
+            <form action="{% url 'verify_otp_phone_stu' %}" method="POST" onsubmit="return disable_button()">
+                {% csrf_token %}
+                <input type="text" class="input-field" name="otp" placeholder="Enter otp sent to {{phone}}" style="width: 300px;" required>
+                <br>
+                <input type="submit" id="mybutton" value="Verify OTP">
+            </form><br>
+            <a href="{% url 'resend_otp_to_phone_stu' %}">Resend OTP?</a>
+            {% endifequal %}
+        {% endifequal %}
+<!--####################################################################-->
+        {% ifequal phase 3 %}
+        <h2>Phone number has been succesfully verified</h2>
+        <a href="{% url 'dashboard' %}">Go to dashboard?</a>
+        {% endifequal %}
+    {% else %}
+        <h1>You are visiting a wrong page, please login and then you can change your profile.</h1>
+    {% endif %}
+  </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'dashboard/js/profile_app.js' %}"></script>
+{% endblock %}

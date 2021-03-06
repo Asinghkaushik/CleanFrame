@@ -1,0 +1,203 @@
+/* override browser default */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+/* use viewport-relative units to cover page fully */
+body {
+  height: 100vh;
+  width: 100vw;
+}
+/* include border and padding in element width and height */
+* {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+::-webkit-scrollbar{
+  width: 0;
+}
+/* #dropdown-menu{
+  border-radius: 10px;
+  padding-left: 5px;
+} */
+#progressbar{
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 15px;
+  border-radius: 0 0 0 10px;
+  background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  /* z-index: 300; */
+}
+#companyname{
+  font-family: Merriweather;
+  color: #0f3057;
+  font-size: 1.4rem;
+  letter-spacing: 0.1rem;
+  font-weight: bold;
+}
+.comp1{
+  display: inline-block;
+}
+#companyname1{
+  margin-top: 1px;
+  font-family: Merriweather;
+  color: #0f3057;
+  font-size: 1.4rem;
+  letter-spacing: 0.1rem;
+  font-weight: bold;
+}
+#companyname:hover{
+  color: #000;
+  font-size: 1.42rem;
+}
+#ham{
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+.navigationbar{
+  background: linear-gradient(40deg, #04DA8B, #298CB8);
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.nav-link{
+  font-family: Ubuntu;
+  font-size: 1.1rem;
+  color: #350b40;
+}
+.navigationlist{
+  margin: 0% 2%;
+}
+.navigationitems{
+  margin: 0% 3%;
+}
+.about,.rev{
+  width: 100%;
+  background-color: #000;
+  height: 100%;
+}
+.conta{
+  width: 100%;
+  background-color: #000;
+  height: 25%;
+}
+#mydrop{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    /* display: none; */
+    float: left;
+    min-width: 7rem;
+    padding: .5rem 1rem;
+    margin: .5rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+#stud:hover{
+  text-decoration: none;
+}
+#comp:hover{
+  text-decoration: none;
+}
+#mybtn{
+  border-radius: 28px;
+  border-color: #2c061f;
+  color: #2c061f;
+  margin-right: 10px;
+}
+#mybtnlink{
+  color: #2c061f;
+  text-decoration: none;
+}
+#dropdownsignup {
+    min-width: 7rem;
+    padding: .5rem 0.5rem;
+    text-align: -webkit-center;
+    border-radius: .35rem;
+}
+#log_btn{
+  border-radius: 28px;
+  border-color: #2c061f;
+  color: #2c061f;
+  margin-right: 10px;
+  text-decoration: none;
+}
+#mybtn{
+  /* color: #fff; */
+  background-color: #2c061f;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  text-decoration: none;
+}
+#mybtnlink{
+  color: #fff;
+  text-decoration: none;
+}
+.myicon{
+  padding-right: 9px;
+  font-size: 2.5rem;
+}
+.nav-link:hover{
+  color: #2c061f;
+  font-size: 1.15rem;
+}
+.section1,.Review{
+  background-image: linear-gradient(40deg, #64AEEF, #05ffa3);
+  height: 100%;
+  width: 100%;
+}
+.About{
+  /* background-image: linear-gradient(40deg, rgba(255, 216, 111, 0.9), rgba(252, 98, 98, 0.9)); */
+  height: 100%;
+  width: 100%;
+}
+.Contact{
+  background-image: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+  height: 25%;
+  width: 100%;
+}
+.intro{
+  background: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slider{
+  background-image: linear-gradient(to bottom right, #0066cc 0%, #00ffff 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(100%);
+}
+.intro-text{
+  color: rgb(227,242,255);
+  font-family: Lobster;
+  font-size: 3rem;
+}
+.hide{
+  background: black;
+  overflow: hidden;
+}
+.hide span{
+  transform: translateY(100%);
+  display: inline-block;
+}

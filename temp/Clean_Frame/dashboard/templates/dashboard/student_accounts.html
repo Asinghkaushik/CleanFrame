@@ -1,0 +1,187 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+<!--Write the title of the page-->
+{% block title %}
+  <title>Dashboard {{request.user.email}}</title>
+  <link rel="icon" href="{% static 'img/logo.png' %}" type = "image/x-icon"> 
+{% endblock %}
+
+
+<!--Make the class active for the link you want-->
+{% block sidebar_menu %}
+<div class="sidebar-menu">
+  <ul>
+    <li>
+      <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="{% url 'profile' %}" class=""><span class="las la-id-card"></span>
+        <span>Profile</span>
+      </a>
+    </li>
+    {% if permissions.can_access_student_inactive_accounts %}
+    <li>
+      <a href="{% url 'student_account_signup_permit' %}" class="active"><span class="las la-graduation-cap"></span>
+        <span>Student Accounts</span>
+      </a>
+    </li>
+    {% endif %}
+    {% if permissions.can_access_company_inactive_accounts %}
+    <li>
+      <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-tie"></span>
+        <span>Company Accounts</span>
+      </a>
+    </li>
+    {% endif %}
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+    <li>
+      <a href=""><span class="las la-users"></span>
+        <span>Add Staff</span>
+      </a>
+    </li>
+  </ul>
+</div>
+{% endblock %}
+
+<!--For the text at the top of panel 2-->
+{% block dashboard_title %}
+    Student Accounts
+{% endblock %}
+
+<!--For the user details displayed at the top right-->
+
+
+<!--For the main section : 3-->
+{% block section_main %}
+    <main>
+      {% if request.user.is_authenticated and request.user.is_staff %}
+      {% ifequal code 0 %}
+      <h6 style="text-align: center; color: red;" id="message" >ERROR: Profile Not Found</h6>
+      {% endifequal %}
+      {% ifequal code 1 %}
+      <h6 style="text-align: center; color: green;" id="message" >Profile Status has been done to Verified</h6>
+      {% endifequal %}
+      {% ifequal code 2 %}
+      <h6 style="text-align: center; color: green;" id="message" >User Account has been successfully deleted</h6>
+      {% endifequal %}
+      {% ifequal code 3 %}
+      <h6 style="text-align: center; color: red;" id="message" >ERROR: Profile Status is already verified</h6>
+      {% endifequal %}
+      {% ifequal code 4 %}
+      <h6 style="text-align: center; color: red;" id="message" >ERROR: Profile Status once verified can't be deleted</h6>
+      {% endifequal %}
+      <div class="recent-grid1">
+        <div class="projects">
+          <div class="card">
+            <div class="card-header">
+              <h3 style="margin-left: 13%;">Student Accounts pending for verification</h3>
+              <!-- <div id="myTable_filter" class="search-wrapper1">
+                <span class="las la-search"></span>
+                <input type="search" aria-controls="myTable" placeholder="Search User">
+              </div> -->
+              <!-- <button type="button" name="See all">See all <span class="las la-arrow-right"></span></button> -->
+            </div>
+            <div class="card-body">
+              <div class="table-responsive container">
+                <!-- <div id="myTable_filter" class="search-wrapper1 dataTables_filter">
+                  <span class="las la-search"></span>
+                  <input type="search" aria-controls="myTable" placeholder="Search User">
+                </div> -->
+                <table id="myTable">
+                  <thead id="thead">
+                    <tr id="tr1" style="text-align: center;">
+                      <td>Student ID</td>
+                      <td id="td1">Email</td>
+                      <td id="td2">Username</td>
+                      <td id="td3">First Name</td>
+                      <td id="td4">Last Name</td>
+                      <td>Verify</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for each in data %}
+                        <tr style="text-align: center;">
+                            <td>{{each.id}}</td>
+                            <td>{{each.user.email}}</td>
+                            <td>{{each.user.username}}</td>
+                            <td>{{each.user.first_name}}</td>
+                            <td>{{each.user.last_name}}</td>
+                            <td style="margin-left: 4%;">
+                                <a href="{% url 'student_account_signup_action' item=each.id type='1' %}" style="text-decoration: none;">
+                                    <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
+                                </a>
+                                <a href="{% url 'student_account_signup_action' item=each.id type='2' %}" style="text-decoration: none; padding-left: 20%;">
+                                    <span class="fas fa-times" style="color: red; font-size: 1.2rem;"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    </main>
+    
+    <script src="{% static 'dashboard/js/timer.js' %}"></script>
+    {% endblock %}

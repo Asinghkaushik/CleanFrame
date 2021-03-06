@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <link rel="icon" href="{% static 'img/logo.ico' %}" type = "image/x-icon"> 
+    <meta charset="utf-8">
+    <title>SETTINGS {{request.user.email}}</title>
+  </head>
+  <body>
+      SETTINGS PAHE
+      <br><br>
+      <a href="{% url 'delete_account' %}">Delete my account</a>
+  </body>
+</html>
