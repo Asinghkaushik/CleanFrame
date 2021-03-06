@@ -10,7 +10,6 @@
   cursor: pointer;
   display: block;
   width: 200px;
-  /* margin: 10px 145px; */
   background: linear-gradient(to right, #ff105f, #ffad06);
   border: 0;
   outline: none;
@@ -24,11 +23,54 @@
   border-radius: 30px;
   padding: 20px 20px;
   margin-top: 10%;
-  width: 500px;
+  width: 600px;
+}
+tr td:last-child {
+    display: unset !important;
+    align-items: center;
+}
+.com_spec_td{
+  align-items: center;
+  justify-content: center;
+}
+.comp_table{
+  width: 550px;
+}
+.comp_table tr td label{
+  font-size: 1.1rem;
+}
+.comp_table tr td:first-child{
+  width: 242px;
+}
+.cards_form_comp{
+  background: #fff;
+  border-radius: 30px;
+  padding: 20px 20px;
+  margin-top: 0%;
+  width: 600px;
+}
+@media only screen and (max-width: 410px) {
+  .cards_form{
+    width: 350px !important;
+    margin-left: 8px !important;
+  }
 }
 @media only screen and (max-width: 500px) {
   .cards_form{
-    width: 350px;
+    width: 400px;
+  }
+  .input-field{
+    width: 180px !important;
+    padding-right: 5px !important;
+  }
+  table tr td{
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+@media only screen and (max-width: 450px) {
+  .cards_form_comp{
+    width: 370px;
     margin-left: 0px !important;
   }
   .input-field{
@@ -40,9 +82,34 @@
     padding-right: 0;
   }
 }
-/* form{
-  display: inline-block;
-} */
+@media only screen and (max-width: 410px) {
+  #main1{
+    padding-left: 8px;
+  }
+}
+@media only screen and (max-width: 630px){
+  .cards_form_comp{
+    width: 370px !important;
+  }
+  .input-field{
+    width: 180px !important;
+    padding-right: 5px !important;
+  }
+  table tr td{
+    padding-left: 0;
+    padding-right: 0;
+    width: 150px !important;
+  }
+}
+
+.cards_form_comp h6:first-child{
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+.comp_form{
+  margin-bottom: 15px;
+}
 form.is-readonly .btn-save{
   display: none;
 }
@@ -57,11 +124,6 @@ form.is-readonly input[disabled], form.is-readonly textarea[disabled], form.is-r
 form.is-editing .btn-edit {
   display: none;
 }
-/* form.is-editing #btn_img:hover {
-  background-color: unset;
-  opacity:unset;
-  filter:unset;
-} */
 .container {
   position: relative;
   display: block;
@@ -117,6 +179,20 @@ form.is-editing .btn-edit {
   border-radius: 30px;
   font-family: Poppins;
   font-size: 1.2rem;
+  width: 130px;
+}
+.profile_save_changes_btn2{
+  padding: 5px 15px;
+  cursor: pointer;
+  display: inline-block;
+  margin: auto;
+  background: linear-gradient(to right, rgba(106, 17, 203, 0.5), rgba(37, 117, 252, 0.5));
+  border: 0;
+  outline: none;
+  border-radius: 30px;
+  font-family: Poppins;
+  font-size: 1.2rem;
+  width: fit-content;
 }
 label{
   font-size: 1.2rem;
@@ -147,4 +223,5 @@ form{
     font-family: Poppins;
     font-size: 1rem;
     border-radius: 30px;
+    width: 260px !important;
 }

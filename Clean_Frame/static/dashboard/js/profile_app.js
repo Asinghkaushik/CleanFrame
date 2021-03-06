@@ -1,10 +1,4 @@
-// $(document).ready(function () {
-// 	$('#choose-file').change(function () {
-// 		var i = $(this).prev('label').clone();
-// 		var file = $('#choose-file')[0].files[0].name;
-// 		$(this).prev('label').text(file);
-// 	});
-//  });
+
 $(document).ready(function(){
 	var element = document.getElementById("main1");
 	var positioninfo = element.getBoundingClientRect();
@@ -15,10 +9,32 @@ $(document).ready(function(){
 	var req_w = (width - width1)*(0.45);
 	var e = width1 - 40;
 	$('#f1').css('width', e + 'px');
+	// $('.my_table').css('width', e + 'px');
+	// $('.my_table tr').css('width', e + 'px !important');
+	// $('.my_table tbody').css('width', e + 'px !important');
+	// $('.input-field').css('width', e + 'px');
 	var f2=(e-200)/2;
 	$('.profile_save_changes_btn').css('margin-left', f2 + 'px');
 	$('.cards_form').css('margin-left', req_w + 'px');
 	$('.cards_form').css('margin-right', req_w + 'px');
+});
+$(document).ready(function(){
+	var element = document.getElementById("main1");
+	var positioninfo = element.getBoundingClientRect();
+	var width = positioninfo.width;
+	var element1 = document.getElementById("cr1");
+	var positioninfo1 = element1.getBoundingClientRect();
+	var width1 = positioninfo1.width;
+	var req_w = (width - width1)*(0.4);
+	var e = width1 - 40;
+	$('.comp_form').css('width', e + 'px');
+	$('.comp_table').css('width', e + 'px');
+	var f2=(e-200)/2;
+	var f3=(e-130)/2;
+	$('.profile_save_changes_btn').css('margin-left', f2 + 'px');
+	$('.profile_save_changes_btn1').css('margin-left', f3 + 'px');
+	$('.cards_form_comp').css('margin-left', req_w + 'px');
+	$('.cards_form_comp').css('margin-right', req_w + 'px');
 });
 $(document).ready(function(){
 	$('.js-edit, .js-save').on('click', function(){
