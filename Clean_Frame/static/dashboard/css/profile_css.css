@@ -5,11 +5,24 @@
   -ms-user-select: none;
   user-select: none;
 }
+.profile_save_changes_btn4{
+  padding: 10px 30px;
+  cursor: pointer;
+  display: block;
+  width: fit-content !important;
+  background: linear-gradient(to right, #ff105f, #ffad06);
+  border: 0;
+  outline: none;
+  border-radius: 30px;
+  font-family: Poppins;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
 .profile_save_changes_btn{
   padding: 10px 30px;
   cursor: pointer;
   display: block;
-  width: 200px;
+  width: fit-content !important;
   background: linear-gradient(to right, #ff105f, #ffad06);
   border: 0;
   outline: none;
@@ -23,7 +36,7 @@
   border-radius: 30px;
   padding: 20px 20px;
   margin-top: 10%;
-  width: 600px;
+  width: 500px;
 }
 tr td:last-child {
     display: unset !important;
@@ -42,7 +55,17 @@ tr td:last-child {
 .comp_table tr td:first-child{
   width: 242px;
 }
+.comp_table1 tr td:first-child{
+  width: 242px;
+}
 .cards_form_comp{
+  background: #fff;
+  border-radius: 30px;
+  padding: 20px 20px;
+  margin-top: 0%;
+  width: 600px;
+}
+.cards_form_comp1{
   background: #fff;
   border-radius: 30px;
   padding: 20px 20px;
@@ -55,7 +78,7 @@ tr td:last-child {
     margin-left: 8px !important;
   }
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
   .cards_form{
     width: 400px;
   }
@@ -73,6 +96,10 @@ tr td:last-child {
     width: 370px;
     margin-left: 0px !important;
   }
+  .cards_form_comp1{
+    width: 370px;
+    margin-left: 0px !important;
+  }
   .input-field{
     width: 180px !important;
     padding-right: 5px !important;
@@ -87,8 +114,26 @@ tr td:last-child {
     padding-left: 8px;
   }
 }
+@media only screen and (max-width: 650px) and (min-width: 630px){
+  .cards_form_comp1, .cards_form_comp{
+    /* width: 370px !important; */
+    margin-left: 0px !important;
+  }
+  #main1{
+    padding-left: 14px;
+  }
+}
+@media only screen and (max-width: 630px){
+  .cards_form_comp1 .input-field{
+    width: 180px !important;
+    padding-right: 5px !important;
+  }
+}
 @media only screen and (max-width: 630px){
   .cards_form_comp{
+    width: 370px !important;
+  }
+  .cards_form_comp1{
     width: 370px !important;
   }
   .input-field{
@@ -99,6 +144,9 @@ tr td:last-child {
     padding-left: 0;
     padding-right: 0;
     width: 150px !important;
+  }
+  #profile_btn_2{
+    text-align: -webkit-center !important;
   }
 }
 
@@ -168,6 +216,19 @@ form.is-editing .btn-edit {
   padding: 6px 12px;
   cursor: pointer;
 }
+.profile_save_changes_btn3{
+  padding: 5px 15px;
+  cursor: pointer;
+  display: inline-block;
+  margin: auto;
+  background: linear-gradient(to right, rgba(106, 17, 203, 0.5), rgba(37, 117, 252, 0.5));
+  border: 0;
+  outline: none;
+  border-radius: 30px;
+  font-family: Poppins;
+  font-size: 1.2rem;
+  width: 130px;
+}
 .profile_save_changes_btn1{
   padding: 5px 15px;
   cursor: pointer;
@@ -192,17 +253,23 @@ form.is-editing .btn-edit {
   border-radius: 30px;
   font-family: Poppins;
   font-size: 1.2rem;
-  width: fit-content;
+  width: fit-content !important;
+}
+#profile_btn_2{
+  text-align: -webkit-right;
+}
+#profile_btn_1{
+  text-align: -webkit-center;
+}
+.cv_upload{
+  width: unset !important;
 }
 label{
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .myicon{
   font-size: 1.7rem;
   margin-top: 10px;
-}
-input{
-  width : unset !important;
 }
 .my_table{
   display: inline-block;
@@ -214,14 +281,18 @@ form{
   align-items: center;
   justify-content: center;
 }
+@media only screen and (min-width: 600px){
+  .input-field{
+    width: 260px !important;
+  }
+}
 .input-field {
     padding: 8px 15px;
-    margin: 5px 5px;
+    padding-right: 6px;
     border: 2px solid #0000003c;
     outline: none;
     background: #cccccc3c;
     font-family: Poppins;
     font-size: 1rem;
     border-radius: 30px;
-    width: 260px !important;
 }

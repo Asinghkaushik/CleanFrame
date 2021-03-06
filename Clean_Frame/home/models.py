@@ -30,6 +30,7 @@ class CompanyProfile(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     contact_number=models.IntegerField(null=True)
     complete_address=models.CharField(max_length=1000, null=True)
+    image=models.ImageField(upload_to='post_images/', default="us_ma.png")
     profile_filled=models.BooleanField(default=False)
     profile_created=models.DateTimeField(auto_now=True)
     account_banned_permanent=models.BooleanField(default=False)
