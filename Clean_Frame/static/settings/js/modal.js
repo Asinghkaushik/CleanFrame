@@ -19,7 +19,7 @@ btn.onclick = function() {
     modal.style.display = "block";
     var activatebtn = document.getElementById("deel")
     activatebtn.style.backgroundColor = "#FFECEC";
-    activatebtn.style.pointerEvents = none;
+    activatebtn.style.pointerEvents = "none";
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -43,10 +43,10 @@ function text_changed(myval) {
     if (myval == orgvalbtn.innerHTML) {
         var activatebtn = document.getElementById("deel")
         activatebtn.style.backgroundColor = "red";
-        activatebtn.style.pointerEvents = auto;
+        activatebtn.style.pointerEvents = "auto";
     } else {
         var activatebtn = document.getElementById("deel")
         activatebtn.style.backgroundColor = "#FFECEC";
-        activatebtn.style.pointerEvents = none;
+        activatebtn.style.pointerEvents = "none";
     }
 }
