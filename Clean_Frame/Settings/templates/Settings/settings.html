@@ -21,9 +21,15 @@
         <section class="glass">
             <div class="dashboard">
                 <div class="user">
-                    <img src="./images/avatar.jpg" alt="Avatar" class="Avatar" />
-                    <h3>User_Name</h3>
-                    <p>User_Type(Student or company)</p>
+                    {% if data.image %}
+                    <img src="{{data.image.url}}" alt="Avatar" class="Avatar" /> {% else %}
+                    <img src="{% static 'dashboard/img/us_ma.png' %}" alt="Avatar" class="Avatar" /> {% endif %}
+                    <h3>{{request.user}}</h3>
+                    {% if request.user.is_superuser %}
+                    <p>Administrator</p> {% else %} {% if request.user.is_staff %}
+                    <p>Staff</p> {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                    <p>Company</p> {% else %}
+                    <p>Student</p> {% endifequal %} {% endif %} {% endif %}
                 </div>
                 <div class="card1">
                     <!-- <h3>Do you want to delete your account?</h3> -->
