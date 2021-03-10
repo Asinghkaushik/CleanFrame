@@ -1,104 +1,107 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
+{% extends 'dashboard/base.html' %} {% load static %}
 
 <!--Write the title of the page-->
 {% block title %}
 <title>Dashboard {{request.user.email}}</title>
 <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
-<link rel="stylesheet" href="{% static 'dashboard/css/profile_css.css' %}">
-{% endblock %}
+<link rel="stylesheet" href="{% static 'dashboard/css/profile_css.css' %}"> {% endblock %}
 
 
 <!--Make the class active for the link you want-->
 {% block sidebar_menu %}
 <div class="sidebar-menu">
-  <ul>
-    <li>
-      <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+    <ul>
+        <li>
+            <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
         <span>Dashboard</span>
       </a>
-    </li>
-    <hr>
-    <li>
-      <a href="{% url 'profile' %}" class="active"><span class="las la-id-card"></span>
+        </li>
+        <hr>
+        <li>
+            <a href="{% url 'profile' %}" class="active"><span class="las la-id-card"></span>
         <span>Profile</span>
       </a>
-    </li>
-    {% if permissions.can_access_student_inactive_accounts %}
-    <li>
-      <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
+        </li>
+        {% if permissions.can_access_student_inactive_accounts %}
+        <li>
+            <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
         <span>Student Accounts</span>
       </a>
-    </li>
-    {% endif %}
-    {% if permissions.can_access_company_inactive_accounts %}
-    <li>
-      <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-tie"></span>
+        </li>
+        {% endif %} {% if permissions.can_access_company_inactive_accounts %}
+        <li>
+            <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-tie"></span>
         <span>Company Accounts</span>
       </a>
-    </li>
-    {% endif %}
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        {% endif %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        <li>
+            <a href=""><span class="las la-users"></span>
+        <span>Create Announcement</span>
+      </a>
+        </li>
+        {% endifequal %}
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-    <li>
-      <a href=""><span class="las la-users"></span>
+        </li>
+        <li>
+            <a href=""><span class="las la-users"></span>
         <span>Add Staff</span>
       </a>
-    </li>
-  </ul>
+        </li>
+    </ul>
 </div>
 {% endblock %}
 
@@ -110,500 +113,482 @@
 
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-Profile
-{% endblock %}
+{% block dashboard_title %} Profile {% endblock %} {% block section_main %}
+<main id="main1">
+    {% if request.user.is_authenticated %} {% ifequal phase 1 %} {% if contact_given %} {% if request.user.is_staff %}
+    <!--Profile Update for staffs (bichare sirf first and last name change kar sakte)-->
+    <!-- this form is for admin and staff profile to edit only & there is no other form for them -->
+    <!-- single appearence -->
+    <div class="cards_form" id="cr1">
+        <form class="is-readonly" id="f1" action="{% url 'staff_profile' %}" method="POST">
+            {% csrf_token %}
+            <table class="my_table">
+                <tbody>
+                    <tr>
+                        <td><label>Email: </label></td>
+                        <td><input type="text" class="input-field" value="{{request.user.email}}" readonly disabled></td>
+                    </tr>
+                    <tr>
+                        <td><label for="first_name">First Name: </label></td>
+                        <td><input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" disabled></td>
+                    </tr>
+                    <tr>
+                        <td><label for="last_name">Last Name: </label></td>
+                        <td><input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" disabled></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
+            <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
+        </form>
+    </div>
+    {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+    <!--COPY OF PHONE VERIFICATION FORM-->
+    <div class="cards_form_comp1" id="cr11">
+        <h6 id="time_error">{{error}}</h6>
+        <table class="comp_table1">
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form1" id="form_phone1" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                        {% csrf_token %}
+                        <table class="comp_table1">
+                            <tr>
+                                <td>
+                                    <label>Phone :</label>
+                                </td>
+                                <td>
+                                    <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
+                                </td>
+                            </tr>
+                        </table>
+                        <input class="submit-btn profile_save_changes_btn3 btn-save" type="submit" value="Send OTP">
+                        <button class="profile_save_changes_btn3 btn-edit js-edit" type="button">Change</button>
+                    </form>
+                </td>
+            </tr>
+            <!--GO FOR COMPANY PHASE 2-->
+            <!-- only for company, it includes editing basic profile details -->
+            <!-- form C2 -->
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form1" id="form_comp_details1" action="{% url 'company_profile_2' %}" method="POST" onsubmit="return validate_company_profile_2()" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="comp_table1">
+                            <tr>
+                                <td>
+                                    <label>Email: </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" value="{{request.user.email}}" readonly disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="company_name">Company Name: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="company_name" class="input-field" name="company_name" value="{{request.user.first_name}}" placeholder="Enter company name" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="address">Complete Address: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="address" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address" disabled>
+                                </td>
+                            </tr>
+                            <tr id="com_spec_tr">
+                                <td colspan="2" class="com_spec_td">
+                                    <h4 class="com_spec">Internship Details</h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="duration">Internship Duration: </label>
+                                </td>
+                                <td>
+                                    <input type="number" id="duration" class="input-field" name="duration" value="{{data.internship_duration}}" placeholder="Enter duration of internship" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="number_of_students">Students required: </label>
+                                </td>
+                                <td>
+                                    <input type="number" id="number_of_students" class="input-field" name="number_of_students" value="{{data.students_required}}" placeholder="Enter students required " disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="internship_position">Position Offered: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="internship_position" class="input-field" name="internship_position" value="{{data.internship_position}}" placeholder="Enter highest position of internship offered" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="minimum_cgpa">Min. CGPA: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="minimum_cgpa" class="input-field" name="minimum_cgpa" value="{{data.minimum_cgpa}}" placeholder="Enter minimum cgpa required" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="stipend">Max. Stipend: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="stipend" class="input-field" name="stipend" value="{{data.stipend}}" placeholder="Enter maximum stipend" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="pre1">Prerequisite </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="pre" value="{{data.prerequisite}}" placeholder="Enter prerequisites" disabled>
+                                </td>
+                            </tr>
+                        </table>
+                        <input class="profile_save_changes_btn4 btn-save" type="submit" value="Save Changes">
+                        <button class="profile_save_changes_btn4 btn-edit js-edit" type="button">Edit Details</button>
+                    </form>
+                </td>
+            </tr>
+            <tfoot>
+                <tr>
+                    <td><span style="color: red;">**</span>CGPA should be out of 10</td>
+                </tr>
+                <tr>
+                    <td><span style="color: red;">**</span>Prerequisite is optional</td>
+                </tr>
+                <tr>
+                    <td><span style="color: red;">**</span>Use ** to separate 2 prerequisites</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% else %}
+    <!--COPY OF PHONE VERIFICATION FORM-->
+    <div class="cards_form_comp" id="cr1">
+        <h6>{{error}}</h6>
+        <table class="comp_table">
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form" id="form_phone" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                        {% csrf_token %}
+                        <table class="comp_table">
+                            <tr>
+                                <td>
+                                    <label>Phone :</label>
+                                </td>
+                                <td>
+                                    <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
+                                </td>
+                            </tr>
+                        </table>
+                        <input class="submit-btn profile_save_changes_btn1 btn-save" type="submit" value="Send OTP">
+                        <button class="profile_save_changes_btn1 btn-edit js-edit" type="button">Change</button>
+                    </form>
+                </td>
+            </tr>
+            <!--PHASE 1, CV-->
+            <!-- for student only -->
+            <!-- form S2 -->
+            <!-- to be made for company too -->
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form" method="POST" action="{% url 'student_profile_1' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-{% block section_main %}
-  <main id="main1">
-    {% if request.user.is_authenticated %}
-        {% ifequal phase 1 %}
-            {% if contact_given %}
-            {% if request.user.is_staff %}
-                <!--Profile Update for staffs (bichare sirf first and last name change kar sakte)-->
-                <!-- this form is for admin and staff profile to edit only & there is no other form for them -->
-                <!-- single appearence -->
-                <div class="cards_form" id="cr1">
-                  <form class="is-readonly" id="f1" action="{% url 'staff_profile' %}" method="POST">
-                      {% csrf_token %}
-                      <table class="my_table">
-                        <tbody>
-                          <tr>
-                            <td><label>Email: </label></td>
-                            <td><input type="text" class="input-field" value="{{request.user.email}}" readonly disabled></td>
-                          </tr>
-                          <tr>
-                            <td><label for="first_name">First Name: </label></td>
-                            <td><input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" disabled></td>
-                          </tr>
-                          <tr>
-                            <td><label for="last_name">Last Name: </label></td>
-                            <td><input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" disabled></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
-                      <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
-                  </form>
-                </div>
-            {% else %}
-                {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
-                    <!--COPY OF PHONE VERIFICATION FORM-->
-                    <div class="cards_form_comp1" id="cr11">
-                      <h6 id="time_error">{{error}}</h6>
-                      <table class="comp_table1">
-                        <tr>
-                          <td>
-                            <form class="is-readonly comp_form1" id="form_phone1" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
-                                {% csrf_token %}
-                                <table class="comp_table1">
-                                  <tr>
-                                    <td>
-                                      <label>Phone :</label>
-                                    </td>
-                                    <td>
-                                      <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
-                                    </td>
-                                  </tr>
-                                </table>
-                                <input class="submit-btn profile_save_changes_btn3 btn-save" type="submit" value="Send OTP">
-                                <button class="profile_save_changes_btn3 btn-edit js-edit" type="button">Change</button>
-                            </form>
-                          </td>
-                        </tr>
-                        <!--GO FOR COMPANY PHASE 2-->
-                        <!-- only for company, it includes editing basic profile details -->
-                        <!-- form C2 -->
-                        <tr>
-                          <td>
-                            <form class="is-readonly comp_form1" id="form_comp_details1" action="{% url 'company_profile_2' %}" method="POST" onsubmit="return validate_company_profile_2()" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <table class="comp_table1">
-                                  <tr>
-                                    <td>
-                                      <label>Email: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" class="input-field" value="{{request.user.email}}" readonly disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="company_name">Company Name: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" id="company_name" class="input-field" name="company_name" value="{{request.user.first_name}}" placeholder="Enter company name"  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="address">Complete Address: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" id="address" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address"  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr id="com_spec_tr">
-                                    <td colspan="2" class="com_spec_td">
-                                      <h4 class="com_spec">Internship Details</h4>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="duration">Internship Duration: </label>
-                                    </td>
-                                    <td>
-                                      <input type="number" id="duration" class="input-field" name="duration" value="{{data.internship_duration}}" placeholder="Enter duration of internship"  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="number_of_students">Students required: </label>
-                                    </td>
-                                    <td>
-                                      <input type="number" id="number_of_students" class="input-field" name="number_of_students" value="{{data.students_required}}" placeholder="Enter students required "  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="internship_position">Position Offered: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" id="internship_position" class="input-field" name="internship_position" value="{{data.internship_position}}" placeholder="Enter highest position of internship offered"  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="minimum_cgpa">Min. CGPA: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" id="minimum_cgpa" class="input-field" name="minimum_cgpa" value="{{data.minimum_cgpa}}" placeholder="Enter minimum cgpa required"  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="stipend">Max. Stipend: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" id="stipend" class="input-field" name="stipend" value="{{data.stipend}}" placeholder="Enter maximum stipend"  disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="pre1">Prerequisite </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" class="input-field" name="pre" value="{{data.prerequisite}}" placeholder="Enter prerequisites" disabled>
-                                    </td>
-                                  </tr>
-                                </table>
-                                <input class="profile_save_changes_btn4 btn-save" type="submit" value="Save Changes">
-                                <button class="profile_save_changes_btn4 btn-edit js-edit" type="button">Edit Details</button>
-                            </form>
-                          </td>
-                        </tr>
-                        <tfoot>
-                          <tr>
-                            <td><span style="color: red;">**</span>CGPA should be out of 10</td>
-                          </tr>
-                          <tr>
-                            <td><span style="color: red;">**</span>Prerequisite is optional</td>
-                          </tr>
-                          <tr>
-                            <td><span style="color: red;">**</span>Use ** to separate 2 prerequisites</td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                {% else %}
-                <!--COPY OF PHONE VERIFICATION FORM-->
-                    <div class="cards_form_comp" id="cr1">
-                      <h6>{{error}}</h6>
-                      <table class="comp_table">
-                        <tr>
-                          <td>
-                            <form class="is-readonly comp_form" id="form_phone" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
-                                {% csrf_token %}
-                                <table class="comp_table">
-                                  <tr>
-                                    <td>
-                                      <label>Phone :</label>
-                                    </td>
-                                    <td>
-                                      <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" disabled>
-                                    </td>
-                                  </tr>
-                                </table>
-                                <input class="submit-btn profile_save_changes_btn1 btn-save" type="submit" value="Send OTP">
-                                <button class="profile_save_changes_btn1 btn-edit js-edit" type="button">Change</button>
-                            </form>
-                          </td>
-                        </tr>
-                        <!--PHASE 1, CV-->
-                        <!-- for student only -->
-                        <!-- form S2 -->
-                        <!-- to be made for company too -->
-                        <tr>
-                          <td>
-                            <form class="is-readonly comp_form" method="POST" action="{% url 'student_profile_1' %}"  enctype="multipart/form-data">
-                                {% csrf_token %}
-
-                                <table class="comp_table">
-                                  <tr>
-                                    <td>
-                                      <div class="" id="profile_btn_1">
+                        <table class="comp_table">
+                            <tr>
+                                <td>
+                                    <div class="" id="profile_btn_1">
                                         <input class="profile_save_changes_btn2 btn-save" type="submit" value="Upload CV">
                                         <button class="profile_save_changes_btn2 btn-edit js-edit" type="button">Change CV</button>
-                                        <input type="file" class="btn-save cv_upload" name="cv" disabled>
-                                        {% if data.cv %}
-                                        <a href="{{data.cv.url}}" id="my_cv">{{data.cv.name}}</a>
-                                        {% else %}
-                                          <p>cv not found</p>
+                                        <input type="file" class="btn-save cv_upload" name="cv" disabled> {% if data.cv %}
+                                        <a href="{{data.cv.url}}" id="my_cv">{{data.cv.name}}</a> {% else %}
+                                        <p>cv not found</p>
                                         {% endif %}
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </table>
-                            </form>
-                          </td>
-                        </tr>
-                            <!-- <h3>upload your photo</h3> -->
-                            <!--PHASE 2, PHOTO-->
-                            <!-- for student only -->
-                            <!-- form S3 -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </td>
+            </tr>
+            <!-- <h3>upload your photo</h3> -->
+            <!--PHASE 2, PHOTO-->
+            <!-- for student only -->
+            <!-- form S3 -->
 
-                        <tr>
-                          <td>
-                            <form class="is-readonly comp_form" method="POST" action="{% url 'student_profile_2' %}"  enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <table class="comp_table" style="height: 110px !important;">
-                                  <tr style="height: 110px !important;">
-                                    <td style="height: 110px !important;">
-                                      <div class="container" id="div_img">
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form" method="POST" action="{% url 'student_profile_2' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="comp_table" style="height: 110px !important;">
+                            <tr style="height: 110px !important;">
+                                <td style="height: 110px !important;">
+                                    <div class="container" id="div_img">
                                         {% if data.image %}
-                                        <img id="btn_img" class="btn-edit1" src="{{data.image.url}}" alt="submit">
-                                        {% else %}
-                                        <img id="btn_img" class="btn-edit1" src="{% static 'dashbord/img/us_ma.png' %}" alt="submit">
-                                        {% endif %}
+                                        <img id="btn_img" class="btn-edit1" src="{{data.image.url}}" alt="submit"> {% else %}
+                                        <img id="btn_img" class="btn-edit1" src="{% static 'dashbord/img/us_ma.png' %}" alt="submit"> {% endif %}
                                         <div class="overlay">Edit</div>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                  <tr class="btn-save">
-                                    <td class="btn-save">
-                                      <div class="" id="profile_btn_2">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="btn-save">
+                                <td class="btn-save">
+                                    <div class="" id="profile_btn_2">
                                         <input type="submit" class="profile_save_changes_btn2 btn-save change_btn_2" value="Upload image">
                                         <input type="file" class="btn-save cv_upload" name="image" disabled>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </table>
-                            </form>
-                          </td>
-                        </tr>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </td>
+            </tr>
 
-                            <!-- <br><hr><br> -->
-                            <!--PHASE 3, BASIC DETAILS-->
-                            <!-- for student only -->
-                            <!-- form S4 -->
-                        <tr>
-                          <td>
-                            <form class="is-readonly comp_form" action="{% url 'student_profile_3' %}" method="POST">
-                                {% csrf_token %}
-                                <table class="comp_table">
-                                  <tr>
-                                    <td>
-                                      <label>Email: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" class="input-field" value="{{request.user.email}}" readonly disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="first_name">First Name: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="last_name">Last Name: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label for="address">Complete Address: </label>
-                                    </td>
-                                    <td>
-                                      <input type="text" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address" disabled>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <label>Gender:</label>
-                                    </td>
-                                    <td>
-                                      <select class="input-field" name="gender" disabled>
+            <!-- <br><hr><br> -->
+            <!--PHASE 3, BASIC DETAILS-->
+            <!-- for student only -->
+            <!-- form S4 -->
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form" action="{% url 'student_profile_3' %}" method="POST">
+                        {% csrf_token %}
+                        <table class="comp_table">
+                            <tr>
+                                <td>
+                                    <label>Email: </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" value="{{request.user.email}}" readonly disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="first_name">First Name: </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="first_name" value="{{request.user.first_name}}" placeholder="Enter first name" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="last_name">Last Name: </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="last_name" value="{{request.user.last_name}}" placeholder="Enter last name" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="address">Complete Address: </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Gender:</label>
+                                </td>
+                                <td>
+                                    <select class="input-field" name="gender" disabled>
                                           <option id="male" value="1">Male</option>
                                           <option id="female" value="2">Female</option>
                                           <option id="transgender" value="3">Transgender</option>
                                       </select>
-                                    </td>
-                                  </tr>
-                                </table>
-                                Now gender according to the database is : {{data.gender}}
-                                <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
-                                <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
-                            </form>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-                        {% endifequal %}
-                    {% endif %}
-                    <!-- <hr> -->
-                    {% else %}
-                        <!-- <h2>Your minimum profile requirements are pending, please fill them to proceed to dashboard.</h2> -->
-                    <br>{{error}}
-                    <!-- <hr> -->
-                    {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
-                    <!-- for company only, it would be displayed until phone number is verified for the first time -->
-                    <!-- single appearence -->
-                      <div class="cards_form" id="cr1">
-                        <table>
-                          <tr>
-                            <td>
-                              <h5>Basic Profile Completion</h5>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <form action="{% url 'send_otp_to_phone_com' %}" method="POST" onsubmit="return validate_number()">
-                                  {% csrf_token %}
-                                  <table class="my_table">
-                                    <tr>
-                                      <td>
-                                        <label>Phone:</label>
-                                      </td>
-                                      <td>
-                                        <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <label>Address:</label>
-                                      </td>
-                                      <td>
-                                        <input type="text" class="input-field" name="address" {% if data.complete_address %} value="{{data.complete_address}}" {% endif %} placeholder="Enter your complete address" required>
-                                      </td>
-                                    </tr>
-                                  </table>
-                                  <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Send OTP to phone">
-                              </form>
-                            </td>
-                          </tr>
+                                </td>
+                            </tr>
                         </table>
-                      </div>
+                        Now gender according to the database is : {{data.gender}}
+                        <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
+                        <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    {% endifequal %} {% endif %}
+    <!-- <hr> -->
+    {% else %}
+    <!-- <h2>Your minimum profile requirements are pending, please fill them to proceed to dashboard.</h2> -->
+    <br>{{error}}
+    <!-- <hr> -->
+    {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+    <!-- for company only, it would be displayed until phone number is verified for the first time -->
+    <!-- single appearence -->
+    <div class="cards_form" id="cr1">
+        <table>
+            <tr>
+                <td>
+                    <h5>Basic Profile Completion</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="{% url 'send_otp_to_phone_com' %}" method="POST" onsubmit="return validate_number()">
+                        {% csrf_token %}
+                        <table class="my_table">
+                            <tr>
+                                <td>
+                                    <label>Phone:</label>
+                                </td>
+                                <td>
+                                    <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Address:</label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="address" {% if data.complete_address %} value="{{data.complete_address}}" {% endif %} placeholder="Enter your complete address" required>
+                                </td>
+                            </tr>
+                        </table>
+                        <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Send OTP to phone">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-                    {% else %}
-                    <!-- for student only, it would be displayed until phone number is verified for the first time -->
-                    <!-- single appearence -->
-                      <div class="cards_form" id="cr1">
-                        <table>
-                          <tr>
-                            <td>
-                              <h5>Basic Profile Completion</h5>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <form action="{% url 'send_otp_to_phone_stu' %}" method="POST" onsubmit="return validate_number()">
-                                  {% csrf_token %}
-                                  <table class="my_table">
-                                    <tr>
-                                      <td>
-                                        <label>Phone:</label>
-                                      </td>
-                                      <td>
-                                        <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <label>Address:</label>
-                                      </td>
-                                      <td>
-                                        <input type="text" class="input-field" name="address" {% if data.complete_address %} value="{{data.complete_address}}" {% endif %} placeholder="Enter your complete address" required>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <label>Gender:</label>
-                                      </td>
-                                      <td>
-                                        <select class="input-field" name="gender" required>
+    {% else %}
+    <!-- for student only, it would be displayed until phone number is verified for the first time -->
+    <!-- single appearence -->
+    <div class="cards_form" id="cr1">
+        <table>
+            <tr>
+                <td>
+                    <h5>Basic Profile Completion</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="{% url 'send_otp_to_phone_stu' %}" method="POST" onsubmit="return validate_number()">
+                        {% csrf_token %}
+                        <table class="my_table">
+                            <tr>
+                                <td>
+                                    <label>Phone:</label>
+                                </td>
+                                <td>
+                                    <input type="number" class="input-field" id="contact_number" name="contact_number" {% if data.contact_number %} value="{{data.contact_number}}" {% endif %} placeholder="Enter an indian contact number" style="width: 200px;" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Address:</label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="address" {% if data.complete_address %} value="{{data.complete_address}}" {% endif %} placeholder="Enter your complete address" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Gender:</label>
+                                </td>
+                                <td>
+                                    <select class="input-field" name="gender" required>
                                             <option value="1">Male</option>
                                             <option value="2">Female</option>
                                                 <option value="3">Transgender</option>
                                         </select>
-                                      </td>
-                                    </tr>
-                                  </table>
-                                  <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Send OTP to phone">
-                              </form>
-                            </td>
-                          </tr>
+                                </td>
+                            </tr>
                         </table>
-                      </div>
+                        <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Send OTP to phone">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-            {% endifequal %}
-            {% endif %}
-        {% endifequal %}
-<!--####################################################################-->
-        {% ifequal phase 2 %}
-            {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
-                <div class="cards_form" id="cr1">
-                {{error}}
-                <!-- otp verification for company only -->
-                <table>
-                  <tr>
-                    <td>
-                      <h5>OTP sent to {{phone}}</h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <form action="{% url 'verify_otp_phone_com' %}" method="POST" onsubmit="return disable_button()">
-                          {% csrf_token %}
-                          <table class="my_table">
+    {% endifequal %} {% endif %} {% endifequal %}
+    <!--####################################################################-->
+    {% ifequal phase 2 %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+    <div class="cards_form" id="cr1">
+        {{error}}
+        <!-- otp verification for company only -->
+        <table>
+            <tr>
+                <td>
+                    <h5>OTP sent to {{phone}}</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="{% url 'verify_otp_phone_com' %}" method="POST" onsubmit="return disable_button()">
+                        {% csrf_token %}
+                        <table class="my_table">
                             <tr>
-                              <td>
-                                <label>OTP:</label>
-                              </td>
-                              <td>
-                                <input type="text" class="input-field" name="otp" placeholder="Enter otp sent to {{phone}}" style="width: 300px;" required>
-                              </td>
+                                <td>
+                                    <label>OTP:</label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="otp" placeholder="Enter otp sent to {{phone}}" style="width: 300px;" required>
+                                </td>
                             </tr>
-                          </table>
-                          <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Verify OTP">
-                      </form>
-                    </td>
-                  </tr>
-                </table>
-                <a href="{% url 'resend_otp_to_phone_com' %}">Resend OTP?</a>
-              </div>
-            {% else %}
-            <!-- otp verification for student only -->
-              <div class="cards_form" id="cr1">
-                {{error}}
-                <table>
-                  <tr>
-                    <td>
-                      <h5>OTP sent to {{phone}}</h5>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <form action="{% url 'verify_otp_phone_stu' %}" method="POST" onsubmit="return disable_button()">
-                          {% csrf_token %}
-                          <table>
-                            <tr>
-                              <td>
-                                <label>OTP:</label>
-                              </td>
-                              <td>
-                                <input type="text" class="input-field" name="otp" placeholder="Enter otp sent to {{phone}}" style="width: 300px;" required>
-                              </td>
-                            </tr>
-                          </table>
-                          <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Verify OTP">
-                      </form>
-                    </td>
-                  </tr>
-                </table>
-                <a href="{% url 'resend_otp_to_phone_stu' %}">Resend OTP?</a>
-              </div>
-            {% endifequal %}
-        {% endifequal %}
-<!--####################################################################-->
-        {% ifequal phase 3 %}
-        <div class="" style="text-align: -webkit-center;">
-          <h2>Phone number has been succesfully verified</h2>
-          <a href="{% url 'profile' %}">Go to Profile?</a>
-        </div>
-        {% endifequal %}
+                        </table>
+                        <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Verify OTP">
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <a href="{% url 'resend_otp_to_phone_com' %}">Resend OTP?</a>
+    </div>
     {% else %}
-        <div class="" style="text-align: -webkit-center;">
-          <h2>You are visiting a wrong page, please login and then you can change your profile.</h2>
-        </div>
+    <!-- otp verification for student only -->
+    <div class="cards_form" id="cr1">
+        {{error}}
+        <table>
+            <tr>
+                <td>
+                    <h5>OTP sent to {{phone}}</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="{% url 'verify_otp_phone_stu' %}" method="POST" onsubmit="return disable_button()">
+                        {% csrf_token %}
+                        <table>
+                            <tr>
+                                <td>
+                                    <label>OTP:</label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="otp" placeholder="Enter otp sent to {{phone}}" style="width: 300px;" required>
+                                </td>
+                            </tr>
+                        </table>
+                        <input type="submit" class="profile_save_changes_btn" id="mybutton" value="Verify OTP">
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <a href="{% url 'resend_otp_to_phone_stu' %}">Resend OTP?</a>
+    </div>
+    {% endifequal %} {% endifequal %}
+    <!--####################################################################-->
+    {% ifequal phase 3 %}
+    <div class="" style="text-align: -webkit-center;">
+        <h2>Phone number has been succesfully verified</h2>
+        <a href="{% url 'profile' %}">Go to Profile?</a>
+    </div>
+    {% endifequal %} {% else %}
+    <div class="" style="text-align: -webkit-center;">
+        <h2>You are visiting a wrong page, please login and then you can change your profile.</h2>
+    </div>
     {% endif %}
-  </main>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="{% static 'js/profile.js' %}"></script>
-    <script src="{% static 'dashboard/js/profile_app.js' %}"></script>
+</main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'dashboard/js/profile_app.js' %}"></script>
 {% endblock %}

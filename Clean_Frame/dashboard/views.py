@@ -7,8 +7,8 @@ from django.core.mail import send_mail
 import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
-from .forms import StudentPhotoForm,StudentCVForm
-from .models import StaffPermissions
+from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
+from .models import StaffPermissions, CompanyAnnouncement, Result
 
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
@@ -559,3 +559,43 @@ def SENDMAIL(subject, message, email):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email, ]
     send_mail( subject, message, email_from, recipient_list )
+
+def new_announcement(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        if request.method == "POST":
+            internship_round=int(request.POST.get('internship_round'))
+            if(internship_round>1):
+                prev_round_for_result=request.POST.get('prev_round_for_result')
+                if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
+                    return render(request, 'dashboard/new_announcement.html', context={"data": data, "error": "No result found with the given previous round number"})
+            form = CompanyAnnouncementForm(request.POST,request.FILES)
+            if form.is_valid():
+                x=form.save()
+                myid=x.id
+                last_date_to_apply=request.POST.get('last_date_to_apply')
+                com_ann=CompanyAnnouncement.objects.get(id=myid)
+                com_ann.company=request.user
+                if com_ann.internship_round==1:
+                    com_ann.first_round=True
+                    com_ann.prev_round_for_result=0
+                com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                com_ann.save()
+                return redirect('new_announcement_success')
+            else:
+                return render(request, 'dashboard/new_announcement.html', context={"data": data, "error": form.errors})
+        else:
+            return render(request, 'dashboard/new_announcement.html', context={"data": data})
+    return error_detection(request,1)
+    
+def new_announcement_success(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        else:
+            data=get_my_profile(request)
+            return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created"})
+    return error_detection(request,1)
+    
