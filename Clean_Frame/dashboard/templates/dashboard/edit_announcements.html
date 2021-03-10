@@ -38,12 +38,12 @@
         </li>
         {% endif %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
-            <a href="{% url 'announcements' %}"><span class="las la-users"></span>
+            <a href="{% url 'announcements' %}" class="active"><span class="las la-users"></span>
             <span>My Announcements</span>
           </a>
         </li>
         <li>
-            <a href="{% url 'new_announcement' %}" class="active"><span class="las la-users"></span>
+            <a href="{% url 'new_announcement' %}"><span class="las la-users"></span>
             <span>Create Announcement</span>
           </a>
         </li>
@@ -104,7 +104,7 @@
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">New Announcement</a> {% endblock %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Announcement #{{data.id}}</a> {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -114,7 +114,7 @@
     {% if request.user.is_authenticated %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
     <!--COPY OF PHONE VERIFICATION FORM-->
     <div class="cards_form_comp1" id="cr11">
-        <h5 style="text-align: center; padding-bottom: 30px">Announce a new internship Round</h5>
+        <h5 style="text-align: center; padding-bottom: 30px">Edit Announcement</h5>
         <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
         <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">{{success}}</h6>
         <table class="comp_table1">
@@ -123,7 +123,7 @@
             <!-- form C2 -->
             <tr>
                 <td>
-                    <form action="{% url 'new_announcement' %}" method="POST" onsubmit="return validate_announcement()" enctype="multipart/form-data">
+                    <form action="{% url 'edit_announcement' item=data.id %}" method="POST" onsubmit="return validate_announcement()" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="comp_table1">
                             <tr>
@@ -131,7 +131,7 @@
                                     <label>Internship Round </label>
                                 </td>
                                 <td>
-                                    <input type="number" name="internship_round" id="inputBox" class="input-field" placeholder="Enter round number" required>
+                                    <input type="number" name="internship_round" value="{{data.internship_round}}" id="inputBox" class="input-field" placeholder="Enter round number" required>
                                 </td>
                             </tr>
                             <tr>
@@ -139,7 +139,7 @@
                                     <label for="round_name">Name of the Round: </label>
                                 </td>
                                 <td>
-                                    <input type="text" name="round_name" class="input-field" placeholder="Enter round name" required>
+                                    <input type="text" name="round_name" value="{{data.round_name}}" class="input-field" placeholder="Enter round name" required>
                                 </td>
                             </tr>
                             <tr>
@@ -147,12 +147,12 @@
                                     <label for="prev_round_for_result">Previous Round: </label>
                                 </td>
                                 <td>
-                                    <input type="number" id="inputBox1" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
+                                    <input type="number" id="inputBox1" value="{{data.prev_round_for_result}}" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="last_date_to_apply">Last Date to apply: </label>
+                                    <label for="last_date_to_apply">Last Date to apply ({{data.last_date_to_apply}}): </label>
                                 </td>
                                 <td>
                                     <input type="datetime-local" id="last_date_to_apply" class="input-field" name="last_date_to_apply" placeholder="Enter last date to fill form" required>
@@ -160,7 +160,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="file" style="margin-top: 15px">Upload any file: </label>
+                                    <label for="file" style="margin-top: 10px">Upload any {% if data.file %}<a href="{{data.file.url}}" class="btn-save">file</a>{% else %}file{% endif %}: </label>
                                 </td>
                                 <td>
                                     <input type="file" style="margin-top: 15px" class="btn-save cv_upload" name="file">
@@ -168,10 +168,10 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="file_for_prev_result">Upload results of previous round: </label>
+                                    <label for="file_for_prev_result">Upload {% if data.file_for_prev_result %}<a href="{{data.file_for_prev_result.url}}" class="btn-save">result</a>{% else %}result{% endif %} of previous round: </label>
                                 </td>
                                 <td>
-                                    <input type="file" class="btn-save cv_upload" name="file_for_prev_result">
+                                    <input type="file" style="margin-top: 15px" class="btn-save cv_upload" name="file_for_prev_result">
                                 </td>
                             </tr>
                             <tr>
@@ -179,13 +179,13 @@
                                     <label for="message">Announcement Message: </label>
                                 </td>
                                 <td>
-                                    <textarea class="input-field" name="message" rows="3" placeholder="Enter message" required></textarea>
+                                    <textarea class="input-field" name="message" rows="3" placeholder="Enter message" required>{{data.message}}</textarea>
                                     <!-- <input type="text" class="input-field" name="message" placeholder="Enter message" required> -->
                                 </td>
                             </tr>
 
                         </table>
-                        <input class="profile_save_changes_btn4" type="submit" value="Announce">
+                        <input class="profile_save_changes_btn4" type="submit" value="Save Changes">
                     </form>
                 </td>
             </tr>

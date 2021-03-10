@@ -598,4 +598,50 @@ def new_announcement_success(request):
             data=get_my_profile(request)
             return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created"})
     return error_detection(request,1)
-    
+
+def announcements(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        announcements=CompanyAnnouncement.objects.filter(company=request.user).order_by('announcement_date')
+        return render(request, 'dashboard/announcements.html', context={"announcements": announcements})
+    return error_detection(request,1)
+
+def edit_announcement(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        if request.method=="POST":
+            data=CompanyAnnouncement.objects.get(id=int(item))
+            internship_round=int(request.POST.get('internship_round'))
+            if(internship_round>1):
+                prev_round_for_result=request.POST.get('prev_round_for_result')
+                if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
+                    return render(request, 'dashboard/edit_announcements.html', context={"data": data, "error": "No result found with the given previous round number"})
+            form = CompanyAnnouncementForm(request.POST,request.FILES)
+            if form.is_valid():
+                data.internship_round=form.cleaned_data['internship_round']
+                data.round_name=form.cleaned_data['round_name']
+                data.prev_round_for_result=form.cleaned_data['prev_round_for_result']
+                data.message=form.cleaned_data['message']
+                if form.cleaned_data['file']:
+                    data.file=form.cleaned_data['file']
+                if form.cleaned_data['file_for_prev_result']:
+                    data.file_for_prev_result=form.cleaned_data['file_for_prev_result']
+                last_date_to_apply=request.POST.get('last_date_to_apply')
+                if data.internship_round==1:
+                    data.first_round=True
+                    data.prev_round_for_result=0
+                data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                data.save()
+                return redirect('edit_announcement', int(item))
+            else:
+                return render(request, 'dashboard/edit_announcements.html', context={"data": data, "error": form.errors})
+                
+        else:
+            try:
+                data=CompanyAnnouncement.objects.get(id=int(item))
+            except:
+                return HttpResponse("Profile not found")
+            return render(request, 'dashboard/edit_announcements.html', context={"data": data})
+    return error_detection(request,1)
