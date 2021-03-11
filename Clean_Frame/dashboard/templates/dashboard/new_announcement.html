@@ -43,8 +43,13 @@
           </a>
         </li>
         <li>
+            <a href="{% url 'new_announcement_round' %}" class=""><span class="las la-users"></span>
+            <span>Announce New Round</span>
+          </a>
+        </li>
+        <li>
             <a href="{% url 'new_announcement' %}" class="active"><span class="las la-users"></span>
-            <span>Create Announcement</span>
+            <span>New Announcement</span>
           </a>
         </li>
         {% endifequal %}
@@ -114,7 +119,7 @@
     {% if request.user.is_authenticated %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
     <!--COPY OF PHONE VERIFICATION FORM-->
     <div class="cards_form_comp1" id="cr11">
-        <h5 style="text-align: center; padding-bottom: 30px">Announce a new internship Round</h5>
+        <h5 style="text-align: center; padding-bottom: 30px">Create a new announcement for everyone</h5>
         <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
         <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">{{success}}</h6>
         <table class="comp_table1">
@@ -126,38 +131,9 @@
                     <form action="{% url 'new_announcement' %}" method="POST" onsubmit="return validate_announcement()" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="comp_table1">
-                            <tr>
-                                <td>
-                                    <label>Internship Round </label>
-                                </td>
-                                <td>
-                                    <input type="number" name="internship_round" id="inputBox" class="input-field" placeholder="Enter round number" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="round_name">Name of the Round: </label>
-                                </td>
-                                <td>
-                                    <input type="text" name="round_name" class="input-field" placeholder="Enter round name" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="prev_round_for_result">Previous Round: </label>
-                                </td>
-                                <td>
-                                    <input type="number" id="inputBox1" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="last_date_to_apply">Last Date to apply: </label>
-                                </td>
-                                <td>
-                                    <input type="datetime-local" id="last_date_to_apply" class="input-field" name="last_date_to_apply" placeholder="Enter last date to fill form" required>
-                                </td>
-                            </tr>
+                            <input type="hidden" name="internship_round" value="0" required>
+                            <input type="hidden" name="round_name" value="NILL" required>
+                            <input type="hidden" value="0" name="prev_round_for_result" required>
                             <tr>
                                 <td>
                                     <label for="file" style="margin-top: 15px">Upload any file: </label>

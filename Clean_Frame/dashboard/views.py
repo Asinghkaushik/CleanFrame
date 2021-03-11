@@ -560,7 +560,7 @@ def SENDMAIL(subject, message, email):
     recipient_list = [email, ]
     send_mail( subject, message, email_from, recipient_list )
 
-def new_announcement(request):
+def new_announcement_round(request):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
@@ -570,7 +570,7 @@ def new_announcement(request):
             if(internship_round>1):
                 prev_round_for_result=request.POST.get('prev_round_for_result')
                 if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
-                    return render(request, 'dashboard/new_announcement.html', context={"data": data, "error": "No result found with the given previous round number"})
+                    return render(request, 'dashboard/new_round.html', context={"data": data, "error": "No result found with the given previous round number"})
             form = CompanyAnnouncementForm(request.POST,request.FILES)
             if form.is_valid():
                 x=form.save()
@@ -583,20 +583,25 @@ def new_announcement(request):
                     com_ann.prev_round_for_result=0
                 com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 com_ann.save()
-                return redirect('new_announcement_success')
+                return redirect('new_announcement_success', '1')
             else:
-                return render(request, 'dashboard/new_announcement.html', context={"data": data, "error": form.errors})
+                return render(request, 'dashboard/new_round.html', context={"data": data, "error": form.errors})
         else:
-            return render(request, 'dashboard/new_announcement.html', context={"data": data})
+            return render(request, 'dashboard/new_round.html', context={"data": data})
     return error_detection(request,1)
     
-def new_announcement_success(request):
+def new_announcement_success(request, item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         else:
             data=get_my_profile(request)
-            return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created"})
+            if item=='1':
+                return render(request, 'dashboard/new_round.html', context={"data": data, "success": "Announcement Created"})
+            if item=='2':
+                return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created"})
+            else:
+                return HttpResponse("404: page not found")
     return error_detection(request,1)
 
 def announcements(request):
@@ -614,7 +619,7 @@ def edit_announcement(request, item):
         if request.method=="POST":
             data=CompanyAnnouncement.objects.get(id=int(item))
             internship_round=int(request.POST.get('internship_round'))
-            if(internship_round>1):
+            if(internship_round>1 and data.general_announcement==False):
                 prev_round_for_result=request.POST.get('prev_round_for_result')
                 if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
                     return render(request, 'dashboard/edit_announcements.html', context={"data": data, "error": "No result found with the given previous round number"})
@@ -632,7 +637,8 @@ def edit_announcement(request, item):
                 if data.internship_round==1:
                     data.first_round=True
                     data.prev_round_for_result=0
-                data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                if data.general_announcement==False:
+                    data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 data.save()
                 return redirect('edit_announcement', int(item))
             else:
@@ -644,4 +650,24 @@ def edit_announcement(request, item):
             except:
                 return HttpResponse("Profile not found")
             return render(request, 'dashboard/edit_announcements.html', context={"data": data})
+    return error_detection(request,1)
+
+def new_announcement(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        if request.method == "POST":
+            form = CompanyAnnouncementForm(request.POST,request.FILES)
+            if form.is_valid():
+                x=form.save()
+                com_ann=CompanyAnnouncement.objects.get(id=x.id)
+                com_ann.company=request.user
+                com_ann.general_announcement=True
+                com_ann.save()
+                return redirect('new_announcement_success', '2')
+            else:
+                return render(request, 'dashboard/new_announcement.html', context={"data": data, "error": form.errors})
+        else:
+            return render(request, 'dashboard/new_announcement.html', context={"data": data})
     return error_detection(request,1)

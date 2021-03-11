@@ -10,7 +10,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'home/css/all.css' %}">
 
-    <link rel="icon" href="{% static 'home/assets/logo.ico' %}" type = "image/x-icon">
+    <link rel="icon" href="{% static 'home/assets/logo.ico' %}" type="image/x-icon">
     <!-- --------- Owl-Carousel ------------------->
     <link rel="stylesheet" href="{% static 'home/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'home/css/owl.theme.default.min.css' %}">
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'home/css/aos.css' %}">
     <title>CleanFrame</title>
     <!-- Custom Style   -->
-    <link rel="stylesheet" href="{% static 'home/css/Style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home/css/style.css' %}">
 
 </head>
 
@@ -30,7 +30,8 @@
     <nav class="nav">
         <div class="nav-menu flex-row">
             <div class="nav-brand">
-                <a href="#" class="text-gray" style="display: flex;"><div class="comp1"><span class="lab la-accusoft myicon"></span></div>CleanFrame</a>
+                <a href="#" class="text-gray" style="display: flex;">
+                    <div class="comp1"><span class="lab la-accusoft myicon"></span></div>CleanFrame</a>
             </div>
             <div class="toggle-collapse">
                 <div class="toggle-icons">
@@ -72,12 +73,10 @@
                 <h1>Always remember, your focus determines your reality</h1>
                 <h3>~ George Lucas</h3>
                 {% if request.user.is_authenticated %}
-                  <a href="{% url 'dashboard' %}" id="mybtnlink"><button class="btn">Dashboard</button></a>
-                  <a href="{% url 'logout_request' %}" id="mybtnlink"><button class="btn">Logout</button></a>
-                {% else %}
-                  <a href="{% url 'login_request' %}" id="mybtnlink"><button class="btn">Login</button></a>
-                  <a href="{% url 'signup_student' %}" id="mybtnlink"><button class="btn">SignUp</button></a>
-                {% endif %}
+                <a href="{% url 'dashboard' %}" id="mybtnlink"><button class="btn">Dashboard</button></a>
+                <a href="{% url 'logout_request' %}" id="mybtnlink"><button class="btn">Logout</button></a> {% else %}
+                <a href="{% url 'login_request' %}" id="mybtnlink"><button class="btn">Login</button></a>
+                <a href="{% url 'signup_student' %}" id="mybtnlink"><button class="btn">SignUp</button></a> {% endif %}
             </div>
         </section>
 
@@ -147,8 +146,7 @@
         <div class="container">
             <div class="about-us" data-aos="fade-right" data-aos-delay="200">
                 <h2>About us</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia atque nemo ad modi officiis
-                    iure, autem nulla tenetur repellendus.</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia atque nemo ad modi officiis iure, autem nulla tenetur repellendus.</p>
             </div>
             <div class="newsletter" data-aos="fade-right" data-aos-delay="200">
                 <h2>Newsletter</h2>
@@ -216,18 +214,18 @@
     <!-- Custom Javascript file -->
     <script src="{% static 'home/js/main.js' %}"></script>
     <script>
-    function menuToggle(){
-      const togglemenu = document.querySelector('.menu');
-      togglemenu.classList.toggle('active');
-    }
-    $(window).scroll(function() {
-      var scroll = $(window).scrollTop(),
-        dh = $(document).height(),
-        wh = $(window).height();
-      scrollPercent = (scroll / (dh - wh)) * 100;
-      $('#progressbar').css('height', scrollPercent + '%');
-    })
-  </script>
+        function menuToggle() {
+            const togglemenu = document.querySelector('.menu');
+            togglemenu.classList.toggle('active');
+        }
+        $(window).scroll(function() {
+            var scroll = $(window).scrollTop(),
+                dh = $(document).height(),
+                wh = $(window).height();
+            scrollPercent = (scroll / (dh - wh)) * 100;
+            $('#progressbar').css('height', scrollPercent + '%');
+        })
+    </script>
 </body>
 
 </html>

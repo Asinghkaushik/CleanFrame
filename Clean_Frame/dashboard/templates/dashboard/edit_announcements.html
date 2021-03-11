@@ -47,6 +47,11 @@
             <span>Create Announcement</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'new_announcement' %}"><span class="las la-users"></span>
+            <span>New Announcement</span>
+          </a>
+        </li>
         {% endifequal %}
         <li>
             <a href=""><span class="las la-users"></span>
@@ -126,6 +131,11 @@
                     <form action="{% url 'edit_announcement' item=data.id %}" method="POST" onsubmit="return validate_announcement()" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="comp_table1">
+                            {% if data.general_announcement %}
+                            <input type="hidden" name="internship_round" value="{{data.internship_round}}" required>
+                            <input type="hidden" name="round_name" value="{{data.round_name}}" required>
+                            <input type="hidden" value="{{data.prev_round_for_result}}" name="prev_round_for_result" required>
+                            <input type="hidden" name="last_date_to_apply" required> {% else %}
                             <tr>
                                 <td>
                                     <label>Internship Round </label>
@@ -158,6 +168,7 @@
                                     <input type="datetime-local" id="last_date_to_apply" class="input-field" name="last_date_to_apply" placeholder="Enter last date to fill form" required>
                                 </td>
                             </tr>
+                            {% endif %}
                             <tr>
                                 <td>
                                     <label for="file" style="margin-top: 10px">Upload any {% if data.file %}<a href="{{data.file.url}}" class="btn-save">file</a>{% else %}file{% endif %}: </label>
