@@ -49,3 +49,14 @@ class Result(models.Model):
                 return str(self.student)
             else:
                 return "NIL"
+            
+class ProfileVisibilty(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    to_other_student=models.BooleanField(default=True)
+    to_company=models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.user:
+            return self.user.username
+        else:
+            return 'NILL'
