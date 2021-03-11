@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3,company_profile_2, student_profile_2,student_profile_1,student_company_number,change_password,student_account_signup_permit,student_account_signup_action,company_account_signup_permit,company_account_signup_action
-from .views import new_announcement_round, new_announcement,new_announcement_success, announcements, edit_announcement
+from .views import new_announcement_round, new_announcement,new_announcement_success, announcements, edit_announcement,result
 
 urlpatterns = [
     path('',dashboard,name="dashboard"),
@@ -27,7 +27,7 @@ urlpatterns = [
     path('announcement/new/success/<str:item>',new_announcement_success,name="new_announcement_success"),
     path('announcements/',announcements,name="announcements"),
     path('announcements/edit/<str:item>/',edit_announcement,name="edit_announcement"),
-    
+    path('announcements/result/<str:item>', result, name="result"),
     
     
 

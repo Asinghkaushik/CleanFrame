@@ -333,6 +333,7 @@ def student_profile_3(request):
             u.save()
             address=request.POST.get('address')
             gender=request.POST.get('gender')
+            cgpa=request.POST.get('cgpa')
             try:
                 p=StudentProfile.objects.get(user=request.user)
                 p.complete_address=address
@@ -342,6 +343,7 @@ def student_profile_3(request):
                     p.gender='Female'
                 else:
                     p.gender='Transgender'
+                p.cgpa=float(cgpa)
                 p.save()
                 return redirect('profile')
             except:
@@ -618,6 +620,8 @@ def edit_announcement(request, item):
             return redirect('home')
         if request.method=="POST":
             data=CompanyAnnouncement.objects.get(id=int(item))
+            if data.company!=request.user:
+                return HttpResponse("Announcement not found")
             internship_round=int(request.POST.get('internship_round'))
             if(internship_round>1 and data.general_announcement==False):
                 prev_round_for_result=request.POST.get('prev_round_for_result')
@@ -647,8 +651,10 @@ def edit_announcement(request, item):
         else:
             try:
                 data=CompanyAnnouncement.objects.get(id=int(item))
+                if data.company!=request.user:
+                    return HttpResponse("Announcement not found")
             except:
-                return HttpResponse("Profile not found")
+                return HttpResponse("Announcement not found")
             return render(request, 'dashboard/edit_announcements.html', context={"data": data})
     return error_detection(request,1)
 
@@ -671,3 +677,22 @@ def new_announcement(request):
         else:
             return render(request, 'dashboard/new_announcement.html', context={"data": data})
     return error_detection(request,1)
+
+def result(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        if request.method == "POST":
+            pass
+        else:
+            data=CompanyAnnouncement.objects.get(id=int(item))
+            if data.company!=request.user:
+                return HttpResponse("Announcement not found")
+            students=get_students(request, int(item))
+            return render(request, 'dashboard/result.html', context={"data": data, "students": students})
+    return error_detection(request,1)
+
+#TO be COmpleted
+def get_students(request, id_of_announcement):
+    return 

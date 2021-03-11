@@ -207,11 +207,17 @@
                 <tr>
                     <td><span style="color: red;">**</span>For round 1, fill previous round as 0</td>
                 </tr>
+                {% if data.general_announcement %} {% else %}
+                <tr>
+                    <td>
+                        <marquee direction="left" height="40" width="200" bgcolor="white"></marquee><a href="{% url 'result' item=data.id %}">Announce Result??</a></td>
+                </tr>
+                {% endif %}
             </tfoot>
         </table>
     </div>{% endifequal %} {% endif %}
 </main>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="{% static 'js/profile.js' %}"></script>
-<script src="{% static 'dashboard/js/profile_app.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
+<script src="{% static 'js/profile.js' %} "></script>
+<script src="{% static 'dashboard/js/profile_app.js' %} "></script>
 {% endblock %}

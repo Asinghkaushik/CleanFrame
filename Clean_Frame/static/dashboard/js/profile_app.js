@@ -86,6 +86,15 @@ $(document).ready(function() {
     });
 });
 
+function validate_student_profile_3() {
+    cgpa = document.getElementById("my_cgpa").value
+    if (validate_cgpa(cgpa) == false) {
+        alert("CGPA is not in proper format.")
+        return false
+    }
+    return true
+}
+
 function validate_company_profile_2() {
     if (document.getElementById("company_name").value.length <= 0) {
         alert("Company Name can not be empty.")

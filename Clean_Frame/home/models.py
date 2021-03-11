@@ -7,6 +7,7 @@ class StudentProfile(models.Model):
     contact_number=models.IntegerField(null=True)
     image=models.ImageField(upload_to='post_images/', default="us_ma.png")
     cv=models.FileField(upload_to='post_files/', null=True, blank=True)
+    cgpa=models.FloatField(default=0.0, null=True)
     complete_address=models.CharField(max_length=1000, null=True)
     gender=models.CharField(max_length=100, null=True)
     profile_filled=models.BooleanField(default=False)

@@ -369,7 +369,7 @@
             <!-- form S4 -->
             <tr>
                 <td>
-                    <form class="is-readonly comp_form" action="{% url 'student_profile_3' %}" method="POST">
+                    <form class="is-readonly comp_form" action="{% url 'student_profile_3' %}" method="POST" onsubmit="return validate_student_profile_3()">
                         {% csrf_token %}
                         <table class="comp_table">
                             <tr>
@@ -414,6 +414,14 @@
                                           <option id="female" value="2">Female</option>
                                           <option id="transgender" value="3">Transgender</option>
                                       </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="cgpa">CGPA: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="my_cgpa" class="input-field" name="cgpa" value="{{data.cgpa}}" placeholder="Enter your CGPA" disabled>
                                 </td>
                             </tr>
                         </table>
