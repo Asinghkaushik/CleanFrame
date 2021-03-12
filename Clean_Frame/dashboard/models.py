@@ -64,6 +64,11 @@ class ProfileVisibilty(models.Model):
 class StudentRegistration(models.Model):
     company=models.ForeignKey(CompanyAnnouncement, on_delete=models.CASCADE, null=True, blank=True)
     student=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    date_of_registrations=models.DateTimeField(auto_now=True)
+    result_status=models.IntegerField(default=0)
+    #Status 0 : Not Announced
+    #Status 1: Cleared
+    #Status 2: Rejected
     
     def __str__(self):
-        return str(self.student.username) + "registered in " + str(self.company)
+        return str(self.student.username) + " registered in " + str(self.company)

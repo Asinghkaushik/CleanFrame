@@ -721,7 +721,9 @@ def show_company_round_details(request, item):
                 company_data={}
         except:
             data1_is=False
+            data2_is=False
             data={}
+            company_data={}
         return render(request, 'dashboard/show_company_details.html', context={"announcement_data": data, "company_data": company_data, "data1": data1_is, "data2": data2_is})
     return error_detection(request,1)
 
@@ -769,3 +771,13 @@ def get_eligible_companies_for_me_round_one(request):
         except:
             eligible_companies=eligible_companies.exclude(id=each.id)
     return eligible_companies
+
+def show_registrations(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        registrations=StudentRegistration.objects.filter(student=request.user)
+        #Also get registrations of other rounds
+        return render(request, "dashboard/registrations.html", context={"registrations": registrations})
+    return error_detection(request,1)

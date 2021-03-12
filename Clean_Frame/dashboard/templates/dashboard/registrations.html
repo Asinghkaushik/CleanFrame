@@ -52,12 +52,12 @@
         <!--Student only-->
         {% else %}
         <li>
-            <a href="{% url 'show_companies' %}" class="active"><span class="las la-users"></span>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
             <span>Register</span>
           </a>
         </li>
         <li>
-            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <a href="{% url 'show_registrations' %}" class="active"><span class="las la-users"></span>
             <span>My Registrations</span>
           </a>
         </li>
@@ -69,7 +69,7 @@
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Register for Internship</a> {% endblock %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">My Registrations</a> {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -85,7 +85,7 @@
         <div class="projects">
             <div class="card">
                 <div class="card-header">
-                    <h5>Note: Here registration will be done only for first round. For other rounds visit the new section</h5>
+                    <h3 style="margin-left: 13%;">You are not allowed to unregister</h3>
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -102,24 +102,26 @@
                             <thead id="thead">
                                 <tr id="tr1" style="text-align: center;">
                                     <td>#ID</td>
-                                    <td id="td1">Company Name</td>
-                                    <td id="td2">Round Name</td>
-                                    <td id="td3">Last Date</td>
-                                    <td id="td4">Register</td>
+                                    <td id="td1">Announcement #ID</td>
+                                    <td id="td2">Round Number</td>
+                                    <td id="td3">Registration Date</td>
+                                    <td id="td4">Result Status</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for each in companies %}
+                                {% for each in registrations %}
                                 <tr id="tr1" style="text-align: center;">
-                                    <td><a href="{% url 'show_company_round_details' item=each.id %}">{{each.id}}</a></td>
-                                    <td>{{each.company}}</td>
-                                    <td>{{each.round_name}}</td>
-                                    <td>{{each.last_date_to_apply}}</td>
-                                    <td style="margin-left: 16%;">
-                                        <a href="{% url 'register_student_first_round_only' item=each.id %}" style="text-decoration: none;">
-                                            <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
-                                        </a>
-                                    </td>
+                                    <td>{{each.id}}</td>
+                                    <td><a href="{% url 'show_company_round_details' item=each.company.id %}">{{each.company.id}}</a></td>
+                                    <td>{{each.company.internship_round}}</td>
+                                    <td>{{each.date_of_registrations}}</td>
+                                    {% ifequal each.result_status 0 %}
+                                    <td>Not Announced</td>
+                                    {% else %} {% ifequal each.result_status 1 %}
+                                    <td style="color:green">Cleared</td>
+                                    {% else %}
+                                    <td style="color:red">Rejected</td>
+                                    {% endifequal %} {% endifequal %}
                                 </tr>
                                 {% endfor %}
                             </tbody>

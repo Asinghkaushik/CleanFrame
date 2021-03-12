@@ -57,57 +57,13 @@
             <span>Register</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
+          </a>
+        </li>
         {% endifequal %} {% endif %}
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
+
     </ul>
 </div>
 {% endblock %}
@@ -125,9 +81,10 @@
     {% if request.user.is_authenticated %}
     <!--COPY OF PHONE VERIFICATION FORM-->
     <div class="cards_form_comp1" id="cr11">
+        {% if data1 or data2 %}
         <h5 style="text-align: center; padding-bottom: 20px">Details of Round-1</h5>
         <h5 style="text-align: center; padding-bottom: 20px">
-            <a href="#" style="padding-top: 20px;">Register?(to be compalted)</a></h5>
+            <a href="{% url 'register_student_first_round_only' item=announcement_data.id %}" style="padding-top: 20px;">Register?</a></h5>
         <table class="comp_table1">
             <!--GO FOR COMPANY PHASE 2-->
             <!-- only for company, it includes editing basic profile details -->
@@ -224,6 +181,8 @@
                 </tr>
             </tfoot>
         </table>
+        {% else %}
+        <h5 style="text-align: center; padding-bottom: 20px">No data available </h5>{% endif %}
     </div>{% endif %}
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
