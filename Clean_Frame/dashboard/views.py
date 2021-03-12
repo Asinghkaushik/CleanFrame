@@ -713,3 +713,22 @@ def show_companies(request):
                 eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
         return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies_for_me})
     return error_detection(request,1)
+
+def show_company_round_details(request, item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            data1_is=True
+            data=CompanyAnnouncement.objects.get(id=int(item))    
+            try:
+                data2_is=True
+                company_data=CompanyProfile.objects.get(user=data.company)
+            except:
+                data2_is=False
+                company_data={}
+        except:
+            data1_is=False
+            data={}
+        return render(request, 'dashboard/show_company_details.html', context={"announcement_data": data, "company_data": company_data, "data1": data1_is, "data2": data2_is})
+    return error_detection(request,1)
