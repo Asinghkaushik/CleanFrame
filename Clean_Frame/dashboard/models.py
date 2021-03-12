@@ -60,3 +60,10 @@ class ProfileVisibilty(models.Model):
             return self.user.username
         else:
             return 'NILL'
+        
+class StudentRegistration(models.Model):
+    company=models.ForeignKey(CompanyAnnouncement, on_delete=models.CASCADE, null=True, blank=True)
+    student=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+    def __str__(self):
+        return str(self.student.username) + "registered in " + str(self.company)

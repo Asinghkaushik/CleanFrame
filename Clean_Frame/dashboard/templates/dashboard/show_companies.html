@@ -121,6 +121,10 @@
 <!--For the main section : 3-->
 {% block section_main %}
 <main>
+    {% if success %}
+    <h6 style="text-align: center; color: green;" id="message">Registered Successfully</h6>
+    {% endif %}
+    <h6 style="text-align: center; color: red;" id="message">{{error}}</h6>
     <div class="recent-grid1">
         <div class="projects">
             <div class="card">
@@ -156,7 +160,7 @@
                                     <td>{{each.round_name}}</td>
                                     <td>{{each.last_date_to_apply}}</td>
                                     <td style="margin-left: 16%;">
-                                        <a href="#" style="text-decoration: none;">
+                                        <a href="{% url 'register_student_first_round_only' item=each.id %}" style="text-decoration: none;">
                                             <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
                                         </a>
                                     </td>

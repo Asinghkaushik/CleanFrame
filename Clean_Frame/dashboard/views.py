@@ -8,7 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
-from .models import StaffPermissions, CompanyAnnouncement, Result
+from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration
 
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
@@ -702,16 +702,8 @@ def show_companies(request):
         if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
-        eligible_companies_for_me=CompanyAnnouncement.objects.filter(general_announcement=False, first_round=True, last_date_to_apply__gte=datetime.datetime.now())
-        copy=eligible_companies_for_me
-        for each in copy:
-            try:
-                min_cgpa=CompanyProfile.objects.get(user=each.company).minimum_cgpa
-                if data.cgpa<min_cgpa:
-                    eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
-            except:
-                eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
-        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies_for_me})
+        eligible_companies=get_eligible_companies_for_me_round_one(request)
+        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies})
     return error_detection(request,1)
 
 def show_company_round_details(request, item):
@@ -732,3 +724,48 @@ def show_company_round_details(request, item):
             data={}
         return render(request, 'dashboard/show_company_details.html', context={"announcement_data": data, "company_data": company_data, "data1": data1_is, "data2": data2_is})
     return error_detection(request,1)
+
+def register_student_first_round_only(request, item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        eligible_companies=get_eligible_companies_for_me_round_one(request)
+        try:
+            ann=CompanyAnnouncement.objects.get(id=int(item))
+            s_data=StudentProfile.objects.get(user=request.user)
+            c_data=CompanyProfile.objects.get(user=ann.company)
+        except:
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Error in fetching your profile or announcement not found"})
+        if ann.first_round==False:
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Announcement Round is not 1, contact staff to see into this matter."})
+        if s_data.cgpa<c_data.minimum_cgpa:
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Your aren't eligible to register for this company since your CGPA does not met minimum CGPA set by the company"})
+        try:
+            StudentRegistration.objects.get(student=request.user, company=ann)
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "You are Already registered"})
+        except:
+            StudentRegistration.objects.create(student=request.user, company=ann)
+        data=get_my_profile(request)
+        eligible_companies=get_eligible_companies_for_me_round_one(request)
+        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "success": True})
+    return error_detection(request,1)
+
+def get_eligible_companies_for_me_round_one(request):
+    eligible_companies=CompanyAnnouncement.objects.filter(general_announcement=False, first_round=True, last_date_to_apply__gte=datetime.datetime.now())
+    copy=eligible_companies
+    data=get_my_profile(request)
+    for each in copy:
+        try:
+            min_cgpa=CompanyProfile.objects.get(user=each.company).minimum_cgpa
+            if data.cgpa<min_cgpa:
+                eligible_companies=eligible_companies.exclude(id=each.id)
+            else:
+                try:
+                    StudentRegistration.objects.get(student=request.user, company=each)
+                    eligible_companies=eligible_companies.exclude(id=each.id)
+                except:
+                    pass
+        except:
+            eligible_companies=eligible_companies.exclude(id=each.id)
+    return eligible_companies
