@@ -836,5 +836,32 @@ def show_registrations(request):
         return render(request, "dashboard/registrations.html", context={"registrations": registrations})
     return error_detection(request,1)
 
+def delete_internship(request,item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            inter=Internship.objects.get(id=int(item))
+            if inter.company==request.user:
+                inter.delete()
+                return redirect('internships')
+            else:
+                return HttpResponse("This account has no Permission to delete it")
+        except:
+            return HttpResponse("Internship Details not found")
+    return error_detection(request,1)
 
-    
+def delete_announcement(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            comann=CompanyAnnouncement.objects.get(id=int(item))
+            if comann.company==request.user:
+                comann.delete()
+                return redirect('announcements')
+            else:
+                return HttpResponse("This account has no Permission to delete it")
+        except:
+            return HttpResponse("Announcement Details not found")
+    return error_detection(request,1)
