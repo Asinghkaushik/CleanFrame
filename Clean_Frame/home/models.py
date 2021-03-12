@@ -42,12 +42,6 @@ class CompanyProfile(models.Model):
     verified=models.BooleanField(default=False)
     otp_time=models.DateTimeField(auto_now=True)
     otp=models.CharField(max_length=100, null=True)
-    stipend=models.FloatField(default=0, null=True)
-    internship_duration=models.IntegerField(default=0, null=True)
-    students_required=models.IntegerField(default=0, null=True)
-    internship_position=models.CharField(max_length=100, null=True)
-    minimum_cgpa=models.FloatField(default=5.0, null=True)
-    prerequisite=models.CharField(max_length=1000000, null=True)
 
     def __str__(self):
         if self.user:

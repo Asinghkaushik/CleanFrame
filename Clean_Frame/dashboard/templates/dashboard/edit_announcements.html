@@ -52,6 +52,16 @@
             <span>New Announcement</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
         <!--Student only-->
         {% else %}
         <li>
@@ -100,6 +110,14 @@
                             <input type="hidden" name="round_name" value="{{data.round_name}}" required>
                             <input type="hidden" value="{{data.prev_round_for_result}}" name="prev_round_for_result" required>
                             <input type="hidden" name="last_date_to_apply" required> {% else %}
+                            <tr>
+                                <td>
+                                    <label>Internship Name </label>
+                                </td>
+                                <td>
+                                    <input type="text" name="internship_name" value="{{data.internship}}" id="inputBox" class="input-field" placeholder="Enter round name" style="background-color: aqua;" readonly>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <label>Internship Round </label>

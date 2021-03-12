@@ -35,7 +35,7 @@
         </li>
         {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
-            <a href="{% url 'announcements' %}"><span class="las la-users"></span>
+            <a href="{% url 'announcements' %}" class=""><span class="las la-users"></span>
             <span>My Announcements</span>
           </a>
         </li>
@@ -55,14 +55,14 @@
         </a>
         </li>
         <li>
-            <a href="{% url 'internships' %}"><span class="las la-users"></span>
-          <span>My Internships</span>
-        </a>
+            <a href="{% url 'internships' %}" class="active"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
         </li>
         <!--Student only-->
         {% else %}
         <li>
-            <a href="{% url 'show_companies' %}" class="active"><span class="las la-users"></span>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
             <span>Register</span>
           </a>
         </li>
@@ -72,14 +72,13 @@
           </a>
         </li>
         {% endifequal %} {% endif %}
-
     </ul>
 </div>
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Register for Internship</a> {% endblock %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Internships Announced </a> {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -87,15 +86,11 @@
 <!--For the main section : 3-->
 {% block section_main %}
 <main>
-    {% if success %}
-    <h6 style="text-align: center; color: green;" id="message">Registered Successfully</h6>
-    {% endif %}
-    <h6 style="text-align: center; color: red;" id="message">{{error}}</h6>
     <div class="recent-grid1">
         <div class="projects">
             <div class="card">
                 <div class="card-header">
-                    <h5>Note: Here registration will be done only for first round. For other rounds visit the new section</h5>
+                    <h3 style="margin-left: 13%;">All internships announced by you</h3>
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -112,26 +107,24 @@
                             <thead id="thead">
                                 <tr id="tr1" style="text-align: center;">
                                     <td>#ID</td>
-                                    <td>Internship Name</td>
-                                    <td id="td1">Company Name</td>
-                                    <td id="td2">Round Name</td>
-                                    <td id="td3">Last Date</td>
-                                    <td id="td4">Register</td>
+                                    <td id="td1">Name</td>
+                                    <td id="td2">Stipend</td>
+                                    <td id="td3">Duration</td>
+                                    <td id="td4">Students Needed</td>
+                                    <td id="td5">Position</td>
+                                    <td id="td5">Minimum CGPA</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for each in companies %}
+                                {% for each in internships %}
                                 <tr id="tr1" style="text-align: center;">
-                                    <td><a href="{% url 'show_company_round_details' item=each.id %}">{{each.id}}</a></td>
-                                    <td>{{each.internship.internship_name}}</td>
-                                    <td>{{each.company}}</td>
-                                    <td>{{each.round_name}}</td>
-                                    <td>{{each.last_date_to_apply}}</td>
-                                    <td style="margin-left: 16%;">
-                                        <a href="{% url 'register_student_first_round_only' item=each.id %}" style="text-decoration: none;">
-                                            <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
-                                        </a>
-                                    </td>
+                                    <td><a href="{% url 'edit_internship' item=each.id %}">#{{each.id}}</a></td>
+                                    <td>{{each.internship_name}}</td>
+                                    <td>{{each.stipend}}</td>
+                                    <td>{{each.internship_duration}}</td>
+                                    <td>{{each.students_required}}</td>
+                                    <td>{{each.internship_position}}</td>
+                                    <td style="margin-left: 25px;">{{each.minimum_cgpa}}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

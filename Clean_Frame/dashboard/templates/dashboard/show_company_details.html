@@ -50,6 +50,16 @@
             <span>New Announcement</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
         <!--Student only-->
         {% else %}
         <li>
@@ -70,7 +80,7 @@
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">{{company_data.user}} round-1 details</a> {% endblock %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">{{announcement_data.internship.internship_name}} round-1 details</a> {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -95,6 +105,14 @@
                         {% csrf_token %}
                         <table class="comp_table1">
                             {% if data1 %}
+                            <tr>
+                                <td>
+                                    <label for="internship_name">Internship Name: </label>
+                                </td>
+                                <td>
+                                    <input type="text" style="background-color: aqua;" name="internship_name" value="{{announcement_data.internship.internship_name}}" class="input-field" readonly>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <label for="round_name">Company Name: </label>
@@ -149,7 +167,7 @@
                                     <label for="round_name">Duration of internship: </label>
                                 </td>
                                 <td>
-                                    <input type="text" name="round_name" value="{{company_data.internship_duration}} days" class="input-field" readonly>
+                                    <input type="text" name="round_name" value="{{announcement_data.internship.internship_duration}} days" class="input-field" readonly>
                                 </td>
                             </tr>
                             <tr>
@@ -157,7 +175,7 @@
                                     <label for="round_name">Highest Position to be given: </label>
                                 </td>
                                 <td>
-                                    <input type="text" name="round_name" value="{{company_data.internship_position}}" class="input-field" readonly>
+                                    <input type="text" name="round_name" value="{{announcement_data.internship.internship_position}}" class="input-field" readonly>
                                 </td>
                             </tr>
                             <tr>
@@ -165,7 +183,15 @@
                                     <label for="round_name">Minimum CGPA Required: </label>
                                 </td>
                                 <td>
-                                    <input type="text" name="round_name" value="{{company_data.minimum_cgpa}}" class="input-field" readonly>
+                                    <input type="text" name="round_name" value="{{announcement_data.internship.minimum_cgpa}}" class="input-field" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="round_name">Maximum Stipend: </label>
+                                </td>
+                                <td>
+                                    <input type="text" name="round_name" value="Rs. {{announcement_data.internship.stipend}}" class="input-field" readonly>
                                 </td>
                             </tr>
                             {% endif %}

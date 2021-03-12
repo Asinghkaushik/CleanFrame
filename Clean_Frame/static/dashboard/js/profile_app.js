@@ -95,15 +95,7 @@ function validate_student_profile_3() {
     return true
 }
 
-function validate_company_profile_2() {
-    if (document.getElementById("company_name").value.length <= 0) {
-        alert("Company Name can not be empty.")
-        return false
-    }
-    if (document.getElementById("address").value.length <= 0) {
-        alert("Company Address can not be empty.")
-        return false
-    }
+function validate_announcement_internship() {
     if (document.getElementById("duration").value.length <= 0) {
         alert("Internship Duration can not be empty.")
         return false
@@ -124,6 +116,18 @@ function validate_company_profile_2() {
     stipend = document.getElementById("stipend").value
     if (validate_float(stipend) == false) {
         alert("Stipend is not in proper format.")
+        return false
+    }
+    return true
+}
+
+function validate_company_profile_2() {
+    if (document.getElementById("company_name").value.length <= 0) {
+        alert("Company Name can not be empty.")
+        return false
+    }
+    if (document.getElementById("address").value.length <= 0) {
+        alert("Company Address can not be empty.")
         return false
     }
     return true

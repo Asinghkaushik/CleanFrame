@@ -49,6 +49,16 @@
             <span>New Announcement</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+          <span>Announce Internship</span>
+        </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+          <span>My Internships</span>
+        </a>
+        </li>
         <!--Student only-->
         {% else %}
         <li>

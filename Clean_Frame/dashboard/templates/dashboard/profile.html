@@ -50,6 +50,16 @@
             <span>New Announcement</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
         <!--Student only-->
         {% else %}
         <li>
@@ -162,76 +172,13 @@
                                     <input type="text" id="address" class="input-field" name="address" value="{{data.complete_address}}" placeholder="Enter your address" disabled>
                                 </td>
                             </tr>
-                            <tr id="com_spec_tr">
-                                <td colspan="2" class="com_spec_td">
-                                    <h4 class="com_spec">Internship Details</h4>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="duration">Internship Duration: </label>
-                                </td>
-                                <td>
-                                    <input type="number" id="duration" class="input-field" name="duration" value="{{data.internship_duration}}" placeholder="Enter duration of internship" disabled>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="number_of_students">Students required: </label>
-                                </td>
-                                <td>
-                                    <input type="number" id="number_of_students" class="input-field" name="number_of_students" value="{{data.students_required}}" placeholder="Enter students required " disabled>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="internship_position">Position Offered: </label>
-                                </td>
-                                <td>
-                                    <input type="text" id="internship_position" class="input-field" name="internship_position" value="{{data.internship_position}}" placeholder="Enter highest position of internship offered" disabled>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="minimum_cgpa">Min. CGPA: </label>
-                                </td>
-                                <td>
-                                    <input type="text" id="minimum_cgpa" class="input-field" name="minimum_cgpa" value="{{data.minimum_cgpa}}" placeholder="Enter minimum cgpa required" disabled>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="stipend">Max. Stipend: </label>
-                                </td>
-                                <td>
-                                    <input type="text" id="stipend" class="input-field" name="stipend" value="{{data.stipend}}" placeholder="Enter maximum stipend" disabled>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="pre1">Prerequisite </label>
-                                </td>
-                                <td>
-                                    <input type="text" class="input-field" name="pre" value="{{data.prerequisite}}" placeholder="Enter prerequisites" disabled>
-                                </td>
-                            </tr>
+
                         </table>
                         <input class="profile_save_changes_btn4 btn-save" type="submit" value="Save Changes">
                         <button class="profile_save_changes_btn4 btn-edit js-edit" type="button">Edit Details</button>
                     </form>
                 </td>
             </tr>
-            <tfoot>
-                <tr>
-                    <td><span style="color: red;">**</span>CGPA should be out of 10</td>
-                </tr>
-                <tr>
-                    <td><span style="color: red;">**</span>Prerequisite is optional</td>
-                </tr>
-                <tr>
-                    <td><span style="color: red;">**</span>Use ** to separate 2 prerequisites</td>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% else %}

@@ -8,7 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
-from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration
+from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration, Internship
 
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
@@ -361,21 +361,9 @@ def company_profile_2(request):
             u.first_name=com_name
             u.save()
             address=request.POST.get('address')
-            duration=request.POST.get('duration')
-            no_stu=request.POST.get('number_of_students')
-            intern_pos=request.POST.get('internship_position')
-            min_cgpa=request.POST.get('minimum_cgpa')
-            stipend=request.POST.get('stipend')
-            pre=request.POST.get('pre')
             try:
                 p=CompanyProfile.objects.get(user=request.user)
                 p.complete_address=address
-                p.internship_duration=int(duration)
-                p.students_required=int(no_stu)
-                p.internship_position=intern_pos
-                p.minimum_cgpa=float(min_cgpa)
-                p.stipend=float(stipend)
-                p.prerequisite=pre
                 p.save()
                 return redirect('profile')
             except:
@@ -584,12 +572,15 @@ def new_announcement_round(request):
                     com_ann.first_round=True
                     com_ann.prev_round_for_result=0
                 com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                internship_name=request.POST.get('internship_name')
+                com_ann.internship=Internship.objects.get(id=int(internship_name))
                 com_ann.save()
                 return redirect('new_announcement_success', '1')
             else:
                 return render(request, 'dashboard/new_round.html', context={"data": data, "error": form.errors})
         else:
-            return render(request, 'dashboard/new_round.html', context={"data": data})
+            internships=Internship.objects.filter(company=request.user)
+            return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships})
     return error_detection(request,1)
     
 def new_announcement_success(request, item):
@@ -598,12 +589,38 @@ def new_announcement_success(request, item):
             return redirect('home')
         else:
             data=get_my_profile(request)
+            internships=Internship.objects.filter(company=request.user)
             if item=='1':
-                return render(request, 'dashboard/new_round.html', context={"data": data, "success": "Announcement Created"})
+                return render(request, 'dashboard/new_round.html', context={"data": data, "success": "Announcement Created", "internships": internships})
             if item=='2':
-                return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created"})
+                return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created", "internships": internships})
             else:
                 return HttpResponse("404: page not found")
+    return error_detection(request,1)
+
+def announce_internship(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        else:
+            data=get_my_profile(request)
+            if request.method=="POST":
+                duration=request.POST.get('duration')
+                no_stu=request.POST.get('number_of_students')
+                intern_pos=request.POST.get('internship_position')
+                min_cgpa=request.POST.get('minimum_cgpa')
+                stipend=request.POST.get('stipend')
+                pre=request.POST.get('pre')
+                internship_name=request.POST.get('internship_name')
+                try:
+                    intern=Internship.objects.get(company=request.user, internship_name=internship_name, stipend=stipend, internship_duration=duration, students_required=no_stu, internship_position=intern_pos, minimum_cgpa=min_cgpa, prerequisite=pre)
+                    return render(request, 'dashboard/new_internship.html', context={"data": data, "error": "Internship with same details already exists"})
+                except:
+                    Internship.objects.create(company=request.user, internship_name=internship_name, stipend=stipend, internship_duration=duration, students_required=no_stu, internship_position=intern_pos, minimum_cgpa=min_cgpa, prerequisite=pre)
+                    return render(request, 'dashboard/new_internship.html', context={"data": data, "success": "Internship created with given details"})
+            # GO FOR GET METHOD
+            return render(request, 'dashboard/new_internship.html', context={"data": data})
+            
     return error_detection(request,1)
 
 def announcements(request):
@@ -612,6 +629,43 @@ def announcements(request):
             return redirect('home')
         announcements=CompanyAnnouncement.objects.filter(company=request.user).order_by('announcement_date')
         return render(request, 'dashboard/announcements.html', context={"announcements": announcements})
+    return error_detection(request,1)
+
+def internships(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        internships=Internship.objects.filter(company=request.user)
+        return render(request, 'dashboard/internships.html', context={"internships": internships})
+    return error_detection(request,1)
+
+def edit_internship(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        if request.method=="POST":
+            try:
+                data=Internship.objects.get(id=int(item))
+                if data.company!=request.user:
+                    return HttpResponse("Announcement not found")
+                data.internship_name=request.POST.get('internship_name')
+                data.internship_duration=int(request.POST.get('duration'))
+                data.students_required=int(request.POST.get('number_of_students'))
+                data.internship_position=request.POST.get('internship_position')
+                data.minimum_cgpa=float(request.POST.get('minimum_cgpa'))
+                data.stipend=float(request.POST.get('stipend'))
+                data.prerequisite=request.POST.get('pre')
+                return render(request, 'dashboard/edit_internships.html', context={"data": data, "success": "Internship Details Updated"})
+            except:
+                return HttpResponse("Error in details entered by you or Announcement not found")
+        else:
+            try:
+                data=Internship.objects.get(id=int(item))
+                if data.company!=request.user:
+                    return HttpResponse("Internship not found")
+            except:
+                return HttpResponse("Internship not found")
+            return render(request, 'dashboard/edit_internships.html', context={"data": data})
     return error_detection(request,1)
 
 def edit_announcement(request, item):
@@ -741,7 +795,7 @@ def register_student_first_round_only(request, item):
             return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Error in fetching your profile or announcement not found"})
         if ann.first_round==False:
             return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Announcement Round is not 1, contact staff to see into this matter."})
-        if s_data.cgpa<c_data.minimum_cgpa:
+        if s_data.cgpa<ann.internship.minimum_cgpa:
             return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Your aren't eligible to register for this company since your CGPA does not met minimum CGPA set by the company"})
         try:
             StudentRegistration.objects.get(student=request.user, company=ann)
@@ -759,12 +813,12 @@ def get_eligible_companies_for_me_round_one(request):
     data=get_my_profile(request)
     for each in copy:
         try:
-            min_cgpa=CompanyProfile.objects.get(user=each.company).minimum_cgpa
+            min_cgpa=each.internship.minimum_cgpa
             if data.cgpa<min_cgpa:
                 eligible_companies=eligible_companies.exclude(id=each.id)
             else:
                 try:
-                    StudentRegistration.objects.get(student=request.user, company=each)
+                    sr=StudentRegistration.objects.get(student=request.user, company=each)
                     eligible_companies=eligible_companies.exclude(id=each.id)
                 except:
                     pass
@@ -781,3 +835,6 @@ def show_registrations(request):
         #Also get registrations of other rounds
         return render(request, "dashboard/registrations.html", context={"registrations": registrations})
     return error_detection(request,1)
+
+
+    

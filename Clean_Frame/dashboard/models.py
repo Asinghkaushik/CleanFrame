@@ -14,7 +14,24 @@ class StaffPermissions(models.Model):
         else:
             return 'NILL'
 
+class Internship(models.Model):
+    company=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    internship_name=models.CharField(max_length=10000, null=True)
+    stipend=models.FloatField(default=0, null=True)
+    internship_duration=models.IntegerField(default=0, null=True)
+    students_required=models.IntegerField(default=0, null=True)
+    internship_position=models.CharField(max_length=100, null=True)
+    minimum_cgpa=models.FloatField(default=5.0, null=True)
+    prerequisite=models.CharField(max_length=1000000, null=True)
+    
+    def __str__(self):
+        if self.company:
+            return self.company.username
+        else:
+            return 'NILL'
+
 class CompanyAnnouncement(models.Model):
+    internship=models.ForeignKey(Internship, on_delete=models.CASCADE, null=True, blank=True)
     company=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     general_announcement=models.BooleanField(default=False)
     internship_round=models.CharField(max_length=100, null=True)
@@ -72,3 +89,4 @@ class StudentRegistration(models.Model):
     
     def __str__(self):
         return str(self.student.username) + " registered in " + str(self.company)
+    

@@ -43,7 +43,7 @@
           </a>
         </li>
         <li>
-            <a href="{% url 'new_announcement_round' %}" class="active"><span class="las la-users"></span>
+            <a href="{% url 'new_announcement_round' %}" class=""><span class="las la-users"></span>
             <span>Announce New Round</span>
           </a>
         </li>
@@ -53,7 +53,7 @@
           </a>
         </li>
         <li>
-            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <a href="{% url 'announce_internship' %}" class="active"><span class="las la-users"></span>
             <span>Announce Internship</span>
           </a>
         </li>
@@ -82,7 +82,7 @@
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">New Round</a> {% endblock %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Announce Internship</a> {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -92,7 +92,7 @@
     {% if request.user.is_authenticated %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
     <!--COPY OF PHONE VERIFICATION FORM-->
     <div class="cards_form_comp1" id="cr11">
-        <h5 style="text-align: center; padding-bottom: 30px">Announce a new internship Round</h5>
+        <h5 style="text-align: center; padding-bottom: 30px">Announce a new internship</h5>
         <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
         <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">{{success}}</h6>
         <table class="comp_table1">
@@ -101,76 +101,63 @@
             <!-- form C2 -->
             <tr>
                 <td>
-                    <form action="{% url 'new_announcement_round' %}" method="POST" onsubmit="return validate_announcement()" enctype="multipart/form-data">
+                    <form action="{% url 'announce_internship' %}" method="POST" onsubmit="return validate_announcement_internship()" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="comp_table1">
                             <tr>
                                 <td>
-                                    <label>Internship Name</label>
+                                    <label for="internship_name">Internship Name </label>
                                 </td>
                                 <td>
-                                    <select name="internship_name" id="inputBox" class="input-field" placeholder="Select internship name" required>
-                                        {% for each in internships %}
-                                        <option value={{each.id}}>{{each.internship_name}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <input type="text" id="internship_name" class="input-field" name="internship_name" placeholder="Enter name of internship" required>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label>Internship Round </label>
+                                    <label for="duration">Internship Duration:<br>(days) </label>
                                 </td>
                                 <td>
-                                    <input type="number" name="internship_round" id="inputBox" class="input-field" placeholder="Enter round number" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="round_name">Name of the Round: </label>
-                                </td>
-                                <td>
-                                    <input type="text" name="round_name" class="input-field" placeholder="Enter round name" required>
+                                    <input type="number" id="duration" class="input-field" name="duration" placeholder="Enter duration of internship">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="prev_round_for_result">Previous Round: </label>
+                                    <label for="number_of_students">Students required: </label>
                                 </td>
                                 <td>
-                                    <input type="number" id="inputBox1" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="last_date_to_apply">Last Date to apply: </label>
-                                </td>
-                                <td>
-                                    <input type="datetime-local" id="last_date_to_apply" class="input-field" name="last_date_to_apply" placeholder="Enter last date to fill form" required>
+                                    <input type="number" id="number_of_students" class="input-field" name="number_of_students" placeholder="Enter students required ">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="file" style="margin-top: 15px">Upload any file: </label>
+                                    <label for="internship_position">Position Offered: </label>
                                 </td>
                                 <td>
-                                    <input type="file" style="margin-top: 15px" class="btn-save cv_upload" name="file">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="file_for_prev_result">Upload results of previous round: </label>
-                                </td>
-                                <td>
-                                    <input type="file" class="btn-save cv_upload" name="file_for_prev_result">
+                                    <input type="text" id="internship_position" class="input-field" name="internship_position" placeholder="Enter highest position of internship offered">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="message">Announcement Message: </label>
+                                    <label for="minimum_cgpa">Min. CGPA: </label>
                                 </td>
                                 <td>
-                                    <textarea class="input-field" name="message" rows="3" placeholder="Enter message" required></textarea>
-                                    <!-- <input type="text" class="input-field" name="message" placeholder="Enter message" required> -->
+                                    <input type="text" id="minimum_cgpa" class="input-field" name="minimum_cgpa" placeholder="Enter minimum cgpa required">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="stipend">Max. Stipend: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="stipend" class="input-field" name="stipend" placeholder="Enter maximum stipend">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="pre1">Prerequisite </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="pre" placeholder="Enter prerequisites">
                                 </td>
                             </tr>
 
@@ -181,13 +168,13 @@
             </tr>
             <tfoot>
                 <tr>
-                    <td><span style="color: red;">**</span>File Uploads are optional</td>
+                    <td><span style="color: red;">**</span>CGPA should be out of 10</td>
                 </tr>
                 <tr>
-                    <td><span style="color: red;">**</span>For round 1, fill previous round as 0</td>
+                    <td><span style="color: red;">**</span>Prerequisite is optional</td>
                 </tr>
                 <tr>
-                    <td><span style="color: red;">**</span>To assign datetime manually, the pattern is DD/MM/YYYY, HH:MM</td>
+                    <td><span style="color: red;">**</span>Use ** to separate 2 prerequisites</td>
                 </tr>
             </tfoot>
         </table>
