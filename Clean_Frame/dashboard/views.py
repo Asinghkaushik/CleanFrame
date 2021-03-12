@@ -580,7 +580,7 @@ def new_announcement_round(request):
                 last_date_to_apply=request.POST.get('last_date_to_apply')
                 com_ann=CompanyAnnouncement.objects.get(id=myid)
                 com_ann.company=request.user
-                if com_ann.internship_round==1:
+                if internship_round==1:
                     com_ann.first_round=True
                     com_ann.prev_round_for_result=0
                 com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
@@ -696,3 +696,20 @@ def result(request, item):
 #TO be COmpleted
 def get_students(request, id_of_announcement):
     return 
+
+def show_companies(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        eligible_companies_for_me=CompanyAnnouncement.objects.filter(general_announcement=False, first_round=True, last_date_to_apply__gte=datetime.datetime.now())
+        copy=eligible_companies_for_me
+        for each in copy:
+            try:
+                min_cgpa=CompanyProfile.objects.get(user=each.company).minimum_cgpa
+                if data.cgpa<min_cgpa:
+                    eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
+            except:
+                eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
+        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies_for_me})
+    return error_detection(request,1)

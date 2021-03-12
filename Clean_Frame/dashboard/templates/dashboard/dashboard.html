@@ -33,7 +33,7 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %} {% if request.user.is_authenticated or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
             <a href="{% url 'announcements' %}"><span class="las la-users"></span>
             <span>My Announcements</span>
@@ -49,10 +49,14 @@
             <span>New Announcement</span>
           </a>
         </li>
-        {% endifequal %} {% else %}
         <!--Student only-->
-
-        {% endif %}
+        {% else %}
+        <li>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
+            <span>Register</span>
+          </a>
+        </li>
+        {% endifequal %} {% endif %}
         <li>
             <a href=""><span class="las la-users"></span>
             <span>Add Staff</span>

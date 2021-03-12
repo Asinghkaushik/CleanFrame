@@ -19,7 +19,7 @@ class CompanyAnnouncement(models.Model):
     general_announcement=models.BooleanField(default=False)
     internship_round=models.CharField(max_length=100, null=True)
     round_name=models.CharField(max_length=1000, null=True)
-    first_round=models.BooleanField(default=True)
+    first_round=models.BooleanField(default=False)
     prev_round_for_result=models.CharField(max_length=100, null=True)
     last_date_to_apply=models.DateTimeField(default=datetime.datetime.now)
     announcement_date=models.DateTimeField(auto_now=True)
