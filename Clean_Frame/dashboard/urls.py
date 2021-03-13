@@ -39,6 +39,7 @@ urlpatterns = [
     path('internships/delete/<str:item>',delete_internship,name="delete_internship"),
     path('announcement/delete/<str:item>',delete_announcement,name="delete_announcement"),
     
+    
         
 
 ]

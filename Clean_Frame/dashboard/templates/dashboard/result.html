@@ -3,7 +3,8 @@
 <!--Write the title of the page-->
 {% block title %}
 <title>Dashboard {{request.user.email}}</title>
-<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon"> {% endblock %}
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'dashboard/css/result.css' %}"> {% endblock %}
 
 
 <!--Make the class active for the link you want-->
@@ -92,7 +93,7 @@
         <div class="projects">
             <div class="card">
                 <div class="card-header">
-                    <h3 style="margin-left: 13%;">Select students those cleared the round</h3>
+                    <h3 style="margin-left: 13%;">No action taken on these student registrations</h3>
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -108,54 +109,66 @@
                         <table id="myTable">
                             <thead id="thead">
                                 <tr id="tr1" style="text-align: center;">
-                                    <td>#ID</td>
-                                    <td id="td1">Type</td>
-                                    <td id="td2">Round</td>
-                                    <td id="td3">Round Name</td>
-                                    <td id="td4">Last Date</td>
-                                    <td id="td5">File</td>
-                                    <td id="td5">Result File</td>
+                                    <td>#</td>
+                                    <td id="td0">Student ID</td>
+                                    <td id="td1">Name</td>
+                                    <td id="td1">Registration Date (UTC)</td>
+                                    <td>Result Status</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!--To be changed w.r.t student -->
-                                {% for each in announcements %}
-                                <tr id="tr1" style="text-align: center;">
-                                    <td><a href="{% url 'edit_announcement' item=each.id %}">#{{each.id}}</a></td>
-                                    {% if each.general_announcement %}
-                                    <td>General</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    {% if each.file %}
-                                    <td><a href="{{each.file.url}}">link</a></td>
-                                    {% else %}
-                                    <td>-</td>
-                                    {% endif %} {% if each.file_for_prev_result %}
-                                    <td><a href="{{each.file_for_prev_result.url}} ">link</a></td>
-                                    {% else %}
-                                    <td>-</td>
-                                    {% endif%} {% else %}
-                                    <td>New round</td>
-                                    <td>{{each.internship_round}}</td>
-                                    <td>{{each.round_name}}</td>
-                                    <td>{{each.last_date_to_apply}}</td>
-                                    {% if each.file %}
-                                    <td><a href="{{each.file.url}}">link</a></td>
-                                    {% else %}
-                                    <td>-</td>
-                                    {% endif %} {% if each.file_for_prev_result %}
-                                    <td><a href="{{each.file_for_prev_result.url}} ">link</a></td>
-                                    {% else %}
-                                    <td>-</td>
-                                    {% endif%} {% endif %}
+                                {% for each in students %} {% ifequal each.result_status 0 %}
+                                <tr id="tr1 " style="text-align: center; ">
+                                    <td style="width: 5%">
+                                        <input class="mycheckbox" onclick="checkbox_checker('{{each.student.id}}')" id='{{each.student.id}}' type="checkbox">
+                                    </td>
+                                    <td>{{each.student.id}}</td>
+                                    <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                    <td>{{each.date_of_registrations}}</td>
+                                    <td>Not Announced</td>
                                 </tr>
-                                {% endfor %}
+                                {% endifequal %} {% ifequal each.result_status 1 %}
+                                <tr id="tr1 " style="text-align: center; ">
+                                    <td style="width: 5%">
+                                        -
+                                    </td>
+                                    <td>{{each.student.id}}</td>
+                                    <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                    <td>{{each.date_of_registrations}}</td>
+                                    <td style="color: green">Cleared</td>
+
+                                </tr>
+                                {% endifequal %} {% endfor %}
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div style="text-align:center">
+            <div class="myresult">
+                <table>
+                    <tr>
+                        <td>
+                            <form href="{% url 'result' item=data.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="students" value="" id="pass_form" required>
+                                <input type="submit" class="re1 re" value="Pass">
+
+                            </form>
+                        </td>
+                        <td>
+                            <form href="#" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="students" value="" id="fail_form" required>
+                                <input type="submit" value="Fail" class="re2 re">
+                            </form>
+                        </td>
+                </table>
+            </div>
+        </div>
 </main>
+<script type="text/javascript " src="{% static 'dashboard/js/result.js' %} "></script>
 {% endblock %}

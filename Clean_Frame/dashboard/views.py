@@ -738,18 +738,32 @@ def result(request, item):
             return redirect('home')
         data=get_my_profile(request)
         if request.method == "POST":
-            pass
+            students=request.POST.get("students")
+            if students=="":
+                return redirect('result', item)
+            mylist=students.split(",")
+            for each_id in mylist:
+                get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
+                if get_re.result_status!=1:
+                    get_re.result_status=1
+                    get_re.save()
+                    subject = 'Internship Round Cleared'
+                    message = f'Hi user, We congratulate you for clearing the round in internship.\nDetails of cleared round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
+                    email=get_re.student.email
+                    SENDMAIL(subject,message,email)
+            return redirect('result', item)
         else:
             data=CompanyAnnouncement.objects.get(id=int(item))
             if data.company!=request.user:
                 return HttpResponse("Announcement not found")
-            students=get_students(request, int(item))
+            students=get_students(request, data)
             return render(request, 'dashboard/result.html', context={"data": data, "students": students})
     return error_detection(request,1)
 
 #TO be COmpleted
-def get_students(request, id_of_announcement):
-    return 
+def get_students(request, announcement):
+    get_stu=StudentRegistration.objects.filter(company=announcement)
+    return get_stu
 
 def show_companies(request):
     if error_detection(request,1)==False:
