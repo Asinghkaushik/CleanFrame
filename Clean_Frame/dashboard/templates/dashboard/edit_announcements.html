@@ -82,8 +82,7 @@
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Announcement #{{data.id}}</a> {% endblock %}
+{% block dashboard_title %} Announcement #{{data.id}}{% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -192,7 +191,7 @@
                 {% if data.general_announcement %} {% else %}
                 <tr>
                     <td>
-                        <marquee direction="left" height="40" width="200" bgcolor="white"></marquee><a href="{% url 'result' item=data.id %}">Announce Result??</a></td>
+                        <marquee direction="left" height="40" width="200" bgcolor="white"></marquee><a href="{% url 'stu_result' item=data.id %}">Announce Result??</a></td>
                 </tr>
                 {% endif %}
             </tfoot>

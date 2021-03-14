@@ -732,26 +732,68 @@ def new_announcement(request):
             return render(request, 'dashboard/new_announcement.html', context={"data": data})
     return error_detection(request,1)
 
-def result(request, item):
+def stu_result(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        if request.method == "POST":            
+            students=request.POST.get("students")
+            if len(students)<=3:
+                return redirect('stu_result', item)
+            spliter=students.split('**')
+            mylist=spliter[0].split(",")
+            if int(spliter[1])==1:
+                for each_id in mylist:
+                    get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
+                    if get_re.result_status!=1:
+                        get_re.result_status=1
+                        get_re.save()
+                        subject = 'Internship Round Cleared'
+                        message = f'Hi user, We congratulate you for clearing the round in internship.\nDetails of cleared round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
+                        email=get_re.student.email
+                        SENDMAIL(subject,message,email)
+                return redirect('stu_result', item)    
+            if int(spliter[1])==2:
+                for each_id in mylist:
+                    get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
+                    if get_re.result_status==0:
+                        get_re.result_status=2
+                        get_re.save()
+                        subject = 'Internship Round Result'
+                        message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
+                        email=get_re.student.email
+                        SENDMAIL(subject,message,email)
+                return redirect('stu_result', item)
+            return HttpResponse("INVALID REQUEST")
+        else:
+            data=CompanyAnnouncement.objects.get(id=int(item))
+            if data.company!=request.user:
+                return HttpResponse("Announcement not found")
+            students=get_students(request, data)
+            return render(request, 'dashboard/result.html', context={"data": data, "students": students})
+    return error_detection(request,1)
+
+def reject_student(request,item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
         if request.method == "POST":
-            students=request.POST.get("students")
+            students=request.POST.get("student_rehection")
             if students=="":
-                return redirect('result', item)
+                return redirect('reject_student', item)
             mylist=students.split(",")
             for each_id in mylist:
                 get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
-                if get_re.result_status!=1:
-                    get_re.result_status=1
+                if get_re.result_status!=2:
+                    get_re.result_status=2
                     get_re.save()
-                    subject = 'Internship Round Cleared'
-                    message = f'Hi user, We congratulate you for clearing the round in internship.\nDetails of cleared round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
+                    subject = 'Internship Round Result'
+                    message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
                     email=get_re.student.email
                     SENDMAIL(subject,message,email)
-            return redirect('result', item)
+            return redirect('reject_student', item)
         else:
             data=CompanyAnnouncement.objects.get(id=int(item))
             if data.company!=request.user:

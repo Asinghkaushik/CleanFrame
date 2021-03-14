@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
-from django.utils import timezone
-import pytz 
-
 
 # Create your models here.
 class StaffPermissions(models.Model):
@@ -84,7 +81,7 @@ class ProfileVisibilty(models.Model):
 class StudentRegistration(models.Model):
     company=models.ForeignKey(CompanyAnnouncement, on_delete=models.CASCADE, null=True, blank=True)
     student=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    date_of_registrations=models.DateTimeField(default=datetime.datetime.now(pytz.timezone('Asia/Kolkata') ))
+    date_of_registrations=models.DateTimeField(auto_now=True)
     result_status=models.IntegerField(default=0)
     #Status 0 : Not Announced
     #Status 1: Cleared

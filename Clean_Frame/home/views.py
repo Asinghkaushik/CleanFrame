@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import (login,authenticate,logout)
@@ -8,12 +8,84 @@ import math,random,string,datetime,array,secrets
 from twilio.rest import Client
 from .forms import UserForm
 from .models import StudentProfile, CompanyProfile
+from dashboard.models import CompanyAnnouncement
 from dashboard.views import dashboard
 import math,random,string,array,secrets
 from os import urandom
 from random import choice
+import os
+from django.http import FileResponse
+# from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
+def secureImage(request, file):
+    if request.user.is_authenticated==False:
+        return redirect('home')
+    try:
+        document=StudentProfile.objects.get(image="post_images/"+file)
+        if document.user==request.user:
+            return FileResponse(document.image)
+        else:
+            if check_student_permissions(document.user)==True:
+                return FileResponse(document.image)
+            else:
+                return redirect('home')
+    except:
+        try:
+            document=CompanyProfile.objects.get(image="post_images/"+file)
+            if document.user==request.user:
+                return FileResponse(document.image)
+            else:
+                if check_company_permissions(document.user)==True:
+                    return FileResponse(document.image)
+                else:
+                    return redirect('home')
+        except:
+            return redirect('home')
+        
+def secureFile(request, file):
+    if request.user.is_authenticated==False:
+        return redirect('home')
+    try:
+        document=StudentProfile.objects.get(cv="post_files/"+file)
+        if document.user==request.user:
+            return FileResponse(document.cv)
+        else:
+            if check_student_permissions(document.user)==True:
+                return FileResponse(document.cv)
+            else:
+                return redirect('home')
+    except:
+        try:
+            document=CompanyAnnouncement.objects.get(file="post_files/"+file)
+            if document.company==request.user:
+                return FileResponse(document.file)
+            else:
+                if check_company_permissions(document.user)==True:
+                    return FileResponse(document.file)
+                else:
+                    return redirect('home')
+        except:
+            try:
+                document=CompanyAnnouncement.objects.get(file_for_prev_result="post_files/"+file)
+                if document.company==request.user:
+                    return FileResponse(document.file_for_prev_result)
+                else:
+                    if check_company_permissions(document.user)==True:
+                        return FileResponse(document.file_for_prev_result)
+                    else:
+                        return redirect('home')
+            except:
+                return redirect('home')
+    
+    
+def check_student_permissions(user):
+    return False
+    
+def check_company_permissions(user):
+    return False
+
 def home(request):
     data={}
     return home_(request)

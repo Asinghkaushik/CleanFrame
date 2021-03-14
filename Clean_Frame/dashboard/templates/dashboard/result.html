@@ -80,8 +80,7 @@
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Result Announcement</a> {% endblock %}
+{% block dashboard_title %} Result Announcement {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -93,7 +92,7 @@
         <div class="projects">
             <div class="card">
                 <div class="card-header">
-                    <h3 style="margin-left: 13%;">No action taken on these student registrations</h3>
+                    <h3 style="margin-left: 13%;">All Registrations</h3>
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -151,24 +150,23 @@
             <div class="myresult">
                 <table>
                     <tr>
-                        <td>
-                            <form href="{% url 'result' item=data.id %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="students" value="" id="pass_form" required>
-                                <input type="submit" class="re1 re" value="Pass">
+                        <form href="{% url 'stu_result' item=data.id %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="students" value="" id="pass_form" required>
 
-                            </form>
-                        </td>
-                        <td>
-                            <form href="#" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="students" value="" id="fail_form" required>
-                                <input type="submit" value="Fail" class="re2 re">
-                            </form>
-                        </td>
+                            <td>
+
+                                <button type="submit" class="re1 re" onmouseout="not_pass_me()" onmouseover="pass_me()">Pass</button>
+                            </td>
+                            <td>
+                                <button type="submit" class="re2 re" onmouseout="not_fail_me()" onmouseover="fail_me()">Fail</button>
+                            </td>
+                        </form>
                 </table>
             </div>
+            <p style="color: red">Note: these actions can't be undone</p>
         </div>
+
 </main>
 <script type="text/javascript " src="{% static 'dashboard/js/result.js' %} "></script>
 {% endblock %}

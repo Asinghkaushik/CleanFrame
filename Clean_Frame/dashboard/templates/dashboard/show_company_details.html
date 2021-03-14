@@ -79,8 +79,7 @@
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">{{announcement_data.internship.internship_name}} round-1 details</a> {% endblock %}
+{% block dashboard_title %} {{announcement_data.internship.internship_name}} round-1 details {% endblock %}
 
 <!--For the user details displayed at the top right-->
 

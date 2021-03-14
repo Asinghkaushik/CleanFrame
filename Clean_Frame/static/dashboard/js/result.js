@@ -3,10 +3,13 @@ function checkbox_checker(id) {
         //Remove checkbox id
         form_val = document.getElementById('pass_form').value
         document.getElementById('pass_form').value = remove_val(form_val, id)
+            // document.getElementById('fail_form').value = document.getElementById('pass_form').value
+
     } else {
         //Add checkbox id
         form_val = document.getElementById('pass_form').value
         document.getElementById('pass_form').value = add_val(form_val, id)
+            // document.getElementById('fail_form').value = document.getElementById('pass_form').value
     }
 }
 
@@ -51,4 +54,22 @@ function binary_searchh(array, val) {
         }
     }
     return -1
+}
+
+function pass_me() {
+    document.getElementById('pass_form').value = document.getElementById('pass_form').value + '**1'
+}
+
+function fail_me() {
+    document.getElementById('pass_form').value = document.getElementById('pass_form').value + '**2'
+}
+
+function not_pass_me() {
+    n = document.getElementById('pass_form').value.length
+    document.getElementById('pass_form').value = document.getElementById('pass_form').value.substring(0, n - 3)
+}
+
+function not_fail_me() {
+    n = document.getElementById('pass_form').value.length
+    document.getElementById('pass_form').value = document.getElementById('pass_form').value.substring(0, n - 3)
 }
