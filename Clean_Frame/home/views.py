@@ -8,7 +8,7 @@ import math,random,string,datetime,array,secrets
 from twilio.rest import Client
 from .forms import UserForm
 from .models import StudentProfile, CompanyProfile
-from dashboard.models import CompanyAnnouncement
+from dashboard.models import CompanyAnnouncement, ProfilePermissions
 from dashboard.views import dashboard
 import math,random,string,array,secrets
 from os import urandom
@@ -19,30 +19,30 @@ from django.http import FileResponse
 
 # Create your views here.
 
-def secureImage(request, file):
-    if request.user.is_authenticated==False:
-        return redirect('home')
-    try:
-        document=StudentProfile.objects.get(image="post_images/"+file)
-        if document.user==request.user:
-            return FileResponse(document.image)
-        else:
-            if check_student_permissions(document.user)==True:
-                return FileResponse(document.image)
-            else:
-                return redirect('home')
-    except:
-        try:
-            document=CompanyProfile.objects.get(image="post_images/"+file)
-            if document.user==request.user:
-                return FileResponse(document.image)
-            else:
-                if check_company_permissions(document.user)==True:
-                    return FileResponse(document.image)
-                else:
-                    return redirect('home')
-        except:
-            return redirect('home')
+# def secureImage(request, file):
+#     if request.user.is_authenticated==False:
+#         return redirect('home')
+#     try:
+#         document=StudentProfile.objects.get(image="post_images/"+file)
+#         if document.user==request.user:
+#             return FileResponse(document.image)
+#         else:
+#             if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+#                 return FileResponse(document.image)
+#             else:
+#                 return redirect('home')
+#     except:
+#         try:
+#             document=CompanyProfile.objects.get(image="post_images/"+file)
+#             if document.user==request.user:
+#                 return FileResponse(document.image)
+#             else:
+#                 if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+#                     return FileResponse(document.image)
+#                 else:
+#                     return redirect('home')
+#         except:
+#             return redirect('home')
         
 def secureFile(request, file):
     if request.user.is_authenticated==False:
@@ -52,7 +52,7 @@ def secureFile(request, file):
         if document.user==request.user:
             return FileResponse(document.cv)
         else:
-            if check_student_permissions(document.user)==True:
+            if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
                 return FileResponse(document.cv)
             else:
                 return redirect('home')
@@ -62,7 +62,7 @@ def secureFile(request, file):
             if document.company==request.user:
                 return FileResponse(document.file)
             else:
-                if check_company_permissions(document.user)==True:
+                if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
                     return FileResponse(document.file)
                 else:
                     return redirect('home')
@@ -72,13 +72,19 @@ def secureFile(request, file):
                 if document.company==request.user:
                     return FileResponse(document.file_for_prev_result)
                 else:
-                    if check_company_permissions(document.user)==True:
+                    if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
                         return FileResponse(document.file_for_prev_result)
                     else:
                         return redirect('home')
             except:
                 return redirect('home')
     
+def check_profile_permissions(request, user):
+    try:
+        ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user)
+        return True
+    except:    
+        return False
     
 def check_student_permissions(user):
     return False

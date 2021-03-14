@@ -8,7 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
-from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration, Internship
+from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration, Internship, ProfilePermissions
 
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
@@ -774,34 +774,6 @@ def stu_result(request, item):
             return render(request, 'dashboard/result.html', context={"data": data, "students": students})
     return error_detection(request,1)
 
-def reject_student(request,item):
-    if error_detection(request,1)==False:
-        if request.user.last_name!=settings.COMPANY_MESSAGE:
-            return redirect('home')
-        data=get_my_profile(request)
-        if request.method == "POST":
-            students=request.POST.get("student_rehection")
-            if students=="":
-                return redirect('reject_student', item)
-            mylist=students.split(",")
-            for each_id in mylist:
-                get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
-                if get_re.result_status!=2:
-                    get_re.result_status=2
-                    get_re.save()
-                    subject = 'Internship Round Result'
-                    message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
-                    email=get_re.student.email
-                    SENDMAIL(subject,message,email)
-            return redirect('reject_student', item)
-        else:
-            data=CompanyAnnouncement.objects.get(id=int(item))
-            if data.company!=request.user:
-                return HttpResponse("Announcement not found")
-            students=get_students(request, data)
-            return render(request, 'dashboard/result.html', context={"data": data, "students": students})
-    return error_detection(request,1)
-
 #TO be COmpleted
 def get_students(request, announcement):
     get_stu=StudentRegistration.objects.filter(company=announcement)
@@ -857,6 +829,10 @@ def register_student_first_round_only(request, item):
             StudentRegistration.objects.get(student=request.user, company=ann)
             return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "You are Already registered"})
         except:
+            try:
+                ProfilePermissions.objects.get(user_who_can_see=ann.company,user_whose_to_see=request.user)
+            except:
+                ProfilePermissions.objects.create(user_who_can_see=ann.company,user_whose_to_see=request.user)
             StudentRegistration.objects.create(student=request.user, company=ann)
         data=get_my_profile(request)
         eligible_companies=get_eligible_companies_for_me_round_one(request)
@@ -921,3 +897,45 @@ def delete_announcement(request, item):
         except:
             return HttpResponse("Announcement Details not found")
     return error_detection(request,1)
+
+def check_student_profile(request, item):
+    if error_detection(request,1)==False:
+        try:
+            user_profile=User.objects.get(id=int(item))
+            data=get_passed_profile(user_profile)
+            if data=={}:
+                return HttpResponse("Profile Not Found")
+        except:
+            return HttpResponse("Profile Not Found")
+        if check_profilepage_permissions(request, item) == False:
+            return HttpResponse("You have not permission to view this user's profile page")
+        image=data.image
+        return render(request,'dashboard/profile_page.html',context={"data": data, "image": image})
+    return error_detection(request,1)
+
+def check_profilepage_permissions(request, item):
+    try:
+        user_profile=User.objects.get(id=int(item))
+    except:
+        return HttpResponse("Profile Not Found")
+    try:
+        if request.user == user_profile:
+            return True
+    except:
+        try:
+            ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user_profile)
+            return True
+        except:
+            #Check the permissions give by user
+            return False
+        
+def get_passed_profile(user):
+    data={}
+    try:
+        data=StudentProfile.objects.get(user=user)
+    except:
+        try:
+            data=CompanyProfile.objects.get(user=user)
+        except:
+            data={}
+    return data

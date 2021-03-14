@@ -90,3 +90,19 @@ class StudentRegistration(models.Model):
     def __str__(self):
         return str(self.student.username) + " registered in " + str(self.company)
     
+class ProfilePermissions(models.Model):
+    user_who_can_see=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='can_see')
+    user_whose_to_see=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='whose_to_see')
+    
+    
+    def __str__(self):
+        if self.user_who_can_see:
+            if self.user_whose_to_see:
+                return str(self.user_who_can_see) + " can see " + str(self.user_whose_to_see) + " profile"
+            else:
+                return str(self.user_who_can_see)
+        else:
+            if self.user_whose_to_see:
+                return str(self.user_whose_to_see)
+            else:
+                return "NIL"

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3,company_profile_2, student_profile_2,student_profile_1,student_company_number,change_password,student_account_signup_permit,student_account_signup_action,company_account_signup_permit,company_account_signup_action
 from .views import new_announcement_round, new_announcement,new_announcement_success, announcements, edit_announcement,stu_result, show_companies, show_company_round_details, register_student_first_round_only, show_registrations, announce_internship, internships, edit_internship
-from .views import delete_internship, delete_announcement, reject_student
+from .views import delete_internship, delete_announcement, check_student_profile
 
 urlpatterns = [
     path('',dashboard,name="dashboard"),
@@ -38,6 +38,7 @@ urlpatterns = [
     path('internships/edit/<str:item>',edit_internship,name="edit_internship"),
     path('internships/delete/<str:item>',delete_internship,name="delete_internship"),
     path('announcement/delete/<str:item>',delete_announcement,name="delete_announcement"),
+    path('profile/student/<str:item>',check_student_profile,name="check_student_profile"),
     
         
 
