@@ -1,0 +1,185 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+<!--Write the title of the page-->
+{% block title %}
+<title>Dashboard {{request.user.email}}</title>
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'dashboard/css/profile_css.css' %}">
+<!-- -->
+{% endblock %}
+
+
+<!--Make the class active for the link you want-->
+{% block sidebar_menu %}
+<div class="sidebar-menu">
+    <ul>
+        <li>
+            <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <hr>
+        <li>
+            <a href="{% url 'profile' %}" class=""><span class="las la-id-card"></span>
+            <span>Profile</span>
+          </a>
+        </li>
+        {% if permissions.can_access_student_inactive_accounts %}
+        <li>
+            <a href="{% url 'student_account_signup_permit' %}"><span class="las la-graduation-cap"></span>
+            <span>Student Accounts</span>
+          </a>
+        </li>
+        {% endif %} {% if permissions.can_access_company_inactive_accounts %}
+        <li>
+            <a href="{% url 'company_account_signup_permit' %}"><span class="las la-user-tie"></span>
+            <span>Company Accounts</span>
+          </a>
+        </li>
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        <li>
+            <a href="{% url 'announcements' %}"><span class="las la-users"></span>
+            <span>My Announcements</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'new_announcement_round' %}" class=""><span class="las la-users"></span>
+            <span>Announce New Round</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'new_announcement' %}"><span class="las la-users"></span>
+            <span>New Announcement</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'announce_internship' %}" class="active"><span class="las la-users"></span>
+            <span>Announce Internship</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
+        <!--Student only-->
+        {% else %}
+        <li>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
+            <span>Register</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
+          </a>
+        </li>
+        {% endifequal %} {% endif %}
+
+    </ul>
+</div>
+{% endblock %}
+
+<!--For the text at the top of panel 2-->
+{% block dashboard_title %} Announce Internship{% endblock %}
+
+<!--For the user details displayed at the top right-->
+
+
+<!--For the main section : 3-->{% block section_main %}
+<main id="main1">
+    {% if request.user.is_authenticated %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+    <!--COPY OF PHONE VERIFICATION FORM-->
+    <div class="cards_form_comp1" id="cr11">
+        <h5 style="text-align: center; padding-bottom: 30px">Announce a new internship</h5>
+        <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
+        <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">{{success}}</h6>
+        <table class="comp_table1">
+            <!--GO FOR COMPANY PHASE 2-->
+            <!-- only for company, it includes editing basic profile details -->
+            <!-- form C2 -->
+            <tr>
+                <td>
+                    <form action="{% url 'announce_internship' %}" method="POST" onsubmit="return validate_announcement_internship()" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="comp_table1">
+                            <tr>
+                                <td>
+                                    <label for="internship_name">Internship Name </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="internship_name" class="input-field" name="internship_name" placeholder="Enter name of internship" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="duration">Internship Duration:<br>(days) </label>
+                                </td>
+                                <td>
+                                    <input type="number" id="duration" class="input-field" name="duration" placeholder="Enter duration of internship">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="number_of_students">Students required: </label>
+                                </td>
+                                <td>
+                                    <input type="number" id="number_of_students" class="input-field" name="number_of_students" placeholder="Enter students required ">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="internship_position">Position Offered: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="internship_position" class="input-field" name="internship_position" placeholder="Enter highest position of internship offered">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="minimum_cgpa">Min. CGPA: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="minimum_cgpa" class="input-field" name="minimum_cgpa" placeholder="Enter minimum cgpa required">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="stipend">Max. Stipend: </label>
+                                </td>
+                                <td>
+                                    <input type="text" id="stipend" class="input-field" name="stipend" placeholder="Enter maximum stipend">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="pre1">Prerequisite </label>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-field" name="pre" placeholder="Enter prerequisites">
+                                </td>
+                            </tr>
+
+                        </table>
+                        <input class="profile_save_changes_btn4" type="submit" value="Announce">
+                    </form>
+                </td>
+            </tr>
+            <tfoot>
+                <tr>
+                    <td><span style="color: red;">**</span>CGPA should be out of 10</td>
+                </tr>
+                <tr>
+                    <td><span style="color: red;">**</span>Prerequisite is optional</td>
+                </tr>
+                <tr>
+                    <td><span style="color: red;">**</span>Use ** to separate 2 prerequisites</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>{% endifequal %} {% endif %}
+</main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'dashboard/js/profile_app.js' %}"></script>
+{% endblock %}
