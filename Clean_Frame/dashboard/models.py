@@ -23,10 +23,10 @@ class Internship(models.Model):
     internship_position=models.CharField(max_length=100, null=True)
     minimum_cgpa=models.FloatField(default=5.0, null=True)
     prerequisite=models.CharField(max_length=1000000, null=True)
-    
+
     def __str__(self):
         if self.company:
-            return self.company.username
+            return self.company.username + str(" -> ") + self.internship_name
         else:
             return 'NILL'
 
@@ -49,12 +49,12 @@ class CompanyAnnouncement(models.Model):
             return str(self.company.username) + " Round " + str(self.internship_round)
         else:
             return 'NILL'
-        
+
 class Result(models.Model):
     company=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='company')
     student=models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='student')
     internship_round=models.CharField(max_length=100, null=True)
-    
+
     def __str__(self):
         if self.company:
             if self.student:
@@ -66,7 +66,7 @@ class Result(models.Model):
                 return str(self.student)
             else:
                 return "NIL"
-            
+
 class ProfileVisibilty(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     to_other_student=models.BooleanField(default=True)
@@ -77,7 +77,7 @@ class ProfileVisibilty(models.Model):
             return self.user.username
         else:
             return 'NILL'
-        
+
 class StudentRegistration(models.Model):
     company=models.ForeignKey(CompanyAnnouncement, on_delete=models.CASCADE, null=True, blank=True)
     student=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -86,15 +86,15 @@ class StudentRegistration(models.Model):
     #Status 0 : Not Announced
     #Status 1: Cleared
     #Status 2: Rejected
-    
+
     def __str__(self):
         return str(self.student.username) + " registered in " + str(self.company)
-    
+
 class ProfilePermissions(models.Model):
     user_who_can_see=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='can_see')
     user_whose_to_see=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='whose_to_see')
-    
-    
+
+
     def __str__(self):
         if self.user_who_can_see:
             if self.user_whose_to_see:

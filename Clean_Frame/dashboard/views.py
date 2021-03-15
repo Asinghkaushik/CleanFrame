@@ -9,7 +9,6 @@ from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
 from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration, Internship, ProfilePermissions
-
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -927,13 +926,26 @@ def delete_internship(request,item):
         except:
             return HttpResponse("Internship Details not found")
     return error_detection(request,1)
-
+# **************************************************************************
+# **************************************************************************
 def delete_announcement(request, item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         try:
             comann=CompanyAnnouncement.objects.get(id=int(item))
+            previous_round = comann.prev_round_for_result
+            if comman.internship_round > 1:
+                try:
+                    internship = comman.internship
+                    abcd = CompanyAnnouncement.objects.filter(internship = internship)
+                    mx=0
+                    for each in abcd:
+                        mx=math.max(mx,each.internship_round)
+                    if mx==comman.internship_round:
+                        set_results_for_previous_round(request, previous_round, comman.internship_round, comman.internship)
+                except:
+                    pass
             if comann.company==request.user:
                 comann.delete()
                 return redirect('announcements')
@@ -942,6 +954,25 @@ def delete_announcement(request, item):
         except:
             return HttpResponse("Announcement Details not found")
     return error_detection(request,1)
+
+def set_results_for_previous_round(request, old, new, internship):
+    students = StudentRegistration.objects.filter(company__internship = internship)
+    while old > 0:
+        try:
+            old_announcement = CompanyAnnouncement.objects.get(internship = internship, internship_round = old)
+        except:
+            old=old-1
+    if old==0:
+        return
+    for each in students:
+        if each.company.internship_round == new:
+            each.result_status = 1
+            each.company = old_announcement
+            each.save()
+            subject = 'Reverted back for previous Round'
+            message = f'Hi user, you have been reverted back to previous round of internship because company deleted the latest round.\nDetails of the current cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
+            email=each.student.email
+            SENDMAIL(subject,message,email)
 
 def check_student_profile(request, item):
     if error_detection(request,1)==False:
