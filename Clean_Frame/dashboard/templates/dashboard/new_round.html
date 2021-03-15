@@ -120,7 +120,7 @@
                                     <label>Internship Round </label>
                                 </td>
                                 <td>
-                                    <input type="number" name="internship_round" id="inputBox" class="input-field" placeholder="Enter round number" required>
+                                    <input type="number" name="internship_round" id="inputBox1" onkeyup="show_hide(this.value)" class="input-field" placeholder="Enter round number" required>
                                 </td>
                             </tr>
                             <tr>
@@ -131,15 +131,15 @@
                                     <input type="text" name="round_name" class="input-field" placeholder="Enter round name" required>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="prev_round">
                                 <td>
                                     <label for="prev_round_for_result">Previous Round: </label>
                                 </td>
                                 <td>
-                                    <input type="number" id="inputBox1" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
+                                    <input type="number" id="prev_round_for_result" class="input-field" style="background-color: aqua;" name="prev_round_for_result" placeholder="Enter round number" readonly>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="last_date">
                                 <td>
                                     <label for="last_date_to_apply">Last Date to apply: </label>
                                 </td>

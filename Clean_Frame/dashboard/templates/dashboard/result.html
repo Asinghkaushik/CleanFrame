@@ -142,7 +142,9 @@
 
                                             </tr>
                                         {% endifequal %} 
-                                    {% else %} 
+                                    {% else %}
+                                      {% if data.internship_round > each.company.internship_round %}
+                                      {% else %}
                                         {% ifnotequal each.result_status 2 %}
                                             <tr id="tr1 " style="text-align: center; ">
                                                 <td style="width: 5%">
@@ -155,7 +157,7 @@
 
                                             </tr>
                                         {% else %} 
-
+                                        
                                         {% if data.internship_round < each.company.internship_round %} 
                                             <tr id="tr1 " style="text-align: center; ">
                                                 <td style="width: 5%">
@@ -170,7 +172,7 @@
                                         {% endif %} 
                                         
                                         {% endifnotequal %} 
-                                        
+                                      {% endif %}  
                                     {% endifequal %} 
                                     
                                 {% endfor %}

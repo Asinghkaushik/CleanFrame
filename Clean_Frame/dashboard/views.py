@@ -571,7 +571,7 @@ def new_announcement_round(request):
                 try:
                     c=CompanyAnnouncement.objects.get(company=request.user, internship_round=prev_round_for_result, internship=int_obj)
                 except:
-                    return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No announcement found with the given previous round number"})           
+                    return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No announcement found with the given previous round number"})
                 if(StudentRegistration.objects.filter(company=c, result_status=1).count()<=0):
                     return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No student found whose previous round was cleared"})
             form = CompanyAnnouncementForm(request.POST,request.FILES)
@@ -583,8 +583,9 @@ def new_announcement_round(request):
                 com_ann.company=request.user
                 if internship_round==1:
                     com_ann.first_round=True
-                    com_ann.prev_round_for_result=0
-                com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                    com_ann.prev_round_for_result=new_announcement_round
+                if len(last_date_to_apply) > 1 :
+                    com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 com_ann.internship=Internship.objects.get(id=int(internship_name))
                 com_ann.save()
                 if internship_round!=1:
