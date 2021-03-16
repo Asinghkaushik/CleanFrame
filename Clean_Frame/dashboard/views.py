@@ -939,13 +939,13 @@ def delete_announcement(request, item):
             if comann.company==request.user:
                 if round_no > 1:
                     try:
-                        internship = comman.internship
+                        internship = comann.internship
                         abcd = CompanyAnnouncement.objects.filter(internship = internship)
                         mx=0
                         for each in abcd:
-                            mx=math.max(mx,each.internship_round)
-                        if mx==comman.internship_round:
-                            set_results_for_previous_round(request, previous_round, comman.internship_round, comman.internship)
+                            mx=get_max(int(mx),int(each.internship_round))
+                        if mx==int(comann.internship_round):
+                            set_results_for_previous_round(request, int(previous_round), int(comann.internship_round), comann.internship)
                     except:
                         pass
                 comann.delete()
@@ -960,13 +960,14 @@ def set_results_for_previous_round(request, old, new, internship):
     students = StudentRegistration.objects.filter(company__internship = internship)
     while old > 0:
         try:
-            old_announcement = CompanyAnnouncement.objects.get(internship = internship, internship_round = old)
+            old_announcement = CompanyAnnouncement.objects.get(internship = internship, internship_round = str(old))
+            break
         except:
             old=old-1
     if old==0:
         return
     for each in students:
-        if each.company.internship_round == new:
+        if each.company.internship_round == str(new):
             each.result_status = 1
             each.company = old_announcement
             each.save()
@@ -975,6 +976,11 @@ def set_results_for_previous_round(request, old, new, internship):
             email=each.student.email
             SENDMAIL(subject,message,email)
             
+            
+def get_max(a,b):
+    if a>b:
+        return a
+    return b
             
 def check_student_profile(request, item):
     if error_detection(request,1)==False:
