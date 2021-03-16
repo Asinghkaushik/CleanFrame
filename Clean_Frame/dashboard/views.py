@@ -935,18 +935,19 @@ def delete_announcement(request, item):
         try:
             comann=CompanyAnnouncement.objects.get(id=int(item))
             previous_round = comann.prev_round_for_result
-            if comman.internship_round > 1:
-                try:
-                    internship = comman.internship
-                    abcd = CompanyAnnouncement.objects.filter(internship = internship)
-                    mx=0
-                    for each in abcd:
-                        mx=math.max(mx,each.internship_round)
-                    if mx==comman.internship_round:
-                        set_results_for_previous_round(request, previous_round, comman.internship_round, comman.internship)
-                except:
-                    pass
+            round_no=int(comann.internship_round)
             if comann.company==request.user:
+                if round_no > 1:
+                    try:
+                        internship = comman.internship
+                        abcd = CompanyAnnouncement.objects.filter(internship = internship)
+                        mx=0
+                        for each in abcd:
+                            mx=math.max(mx,each.internship_round)
+                        if mx==comman.internship_round:
+                            set_results_for_previous_round(request, previous_round, comman.internship_round, comman.internship)
+                    except:
+                        pass
                 comann.delete()
                 return redirect('announcements')
             else:
@@ -973,7 +974,8 @@ def set_results_for_previous_round(request, old, new, internship):
             message = f'Hi user, you have been reverted back to previous round of internship because company deleted the latest round.\nDetails of the current cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
             email=each.student.email
             SENDMAIL(subject,message,email)
-
+            
+            
 def check_student_profile(request, item):
     if error_detection(request,1)==False:
         try:
