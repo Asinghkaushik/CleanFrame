@@ -77,7 +77,7 @@
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %} Internships Announced {% endblock %}
+{% block dashboard_title %} Results {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -89,7 +89,8 @@
         <div class="projects">
             <div class="card">
                 <div class="card-header">
-                    <h3 style="margin-left: 13%;">All internships announced by you</h3>
+                    <h3 style="margin-left: 13%;">Selected Students</h3>
+                    
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -105,40 +106,25 @@
                         <table id="myTable">
                             <thead id="thead">
                                 <tr id="tr1" style="text-align: center;">
-                                    <td>#ID (Edit)</td>
+                                    <td id="td0">Student ID</td>
                                     <td id="td1">Name</td>
-                                    <td id="td2">Stipend</td>
-                                    <td id="td3">Duration</td>
-                                    <td id="td4">Students Needed</td>
-                                    <td id="td5">Position</td>
-                                    <td id="td5">Minimum CGPA</td>
-                                    <td>Result</td>
+                                    <td id="td1">Email</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for each in internships %}
-                                <tr id="tr1" style="text-align: center;">
-                                    <td><a href="{% url 'edit_internship' item=each.id %}">#{{each.id}}</a></td>
-                                    <td>{{each.internship_name}}</td>
-                                    <td>{{each.stipend}}</td>
-                                    <td>{{each.internship_duration}}</td>
-                                    <td>{{each.students_required}}</td>
-                                    <td>{{each.internship_position}}</td>
-                                    <td>{{each.minimum_cgpa}}</td>
-                                    <td style="padding-top: 15px; padding-left: 20px;">
-                                      {% if each.result_announced %}
-                                      <a href="{% url 'internship_result' item=each.id %}">See</a>
-                                      {% else %}
-                                      -
-                                      {% endif %}
-                                    </td>
-                                </tr>
+                                <!--To be changed w.r.t student -->
+                                {% for each in students %} 
+                                    <td style="text-align: center;">{{each.id}}</td>
+                                    <td style="text-align: center;">{{each.student.first_name}} {{each.student.last_name}}</td>
+                                    <td style="text-align: center;">{{each.student.email}}</td>
                                 {% endfor %}
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        </div>
+
 </main>
+<script type="text/javascript " src="{% static 'dashboard/js/result.js' %} "></script>
 {% endblock %}

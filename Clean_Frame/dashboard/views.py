@@ -8,7 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
-from .models import StaffPermissions, CompanyAnnouncement, Result, StudentRegistration, Internship, ProfilePermissions
+from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -571,6 +571,8 @@ def new_announcement_round(request):
                     c=CompanyAnnouncement.objects.get(company=request.user, internship_round=prev_round_for_result, internship=int_obj)
                 except:
                     return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No announcement found with the given previous round number"})
+                if c.last_round==True:
+                    return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "Final Round of this internship has been announced"})
                 if(StudentRegistration.objects.filter(company=c, result_status=1).count()<=0):
                     return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No student found whose previous round was cleared"})
             form = CompanyAnnouncementForm(request.POST,request.FILES)
@@ -580,9 +582,12 @@ def new_announcement_round(request):
                 last_date_to_apply=request.POST.get('last_date_to_apply')
                 com_ann=CompanyAnnouncement.objects.get(id=myid)
                 com_ann.company=request.user
+                last_round=request.POST.get("last_round")
+                if int(last_round)==2:
+                    com_ann.last_round=True
                 if internship_round==1:
                     com_ann.first_round=True
-                    com_ann.prev_round_for_result=new_announcement_round
+                    com_ann.prev_round_for_result=0
                 if len(last_date_to_apply) > 1 :
                     com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 com_ann.internship=Internship.objects.get(id=int(internship_name))
@@ -716,10 +721,6 @@ def edit_announcement(request, item):
             if data.company!=request.user:
                 return HttpResponse("Announcement not found")
             internship_round=int(request.POST.get('internship_round'))
-            if(internship_round>1 and data.general_announcement==False):
-                prev_round_for_result=request.POST.get('prev_round_for_result')
-                if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
-                    return render(request, 'dashboard/edit_announcements.html', context={"data": data, "error": "No result found with the given previous round number"})
             form = CompanyAnnouncementForm(request.POST,request.FILES)
             if form.is_valid():
                 data.internship_round=form.cleaned_data['internship_round']
@@ -730,12 +731,13 @@ def edit_announcement(request, item):
                     data.file=form.cleaned_data['file']
                 if form.cleaned_data['file_for_prev_result']:
                     data.file_for_prev_result=form.cleaned_data['file_for_prev_result']
-                last_date_to_apply=request.POST.get('last_date_to_apply')
+                if data.first_round==True:
+                    last_date_to_apply=request.POST.get('last_date_to_apply')
+                if data.general_announcement==False and data.first_round==True:
+                    data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 if data.internship_round==1:
                     data.first_round=True
                     data.prev_round_for_result=0
-                if data.general_announcement==False:
-                    data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 data.save()
                 return redirect('edit_announcement', int(item))
             else:
@@ -816,6 +818,21 @@ def stu_result(request, item):
             return render(request, 'dashboard/result.html', context={"data": data, "students": students})
     return error_detection(request,1)
 
+def internship_result(request,item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            internship=Internship.objects.get(id=int(item))
+        except:
+            return HttpResponse("Result Not Found")
+        if internship.company!=request.user:
+            return HttpResponse("Announcement not found")
+        students=InternshipFinalResult.objects.filter(internship=internship)
+        data=get_my_profile(request)
+        return render(request, 'dashboard/internship_result.html', context={"students": students})
+    return error_detection(request,1)
+
 #TO be COmpleted
 def get_students(request, announcement):
     name=announcement.internship.internship_name
@@ -893,11 +910,15 @@ def get_eligible_companies_for_me_round_one(request):
             if data.cgpa<min_cgpa:
                 eligible_companies=eligible_companies.exclude(id=each.id)
             else:
-                try:
-                    sr=StudentRegistration.objects.get(student=request.user, company=each)
-                    eligible_companies=eligible_companies.exclude(id=each.id)
-                except:
-                    pass
+                internship=each.internship
+                all_ann=CompanyAnnouncement.objects.filter(internship=internship)
+                for i in all_ann:
+                    try:
+                        sr=StudentRegistration.objects.get(student=request.user, company=i)
+                        eligible_companies=eligible_companies.exclude(id=each.id)
+                        break
+                    except:
+                        continue
         except:
             eligible_companies=eligible_companies.exclude(id=each.id)
     return eligible_companies
@@ -926,14 +947,63 @@ def delete_internship(request,item):
         except:
             return HttpResponse("Internship Details not found")
     return error_detection(request,1)
-# **************************************************************************
-# **************************************************************************
+
+
+def seeze_results(request,item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            comann=CompanyAnnouncement.objects.get(id=int(item))
+            if comann.company!=request.user:
+                return HttpResponse("Announcement Details not found")
+            if comann.last_round==False:
+                return HttpResponse("Not a last round")
+            internship=comann.internship
+            if internship.result_announced==True:
+                return HttpResponse("Final Result has been announced")
+            accept_discard_students(request,comann)
+            return redirect('stu_result',item)
+        except:
+            return HttpResponse("Announcement Details not found")
+    return error_detection(request,1)
+
+def accept_discard_students(request,announcement):
+    internship=announcement.internship
+    company=request.user
+    registrations=StudentRegistration.objects.filter(company=announcement)
+    for each in registrations:
+        if each.result_status==1:
+            each.internship_cleared=True
+            each.save()
+            InternshipFinalResult.objects.create(internship=internship, company=company, student=each.student)
+            subject = 'Internship Selection Last Round'
+            message = f'Hi user, you have been selected by the company in the last round of internship.\nDetails of the last cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+' (Last Round) \nThanks'
+            email=each.student.email
+            SENDMAIL(subject,message,email)
+        if each.result_status==0:
+            each.result_status=2
+            each.save()
+            subject = 'Internship Result Last Round'
+            message = f'Hi user, you have been rejected in the last round of internship, you can try for another interships.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+' (last Round)\nThanks'
+            email=each.student.email
+            SENDMAIL(subject,message,email)
+    all_ann=CompanyAnnouncement.objects.filter(internship=internship, company=company)
+    for each in all_ann:
+        each.last_round_result_announced=True
+        each.save()
+    internship.result_announced=True
+    internship.save()
+            
+
 def delete_announcement(request, item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         try:
             comann=CompanyAnnouncement.objects.get(id=int(item))
+            if comann.company!=request.user:
+                return HttpResponse("Announcement Details not found")
             previous_round = comann.prev_round_for_result
             round_no=int(comann.internship_round)
             if comann.company==request.user:
@@ -1023,3 +1093,4 @@ def get_passed_profile(user):
         except:
             data={}
     return data
+

@@ -115,6 +115,7 @@
                                     <td id="td2">Round Number</td>
                                     <td id="td3">Registration Date</td>
                                     <td id="td4">Result Status</td>
+                                    <td>Action</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -131,6 +132,22 @@
                                     {% else %}
                                     <td style="color:red">Rejected</td>
                                     {% endifequal %} {% endifequal %}
+                                    <td>
+                                    {% ifequal each.result_status 1 %}
+                                      {% if each.internship_cleared %}
+                                        <a href="#" style="text-decoration: none;" onclick="return confirm('By clicking you will be registered in this internship and will not able to register in any other internship according to one student one job policy')">
+                                          <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
+                                        </a>
+                                        <a href="#" style="text-decoration: none; padding-left: 15px;" onclick="return confirm('By clicking you cannot register into this internship again')">
+                                          <span class="fas fa-times" style="color: red; font-size: 1.2rem; "></span>
+                                        </a>
+                                      {% else %}
+                                        <p style="padding-left: 10px; padding-top: 10px;">-</p>
+                                      {% endif %}
+                                    {% else %}
+                                      <p style="padding-left: 10px; padding-top: 10px;">-</p>
+                                    {% endifequal %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

@@ -23,12 +23,31 @@ class Internship(models.Model):
     internship_position=models.CharField(max_length=100, null=True)
     minimum_cgpa=models.FloatField(default=5.0, null=True)
     prerequisite=models.CharField(max_length=1000000, null=True)
+    result_announced=models.BooleanField(default=False)
 
     def __str__(self):
         if self.company:
             return self.company.username + str(" -> ") + self.internship_name
         else:
             return 'NILL'
+        
+class InternshipFinalResult(models.Model):
+    internship=models.ForeignKey(Internship, on_delete=models.CASCADE, null=True, blank=True)
+    company=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='company')
+    student=models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='student')
+    student_agrees=models.BooleanField(default=False)
+    
+    def __str__(self):
+        if self.internship:
+            if self.student:
+                return str(self.student) + " is an intern in " + str(self.internship)
+            else:
+                return str(self.internship)
+        else:
+            if self.student:
+                return str(self.student)
+            else:
+                return "NIL"
 
 class CompanyAnnouncement(models.Model):
     internship=models.ForeignKey(Internship, on_delete=models.CASCADE, null=True, blank=True)
@@ -37,6 +56,8 @@ class CompanyAnnouncement(models.Model):
     internship_round=models.CharField(max_length=100, null=True)
     round_name=models.CharField(max_length=1000, null=True)
     first_round=models.BooleanField(default=False)
+    last_round=models.BooleanField(default=False)
+    last_round_result_announced=models.BooleanField(default=False)
     prev_round_for_result=models.CharField(max_length=100, null=True)
     last_date_to_apply=models.DateTimeField(default=datetime.datetime.now)
     announcement_date=models.DateTimeField(auto_now=True)
@@ -50,22 +71,22 @@ class CompanyAnnouncement(models.Model):
         else:
             return 'NILL'
 
-class Result(models.Model):
-    company=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='company')
-    student=models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='student')
-    internship_round=models.CharField(max_length=100, null=True)
+# class Result(models.Model):
+#     company=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='company')
+#     student=models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='student')
+#     internship_round=models.CharField(max_length=100, null=True)
 
-    def __str__(self):
-        if self.company:
-            if self.student:
-                return str(self.student) + " cleared round " + str(self.internship_round) + " of " + str(self.company)
-            else:
-                return str(self.company)
-        else:
-            if self.student:
-                return str(self.student)
-            else:
-                return "NIL"
+#     def __str__(self):
+#         if self.company:
+#             if self.student:
+#                 return str(self.student) + " cleared round " + str(self.internship_round) + " of " + str(self.company)
+#             else:
+#                 return str(self.company)
+#         else:
+#             if self.student:
+#                 return str(self.student)
+#             else:
+#                 return "NIL"
 
 class ProfileVisibilty(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -83,6 +104,7 @@ class StudentRegistration(models.Model):
     student=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_of_registrations=models.DateTimeField(auto_now=True)
     result_status=models.IntegerField(default=0)
+    internship_cleared=models.BooleanField(default=False)
     #Status 0 : Not Announced
     #Status 1: Cleared
     #Status 2: Rejected

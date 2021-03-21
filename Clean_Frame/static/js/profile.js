@@ -28,3 +28,17 @@ function show_hide(myval){
     $("#last_date_to_apply").prop('required', false);
   }
 }
+
+function check_last_round(event) {
+    var selectElement = event.target;
+    var value = parseInt(selectElement.value);
+    if(value==2){
+        $("#last_date").hide()
+        $("#last_date_to_apply").prop('required', false);
+    }
+    else{
+        $("#last_date").show()
+        $("#last_date_to_apply").val("")
+        $("#last_date_to_apply").prop('required', true);
+    }
+}

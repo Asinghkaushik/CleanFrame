@@ -92,7 +92,14 @@
         <div class="projects">
             <div class="card">
                 <div class="card-header">
+                    {% if data.last_round_result_announced %}
+                    <h3 style="margin-left: 13%;">Final Result has been announced</h3>
+                    {% else %}
                     <h3 style="margin-left: 13%;">All Registrations</h3>
+                    {% endif %}
+                    {% if data.last_round %}
+                    <a href="{% url 'seeze_results' item=data.id %}" onclick="return confirm('This will delete all the decline registrations for this internship.\nYou can see the final students list in My Internships Section\nThis will also take some time, so wait patiently.\nIf you close browser or stopped processing in between then result may not be generated properly')">Seeze Results</a>
+                    {% endif %}
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
