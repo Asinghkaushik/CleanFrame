@@ -10,6 +10,7 @@ from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
 from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions
 from threading import *
+
 class Email_thread(Thread):
     def __init__(self,subject,message,email):
         self.email=email
@@ -19,6 +20,7 @@ class Email_thread(Thread):
 
     def run(self):
         SENDMAIL(self.subject,self.message,self.email)
+        
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -1187,6 +1189,44 @@ def ban_user_account_permanent(request,item):
         return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "1"})
     return error_detection(request,1)
 
+def ban_user_account_temporary(request,item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_ban_users==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        user_ban=User.objects.get(id=int(item))
+        if user_ban.is_staff or user_ban.is_superuser:
+            return redirect('restrict_users')
+        profile=get_the_profile(user_ban)
+        if profile=={}:
+            return redirect('restrict_users')
+        if profile.account_banned_temporary==True:
+            return redirect('restrict_users')
+        ban_time=settings.TEMORARY_BAN_TIME
+        profile.account_banned_temporary=True
+        profile.account_ban_time=ban_time
+        profile.account_ban_date=datetime.datetime.now()
+        profile.save()   
+        subject = 'Account Seized'
+        message = f'Hi user, your account has been banned temporarily for ' + str(ban_time) + ' days.\nAccount is banned by ' + request.user.email + ' , contact this email for any query.\nThanks'
+        email=user_ban.email
+        Email_thread(subject,message,email).start()
+        normal_users={}
+        if permissions.can_ban_users:
+            normal_users=get_simple_users(request)
+        staff_users={}
+        if request.user.is_superuser and permissions.can_delete_staff_accounts:
+            staff_users=User.objects.filter(is_active=True, is_staff=True, is_superuser=False)
+            staff_users=staff_users.exclude(id=request.user.id)
+        return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "3"})
+    return error_detection(request,1)
+
 def delete_staff_account_admin(request,item):
     if error_detection(request,1)==False:
         if request.user.is_staff==False or request.user.is_superuser==False:
@@ -1220,3 +1260,6 @@ def delete_staff_account_admin(request,item):
             staff_users=staff_users.exclude(id=request.user.id)
         return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "2"})
     return error_detection(request,1)
+
+def unban_user(request,item):
+    pass

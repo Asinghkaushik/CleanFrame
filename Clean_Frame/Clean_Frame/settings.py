@@ -147,5 +147,6 @@ OTP_EXPIRE_TIME=16
 COMPANY_MESSAGE='This_is_a_company_Associated_account'
 SEPARATOR='**'
 
+TEMORARY_BAN_TIME=30
 
 USE_TZ=True

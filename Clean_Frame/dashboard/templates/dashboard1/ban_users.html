@@ -110,6 +110,9 @@
                     {% ifequal code '2' %}
                     <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 staff deleted permanently</h6>
                     {% endifequal %}
+                    {% ifequal code '3' %}
+                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 user banned temporarily</h6>
+                    {% endifequal %}
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -152,9 +155,12 @@
                                         <p style="color: rgb(89, 150, 28);">Student</p>
                                         {% endifequal %}
                                     </td>
-                                    <td style="margin-left: 4%;">
+                                    <td>
                                         <a href="{% url 'ban_user_account_permanent' item=each.id %}" onclick="return confirm('This will permanently ban this user\'s account.')" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-times" style="color: rgb(255, 60, 0); font-size: 1.2rem;"></span>
+                                            <span class="fas fa-" style="color: rgb(255, 60, 0); font-size: 1.2rem;">P</span>
+                                        </a>
+                                        <a href="{% url 'ban_user_account_temporary' item=each.id %}" style="margin-left: 8%;" onclick="return confirm('This will ban this user\'s account for some days')" style="text-decoration: none; padding-left: 20%;">
+                                            <span class="fas fa-" style="color: rgb(255, 60, 0); font-size: 1.2rem;">T</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -172,7 +178,7 @@
                                     <td style="margin-left: 4%;">
                                         
                                         <a href="{% url 'delete_staff_account_admin' item=each.id %}"  onclick="return confirm('This will permanently delete this staff\'s account.')" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-times" style="color: rgb(173, 24, 24); font-size: 1.2rem;"></span>
+                                            <span class="fas fa-" style="color: rgb(255, 60, 0); font-size: 1.2rem;">D</span>
                                         </a>
                                     </td>
                                 </tr>
