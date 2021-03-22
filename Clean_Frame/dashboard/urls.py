@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3,company_profile_2, student_profile_2,student_profile_1,student_company_number,change_password,student_account_signup_permit,student_account_signup_action,company_account_signup_permit,company_account_signup_action
-from .views import new_announcement_round, new_announcement,new_announcement_success, announcements, edit_announcement,result, show_companies
+from .views import new_announcement_round, new_announcement,new_announcement_success, announcements, edit_announcement,stu_result, show_companies, show_company_round_details, register_student_first_round_only, show_registrations, announce_internship, internships, edit_internship
+from .views import delete_internship, delete_announcement, check_student_profile, seeze_results, internship_result, restrict_users
 
 urlpatterns = [
     path('',dashboard,name="dashboard"),
@@ -27,10 +28,21 @@ urlpatterns = [
     path('announcement/new/success/<str:item>',new_announcement_success,name="new_announcement_success"),
     path('announcements/',announcements,name="announcements"),
     path('announcements/edit/<str:item>/',edit_announcement,name="edit_announcement"),
-    path('announcements/result/<str:item>', result, name="result"),
+    path('announcements/result/<str:item>', stu_result, name="stu_result"),
     path('register/company/',show_companies,name="show_companies"),
+    path('show/company/details/<str:item>',show_company_round_details,name="show_company_round_details"),
+    path('register/company/round/1/id/<str:item>',register_student_first_round_only,name="register_student_first_round_only"),
+    path('show/student/registrations/all/',show_registrations,name="show_registrations"),
+    path('announcements/internship/',announce_internship,name="announce_internship"),    
+    path('show/internships/all/',internships,name="internships"),
+    path('internships/edit/<str:item>',edit_internship,name="edit_internship"),
+    path('internships/delete/<str:item>',delete_internship,name="delete_internship"),
+    path('announcement/delete/<str:item>',delete_announcement,name="delete_announcement"),
+    path('profile/student/<str:item>',check_student_profile,name="check_student_profile"),
+    path('results/seeze/<str:item>',seeze_results,name="seeze_results"),
+    path('internships/result/<str:item>',internship_result,name="internship_result"),
+    path('staff/restrict/users/',restrict_users,name="restrict_users")
     
-    
-    
+        
 
 ]

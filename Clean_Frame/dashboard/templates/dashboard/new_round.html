@@ -36,7 +36,7 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
             <a href="{% url 'announcements' %}"><span class="las la-users"></span>
             <span>My Announcements</span>
@@ -52,64 +52,36 @@
             <span>New Announcement</span>
           </a>
         </li>
-        {% endifequal %}
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
+        <!--Student only-->
+        {% else %}
+        <li>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
+            <span>Register</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
           </a>
         </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
+        {% endifequal %} {% endif %}
+
     </ul>
 </div>
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">New Round</a> {% endblock %}
+{% block dashboard_title %} New Round {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -133,10 +105,33 @@
                         <table class="comp_table1">
                             <tr>
                                 <td>
+                                    <label>Internship Name</label>
+                                </td>
+                                <td>
+                                    <select name="internship_name" id="inputBox" class="input-field" placeholder="Select internship name" required>
+                                        {% for each in internships %}
+                                        <option value={{each.id}}>{{each.internship_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Last Round?</label>
+                                </td>
+                                <td>
+                                    <select name="last_round" id="inputBox" class="input-field" onchange="check_last_round(event)" placeholder="Is it a last round" required>
+                                        <option value="1">No</option>
+                                        <option value="2">Yes</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label>Internship Round </label>
                                 </td>
                                 <td>
-                                    <input type="number" name="internship_round" id="inputBox" class="input-field" placeholder="Enter round number" required>
+                                    <input type="number" name="internship_round" id="inputBox1" onkeyup="show_hide(this.value)" class="input-field" placeholder="Enter round number" required>
                                 </td>
                             </tr>
                             <tr>
@@ -147,15 +142,15 @@
                                     <input type="text" name="round_name" class="input-field" placeholder="Enter round name" required>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="prev_round">
                                 <td>
                                     <label for="prev_round_for_result">Previous Round: </label>
                                 </td>
                                 <td>
-                                    <input type="number" id="inputBox1" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
+                                    <input type="number" id="prev_round_for_result" class="input-field" style="background-color: aqua;" name="prev_round_for_result" placeholder="Enter round number" readonly>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="last_date">
                                 <td>
                                     <label for="last_date_to_apply">Last Date to apply: </label>
                                 </td>

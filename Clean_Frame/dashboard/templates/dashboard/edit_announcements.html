@@ -36,15 +36,15 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
             <a href="{% url 'announcements' %}" class="active"><span class="las la-users"></span>
             <span>My Announcements</span>
           </a>
         </li>
         <li>
-            <a href="{% url 'new_announcement' %}"><span class="las la-users"></span>
-            <span>Create Announcement</span>
+            <a href="{% url 'new_announcement_round' %}"><span class="las la-users"></span>
+            <span>Announce New Round</span>
           </a>
         </li>
         <li>
@@ -52,64 +52,37 @@
             <span>New Announcement</span>
           </a>
         </li>
-        {% endifequal %}
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
+        <!--Student only-->
+        {% else %}
+        <li>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
+            <span>Register</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
           </a>
         </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
+        {% endifequal %} {% endif %}
+
+
     </ul>
 </div>
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Announcement #{{data.id}}</a> {% endblock %}
+{% block dashboard_title %} <a href="{% url 'announcements' %}" style="text-decoration: none; color: black;">Announcement</a> #{{data.id}}{% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -138,10 +111,18 @@
                             <input type="hidden" name="last_date_to_apply" required> {% else %}
                             <tr>
                                 <td>
+                                    <label>Internship Name </label>
+                                </td>
+                                <td>
+                                    <input type="text" name="internship_name" value="{{data.internship.internship_name}}" id="inputBox" class="input-field" placeholder="Enter round name" style="background-color: aqua;" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label>Internship Round </label>
                                 </td>
                                 <td>
-                                    <input type="number" name="internship_round" value="{{data.internship_round}}" id="inputBox" class="input-field" placeholder="Enter round number" required>
+                                    <input type="text" name="internship_round" value="{{data.internship_round}}" id="inputBox" class="input-field" style="background-color: aqua;" placeholder="Enter round number" readonly>
                                 </td>
                             </tr>
                             <tr>
@@ -157,9 +138,18 @@
                                     <label for="prev_round_for_result">Previous Round: </label>
                                 </td>
                                 <td>
-                                    <input type="number" id="inputBox1" value="{{data.prev_round_for_result}}" class="input-field" name="prev_round_for_result" placeholder="Enter round number" required>
+                                    <input type="text" value="{{data.prev_round_for_result}}" class="input-field" name="prev_round_for_result" style="background-color: aqua;" placeholder="Enter round number" readonly>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <label for="prev_round_for_result">Last Round: </label>
+                                </td>
+                                <td>
+                                    <input type="text" value="{{data.last_round}}" class="input-field" name="last_round" style="background-color: aqua;" placeholder="Enter round number" readonly>
+                                </td>
+                            </tr>
+                            {% if data.first_round %}
                             <tr>
                                 <td>
                                     <label for="last_date_to_apply">Last Date to apply ({{data.last_date_to_apply}}): </label>
@@ -168,6 +158,7 @@
                                     <input type="datetime-local" id="last_date_to_apply" class="input-field" name="last_date_to_apply" placeholder="Enter last date to fill form" required>
                                 </td>
                             </tr>
+                            {% endif %}
                             {% endif %}
                             <tr>
                                 <td>
@@ -210,11 +201,13 @@
                 {% if data.general_announcement %} {% else %}
                 <tr>
                     <td>
-                        <marquee direction="left" height="40" width="200" bgcolor="white"></marquee><a href="{% url 'result' item=data.id %}">Announce Result??</a></td>
+                        <marquee direction="left" height="40" width="200" bgcolor="white"></marquee><a href="{% url 'stu_result' item=data.id %}">Announce Result??</a></td>
                 </tr>
                 {% endif %}
             </tfoot>
         </table>
+        <br>
+        <a href="{% url 'delete_announcement' item=data.id %}" style="color: red; float: right">Delete Announcement?</a>
     </div>{% endifequal %} {% endif %}
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>

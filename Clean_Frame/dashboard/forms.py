@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from home.models import CompanyProfile, StudentProfile
-from .models import CompanyAnnouncement, Result
+from .models import CompanyAnnouncement
 
 class StudentPhotoForm(ModelForm):
     class Meta:

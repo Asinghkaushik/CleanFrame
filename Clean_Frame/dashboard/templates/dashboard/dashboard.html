@@ -33,7 +33,15 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        {% endif %} {% if permissions.can_ban_users %}
+        <li>
+            <a href="{% url 'restrict_users' %}"><span class="las la-user-tie"></span>
+            <span>Restrict Users </span>
+          </a>
+        </li>
+        {% endif %} 
+        
+        {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
             <a href="{% url 'announcements' %}"><span class="las la-users"></span>
             <span>My Announcements</span>
@@ -49,6 +57,16 @@
             <span>New Announcement</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
+          </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
         <!--Student only-->
         {% else %}
         <li>
@@ -56,57 +74,14 @@
             <span>Register</span>
           </a>
         </li>
+        <li>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
+          </a>
+        </li>
         {% endifequal %} {% endif %}
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
+
+
     </ul>
 </div>
 {% endblock %}

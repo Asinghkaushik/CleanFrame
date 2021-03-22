@@ -33,7 +33,7 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
             <a href="{% url 'announcements' %}" class="active"><span class="las la-users"></span>
             <span>My Announcements</span>
@@ -49,64 +49,35 @@
             <span>New Announcement</span>
           </a>
         </li>
-        {% endifequal %}
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+          <span>Announce Internship</span>
+        </a>
+        </li>
+        <li>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+          <span>My Internships</span>
+        </a>
+        </li>
+        <!--Student only-->
+        {% else %}
+        <li>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
+            <span>Register</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
           </a>
         </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
+        {% endifequal %} {% endif %}
     </ul>
 </div>
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">My Announcements</a> {% endblock %}
+{% block dashboard_title %} My Announcements{% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -119,6 +90,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 style="margin-left: 13%;">All Announcements</h3>
+                    <button type="button" onclick="toexcel('#myTable')" style="width: 170px; text-align: center;">Export to excel</button>
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -134,13 +106,15 @@
                         <table id="myTable">
                             <thead id="thead">
                                 <tr id="tr1" style="text-align: center;">
-                                    <td>#ID</td>
+                                    <td>#ID (Edit)</td>
                                     <td id="td1">Type</td>
                                     <td id="td2">Round</td>
                                     <td id="td3">Round Name</td>
                                     <td id="td4">Last Date</td>
                                     <td id="td5">File</td>
-                                    <td id="td5">Result File</td>
+                                    <td id="td6">Result File</td>
+                                    <td id="td7">Final Result</td>
+                                    <td id="td8">Result Section</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -174,13 +148,33 @@
                                     {% else %}
                                     <td>-</td>
                                     {% endif%} {% endif %}
-                                </tr>
+                                  <td>
+                                    {% if each.last_round_result_announced %}
+                                    Declared
+                                    {% else %}
+                                    Not Declared
+                                    {% endif %}
+                                  </td>
+                                  <td style="padding-top: 20px; padding-left: 40px;">
+                                    {% if each.last_round_result_announced %}
+                                    -
+                                    {% else %}
+                                    {% if each.general_announcement %}
+                                    -
+                                    {% else %}
+                                    <a href="{% url 'stu_result' item=each.id %}">Visit</a>
+                                    {% endif %}
+                                    {% endif %}
+                                  </td>
+                               </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
+                
             </div>
         </div>
 </main>
+
 {% endblock %}

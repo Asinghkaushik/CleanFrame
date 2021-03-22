@@ -8,8 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
-from .models import StaffPermissions, CompanyAnnouncement, Result
-
+from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -33,6 +32,17 @@ def get_my_profile(request):
     except:
         try:
             data=CompanyProfile.objects.get(user=request.user)
+        except:
+            data={}
+    return data
+
+def get_the_profile(user):
+    data={}
+    try:
+        data=StudentProfile.objects.get(user=user)
+    except:
+        try:
+            data=CompanyProfile.objects.get(user=user)
         except:
             data={}
     return data
@@ -361,21 +371,9 @@ def company_profile_2(request):
             u.first_name=com_name
             u.save()
             address=request.POST.get('address')
-            duration=request.POST.get('duration')
-            no_stu=request.POST.get('number_of_students')
-            intern_pos=request.POST.get('internship_position')
-            min_cgpa=request.POST.get('minimum_cgpa')
-            stipend=request.POST.get('stipend')
-            pre=request.POST.get('pre')
             try:
                 p=CompanyProfile.objects.get(user=request.user)
                 p.complete_address=address
-                p.internship_duration=int(duration)
-                p.students_required=int(no_stu)
-                p.internship_position=intern_pos
-                p.minimum_cgpa=float(min_cgpa)
-                p.stipend=float(stipend)
-                p.prerequisite=pre
                 p.save()
                 return redirect('profile')
             except:
@@ -567,12 +565,27 @@ def new_announcement_round(request):
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
+        internships=Internship.objects.filter(company=request.user)
+        prev_round_for_result=0
         if request.method == "POST":
+            internship_name=request.POST.get('internship_name')
             internship_round=int(request.POST.get('internship_round'))
+            try:
+                int_obj=Internship.objects.get(id=int(internship_name))
+                CompanyAnnouncement.objects.get(company=request.user, internship_round=internship_round, internship=int_obj)
+                return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "This round has been already declared"})
+            except:
+                pass
             if(internship_round>1):
                 prev_round_for_result=request.POST.get('prev_round_for_result')
-                if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
-                    return render(request, 'dashboard/new_round.html', context={"data": data, "error": "No result found with the given previous round number"})
+                try:
+                    c=CompanyAnnouncement.objects.get(company=request.user, internship_round=prev_round_for_result, internship=int_obj)
+                except:
+                    return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No announcement found with the given previous round number"})
+                if c.last_round==True:
+                    return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "Final Round of this internship has been announced"})
+                if(StudentRegistration.objects.filter(company=c, result_status=1).count()<=0):
+                    return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": "No student found whose previous round was cleared"})
             form = CompanyAnnouncementForm(request.POST,request.FILES)
             if form.is_valid():
                 x=form.save()
@@ -580,30 +593,88 @@ def new_announcement_round(request):
                 last_date_to_apply=request.POST.get('last_date_to_apply')
                 com_ann=CompanyAnnouncement.objects.get(id=myid)
                 com_ann.company=request.user
+                last_round=request.POST.get("last_round")
+                if int(last_round)==2:
+                    com_ann.last_round=True
                 if internship_round==1:
                     com_ann.first_round=True
                     com_ann.prev_round_for_result=0
-                com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                if len(last_date_to_apply) > 1 :
+                    com_ann.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
+                com_ann.internship=Internship.objects.get(id=int(internship_name))
                 com_ann.save()
+                if internship_round!=1:
+                    com_ann=CompanyAnnouncement.objects.get(id=myid)
+                    prev_ann=CompanyAnnouncement.objects.get(company=request.user, internship_round=prev_round_for_result, internship=int_obj)
+                    register_students_for_next_round(request, prev_ann, com_ann)
+                    notify_other_students_for_rejection(request, prev_ann, com_ann)
                 return redirect('new_announcement_success', '1')
             else:
-                return render(request, 'dashboard/new_round.html', context={"data": data, "error": form.errors})
+                return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "error": form.errors})
         else:
-            return render(request, 'dashboard/new_round.html', context={"data": data})
+            internships=Internship.objects.filter(company=request.user)
+            return render(request, 'dashboard/new_round.html', context={"data": data, "internships": internships, "internships": internships})
     return error_detection(request,1)
-    
+
+def register_students_for_next_round(request, prev, new):
+    get_students=StudentRegistration.objects.filter(company=prev, result_status=1)
+    for each in get_students:
+        each.company=new
+        each.result_status=0
+        each.save()
+        subject = 'Registration for next Round'
+        message = f'Hi user, you have been successfully registered for next round of internship.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
+        email=each.student.email
+        SENDMAIL(subject,message,email)
+
+def notify_other_students_for_rejection(request, prev, new):
+    get_students=StudentRegistration.objects.filter(company=prev, result_status=0)
+    for each in get_students:
+        each.result_status=2
+        each.save()
+        subject = 'Internship Round Result'
+        message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
+        email=each.student.email
+        SENDMAIL(subject,message,email)
+
 def new_announcement_success(request, item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         else:
             data=get_my_profile(request)
+            internships=Internship.objects.filter(company=request.user)
             if item=='1':
-                return render(request, 'dashboard/new_round.html', context={"data": data, "success": "Announcement Created"})
+                return render(request, 'dashboard/new_round.html', context={"data": data, "success": "Announcement Created", "internships": internships})
             if item=='2':
-                return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created"})
+                return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created", "internships": internships})
             else:
                 return HttpResponse("404: page not found")
+    return error_detection(request,1)
+
+def announce_internship(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        else:
+            data=get_my_profile(request)
+            if request.method=="POST":
+                duration=request.POST.get('duration')
+                no_stu=request.POST.get('number_of_students')
+                intern_pos=request.POST.get('internship_position')
+                min_cgpa=request.POST.get('minimum_cgpa')
+                stipend=request.POST.get('stipend')
+                pre=request.POST.get('pre')
+                internship_name=request.POST.get('internship_name')
+                try:
+                    intern=Internship.objects.get(company=request.user, internship_name=internship_name, stipend=stipend, internship_duration=duration, students_required=no_stu, internship_position=intern_pos, minimum_cgpa=min_cgpa, prerequisite=pre)
+                    return render(request, 'dashboard/new_internship.html', context={"data": data, "error": "Internship with same details already exists"})
+                except:
+                    Internship.objects.create(company=request.user, internship_name=internship_name, stipend=stipend, internship_duration=duration, students_required=no_stu, internship_position=intern_pos, minimum_cgpa=min_cgpa, prerequisite=pre)
+                    return render(request, 'dashboard/new_internship.html', context={"data": data, "success": "Internship created with given details"})
+            # GO FOR GET METHOD
+            return render(request, 'dashboard/new_internship.html', context={"data": data})
+
     return error_detection(request,1)
 
 def announcements(request):
@@ -612,6 +683,44 @@ def announcements(request):
             return redirect('home')
         announcements=CompanyAnnouncement.objects.filter(company=request.user).order_by('announcement_date')
         return render(request, 'dashboard/announcements.html', context={"announcements": announcements})
+    return error_detection(request,1)
+
+def internships(request):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        internships=Internship.objects.filter(company=request.user)
+        return render(request, 'dashboard/internships.html', context={"internships": internships})
+    return error_detection(request,1)
+
+def edit_internship(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        if request.method=="POST":
+            try:
+                data=Internship.objects.get(id=int(item))
+                if data.company!=request.user:
+                    return HttpResponse("Announcement not found")
+                data.internship_name=request.POST.get('internship_name')
+                data.internship_duration=int(request.POST.get('duration'))
+                data.students_required=int(request.POST.get('number_of_students'))
+                data.internship_position=request.POST.get('internship_position')
+                data.minimum_cgpa=float(request.POST.get('minimum_cgpa'))
+                data.stipend=float(request.POST.get('stipend'))
+                data.prerequisite=request.POST.get('pre')
+                data.save()
+                return render(request, 'dashboard/edit_internships.html', context={"data": data, "success": "Internship Details Updated"})
+            except:
+                return HttpResponse("Error in details entered by you or Announcement not found")
+        else:
+            try:
+                data=Internship.objects.get(id=int(item))
+                if data.company!=request.user:
+                    return HttpResponse("Internship not found")
+            except:
+                return HttpResponse("Internship not found")
+            return render(request, 'dashboard/edit_internships.html', context={"data": data})
     return error_detection(request,1)
 
 def edit_announcement(request, item):
@@ -623,10 +732,6 @@ def edit_announcement(request, item):
             if data.company!=request.user:
                 return HttpResponse("Announcement not found")
             internship_round=int(request.POST.get('internship_round'))
-            if(internship_round>1 and data.general_announcement==False):
-                prev_round_for_result=request.POST.get('prev_round_for_result')
-                if(Result.objects.filter(internship_round=prev_round_for_result, company=request.user).count()<=0):
-                    return render(request, 'dashboard/edit_announcements.html', context={"data": data, "error": "No result found with the given previous round number"})
             form = CompanyAnnouncementForm(request.POST,request.FILES)
             if form.is_valid():
                 data.internship_round=form.cleaned_data['internship_round']
@@ -637,17 +742,18 @@ def edit_announcement(request, item):
                     data.file=form.cleaned_data['file']
                 if form.cleaned_data['file_for_prev_result']:
                     data.file_for_prev_result=form.cleaned_data['file_for_prev_result']
-                last_date_to_apply=request.POST.get('last_date_to_apply')
+                if data.first_round==True:
+                    last_date_to_apply=request.POST.get('last_date_to_apply')
+                if data.general_announcement==False and data.first_round==True:
+                    data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 if data.internship_round==1:
                     data.first_round=True
                     data.prev_round_for_result=0
-                if data.general_announcement==False:
-                    data.last_date_to_apply=datetime.datetime.strptime(str(last_date_to_apply), '%Y-%m-%dT%H:%M')
                 data.save()
                 return redirect('edit_announcement', int(item))
             else:
                 return render(request, 'dashboard/edit_announcements.html', context={"data": data, "error": form.errors})
-                
+
         else:
             try:
                 data=CompanyAnnouncement.objects.get(id=int(item))
@@ -678,38 +784,356 @@ def new_announcement(request):
             return render(request, 'dashboard/new_announcement.html', context={"data": data})
     return error_detection(request,1)
 
-def result(request, item):
+def stu_result(request, item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
         if request.method == "POST":
-            pass
+            students=request.POST.get("students")
+            if len(students)<=3:
+                return redirect('stu_result', item)
+            spliter=students.split('**')
+            mylist=spliter[0].split(",")
+            if int(spliter[1])==1:
+                for each_id in mylist:
+                    get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
+                    if get_re.result_status!=1:
+                        get_re.result_status=1
+                        get_re.save()
+                        subject = 'Internship Round Cleared'
+                        message = f'Hi user, We congratulate you for clearing the round in internship.\nDetails of cleared round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
+                        email=get_re.student.email
+                        SENDMAIL(subject,message,email)
+                return redirect('stu_result', item)
+            if int(spliter[1])==2:
+                for each_id in mylist:
+                    get_re=StudentRegistration.objects.get(student=int(each_id), company=int(item))
+                    if get_re.result_status==0:
+                        get_re.result_status=2
+                        get_re.save()
+                        subject = 'Internship Round Result'
+                        message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
+                        email=get_re.student.email
+                        SENDMAIL(subject,message,email)
+                return redirect('stu_result', item)
+            return HttpResponse("INVALID REQUEST")
         else:
-            data=CompanyAnnouncement.objects.get(id=int(item))
+            try:
+                data=CompanyAnnouncement.objects.get(id=int(item))
+            except:
+                return HttpResponse("Announcement Not Found")
             if data.company!=request.user:
                 return HttpResponse("Announcement not found")
-            students=get_students(request, int(item))
+            students=get_students(request, data)
             return render(request, 'dashboard/result.html', context={"data": data, "students": students})
     return error_detection(request,1)
 
+def internship_result(request,item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            internship=Internship.objects.get(id=int(item))
+        except:
+            return HttpResponse("Result Not Found")
+        if internship.company!=request.user:
+            return HttpResponse("Announcement not found")
+        students=InternshipFinalResult.objects.filter(internship=internship)
+        data=get_my_profile(request)
+        return render(request, 'dashboard/internship_result.html', context={"students": students})
+    return error_detection(request,1)
+
 #TO be COmpleted
-def get_students(request, id_of_announcement):
-    return 
+def get_students(request, announcement):
+    name=announcement.internship.internship_name
+    round=announcement.internship_round
+    get_stu=StudentRegistration.objects.filter(company__internship__internship_name=name)
+    return get_stu
 
 def show_companies(request):
     if error_detection(request,1)==False:
         if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
-        eligible_companies_for_me=CompanyAnnouncement.objects.filter(general_announcement=False, first_round=True, last_date_to_apply__gte=datetime.datetime.now())
-        copy=eligible_companies_for_me
-        for each in copy:
-            try:
-                min_cgpa=CompanyProfile.objects.get(user=each.company).minimum_cgpa
-                if data.cgpa<min_cgpa:
-                    eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
-            except:
-                eligible_companies_for_me=eligible_companies_for_me.exclude(id=each.id)
-        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies_for_me})
+        eligible_companies=get_eligible_companies_for_me_round_one(request)
+        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies})
     return error_detection(request,1)
+
+def show_company_round_details(request, item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            data1_is=True
+            data=CompanyAnnouncement.objects.get(id=int(item))
+            try:
+                data2_is=True
+                company_data=CompanyProfile.objects.get(user=data.company)
+            except:
+                data2_is=False
+                company_data={}
+        except:
+            data1_is=False
+            data2_is=False
+            data={}
+            company_data={}
+        return render(request, 'dashboard/show_company_details.html', context={"announcement_data": data, "company_data": company_data, "data1": data1_is, "data2": data2_is})
+    return error_detection(request,1)
+
+def register_student_first_round_only(request, item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        eligible_companies=get_eligible_companies_for_me_round_one(request)
+        try:
+            ann=CompanyAnnouncement.objects.get(id=int(item))
+            s_data=StudentProfile.objects.get(user=request.user)
+            c_data=CompanyProfile.objects.get(user=ann.company)
+        except:
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Error in fetching your profile or announcement not found"})
+        if ann.first_round==False:
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Announcement Round is not 1, contact staff to see into this matter."})
+        if s_data.cgpa<ann.internship.minimum_cgpa:
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "Your aren't eligible to register for this company since your CGPA does not met minimum CGPA set by the company"})
+        try:
+            StudentRegistration.objects.get(student=request.user, company=ann)
+            return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "error": "You are Already registered"})
+        except:
+            try:
+                ProfilePermissions.objects.get(user_who_can_see=ann.company,user_whose_to_see=request.user)
+            except:
+                ProfilePermissions.objects.create(user_who_can_see=ann.company,user_whose_to_see=request.user)
+            StudentRegistration.objects.create(student=request.user, company=ann)
+        data=get_my_profile(request)
+        eligible_companies=get_eligible_companies_for_me_round_one(request)
+        return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies, "success": True})
+    return error_detection(request,1)
+
+def get_eligible_companies_for_me_round_one(request):
+    eligible_companies=CompanyAnnouncement.objects.filter(general_announcement=False, first_round=True, last_date_to_apply__gte=datetime.datetime.now())
+    copy=eligible_companies
+    data=get_my_profile(request)
+    for each in copy:
+        try:
+            min_cgpa=each.internship.minimum_cgpa
+            if data.cgpa<min_cgpa:
+                eligible_companies=eligible_companies.exclude(id=each.id)
+            else:
+                internship=each.internship
+                all_ann=CompanyAnnouncement.objects.filter(internship=internship)
+                for i in all_ann:
+                    try:
+                        sr=StudentRegistration.objects.get(student=request.user, company=i)
+                        eligible_companies=eligible_companies.exclude(id=each.id)
+                        break
+                    except:
+                        continue
+        except:
+            eligible_companies=eligible_companies.exclude(id=each.id)
+    return eligible_companies
+
+def show_registrations(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        registrations=StudentRegistration.objects.filter(student=request.user)
+        #Also get registrations of other rounds
+        return render(request, "dashboard/registrations.html", context={"registrations": registrations})
+    return error_detection(request,1)
+
+def delete_internship(request,item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            inter=Internship.objects.get(id=int(item))
+            if inter.company==request.user:
+                inter.delete()
+                return redirect('internships')
+            else:
+                return HttpResponse("This account has no Permission to delete it")
+        except:
+            return HttpResponse("Internship Details not found")
+    return error_detection(request,1)
+
+
+def seeze_results(request,item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            comann=CompanyAnnouncement.objects.get(id=int(item))
+            if comann.company!=request.user:
+                return HttpResponse("Announcement Details not found")
+            if comann.last_round==False:
+                return HttpResponse("Not a last round")
+            internship=comann.internship
+            if internship.result_announced==True:
+                return HttpResponse("Final Result has been announced")
+            accept_discard_students(request,comann)
+            return redirect('stu_result',item)
+        except:
+            return HttpResponse("Announcement Details not found")
+    return error_detection(request,1)
+
+def accept_discard_students(request,announcement):
+    internship=announcement.internship
+    company=request.user
+    registrations=StudentRegistration.objects.filter(company=announcement)
+    for each in registrations:
+        if each.result_status==1:
+            each.internship_cleared=True
+            each.save()
+            try:
+                InternshipFinalResult.objects.get(internship=internship, company=company, student=each.student)
+            except:
+                InternshipFinalResult.objects.create(internship=internship, company=company, student=each.student)
+            subject = 'Internship Selection Last Round'
+            message = f'Hi user, you have been selected by the company in the last round of internship.\nDetails of the last cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+' (Last Round) \nThanks'
+            email=each.student.email
+            SENDMAIL(subject,message,email)
+        if each.result_status==0:
+            each.result_status=2
+            each.save()
+            subject = 'Internship Result Last Round'
+            message = f'Hi user, you have been rejected in the last round of internship, you can try for another interships.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+' (last Round)\nThanks'
+            email=each.student.email
+            SENDMAIL(subject,message,email)
+    all_ann=CompanyAnnouncement.objects.filter(internship=internship, company=company)
+    for each in all_ann:
+        each.last_round_result_announced=True
+        each.save()
+    internship.result_announced=True
+    internship.save()
+            
+
+def delete_announcement(request, item):
+    if error_detection(request,1)==False:
+        if request.user.last_name!=settings.COMPANY_MESSAGE:
+            return redirect('home')
+        try:
+            comann=CompanyAnnouncement.objects.get(id=int(item))
+            if comann.company!=request.user:
+                return HttpResponse("Announcement Details not found")
+            previous_round = comann.prev_round_for_result
+            round_no=int(comann.internship_round)
+            if comann.company==request.user:
+                if round_no > 1:
+                    try:
+                        internship = comann.internship
+                        abcd = CompanyAnnouncement.objects.filter(internship = internship)
+                        mx=0
+                        for each in abcd:
+                            mx=get_max(int(mx),int(each.internship_round))
+                        if mx==int(comann.internship_round):
+                            set_results_for_previous_round(request, int(previous_round), int(comann.internship_round), comann.internship)
+                    except:
+                        pass
+                comann.delete()
+                return redirect('announcements')
+            else:
+                return HttpResponse("This account has no Permission to delete it")
+        except:
+            return HttpResponse("Announcement Details not found")
+    return error_detection(request,1)
+
+def set_results_for_previous_round(request, old, new, internship):
+    students = StudentRegistration.objects.filter(company__internship = internship)
+    while old > 0:
+        try:
+            old_announcement = CompanyAnnouncement.objects.get(internship = internship, internship_round = str(old))
+            break
+        except:
+            old=old-1
+    if old==0:
+        return
+    for each in students:
+        if each.company.internship_round == str(new):
+            each.result_status = 1
+            each.company = old_announcement
+            each.save()
+            subject = 'Reverted back for previous Round'
+            message = f'Hi user, you have been reverted back to previous round of internship because company deleted the latest round.\nDetails of the current cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
+            email=each.student.email
+            SENDMAIL(subject,message,email)
+            
+            
+def get_max(a,b):
+    if a>b:
+        return a
+    return b
+            
+def check_student_profile(request, item):
+    if error_detection(request,1)==False:
+        try:
+            user_profile=User.objects.get(id=int(item))
+            data=get_passed_profile(user_profile)
+            if data=={}:
+                return HttpResponse("Profile Not Found")
+        except:
+            return HttpResponse("Profile Not Found")
+        if check_profilepage_permissions(request, item) == False:
+            return HttpResponse("You have not permission to view this user's profile page")
+        image=data.image
+        return render(request,'dashboard/profile_page.html',context={"data": data, "image": image})
+    return error_detection(request,1)
+
+def check_profilepage_permissions(request, item):
+    try:
+        user_profile=User.objects.get(id=int(item))
+    except:
+        return HttpResponse("Profile Not Found")
+    try:
+        if request.user == user_profile:
+            return True
+    except:
+        try:
+            ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user_profile)
+            return True
+        except:
+            #Check the permissions give by user
+            return False
+
+def get_passed_profile(user):
+    data={}
+    try:
+        data=StudentProfile.objects.get(user=user)
+    except:
+        try:
+            data=CompanyProfile.objects.get(user=user)
+        except:
+            data={}
+    return data
+
+def restrict_users(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_ban_users==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        normal_users=get_simple_users(request)
+        staff_users={}
+        if request.user.is_superuser:
+            staff_users=User.objects.filter(is_active=True, is_staff=True)
+        return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions})
+    return error_detection(request,1)
+
+def get_simple_users(request):
+    if request.user.is_staff==False:
+        return HttpResponse("404: ERROR")
+    users=User.objects.filter(is_staff=False, is_active=True, is_superuser=False)
+    for each in users:
+        profile=get_the_profile(each)
+        if profile=={}:
+            users.exclude(id=each.id)
+        elif profile.account_banned_permanent or profile.account_banned_temporary:
+            users.exclude(id=each.id)
+    return users

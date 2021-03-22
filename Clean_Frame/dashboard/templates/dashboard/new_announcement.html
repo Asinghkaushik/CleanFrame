@@ -36,14 +36,14 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
             <a href="{% url 'announcements' %}"><span class="las la-users"></span>
             <span>My Announcements</span>
           </a>
         </li>
         <li>
-            <a href="{% url 'new_announcement_round' %}" class=""><span class="las la-users"></span>
+            <a href="{% url 'new_announcement_round' %}"><span class="las la-users"></span>
             <span>Announce New Round</span>
           </a>
         </li>
@@ -52,64 +52,36 @@
             <span>New Announcement</span>
           </a>
         </li>
-        {% endifequal %}
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'announce_internship' %}"><span class="las la-users"></span>
+            <span>Announce Internship</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
+            <span>My Internships</span>
+          </a>
+        </li>
+        <!--Student only-->
+        {% else %}
+        <li>
+            <a href="{% url 'show_companies' %}"><span class="las la-users"></span>
+            <span>Register</span>
           </a>
         </li>
         <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
+            <a href="{% url 'show_registrations' %}"><span class="las la-users"></span>
+            <span>My Registrations</span>
           </a>
         </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
-        <li>
-            <a href=""><span class="las la-users"></span>
-            <span>Add Staff</span>
-          </a>
-        </li>
+        {% endifequal %} {% endif %}
+
     </ul>
 </div>
 {% endblock %}
 
 <!--For the text at the top of panel 2-->
-{% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">New Announcement</a> {% endblock %}
+{% block dashboard_title %} New Announcement {% endblock %}
 
 <!--For the user details displayed at the top right-->
 

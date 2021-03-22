@@ -146,3 +146,6 @@ PHONE_NUMBER_TWILIO = '+17737565047'
 OTP_EXPIRE_TIME=16
 COMPANY_MESSAGE='This_is_a_company_Associated_account'
 SEPARATOR='**'
+
+
+USE_TZ=True
