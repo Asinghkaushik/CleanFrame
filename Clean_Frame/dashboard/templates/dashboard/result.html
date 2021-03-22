@@ -98,7 +98,7 @@
                     <h3 style="margin-left: 13%;">All Registrations</h3>
                     {% endif %}
                     {% if data.last_round %}
-                    <a href="{% url 'seeze_results' item=data.id %}" onclick="return confirm('This will delete all the decline registrations for this internship.\nYou can see the final students list in My Internships Section\nThis will also take some time, so wait patiently.\nIf you close browser or stopped processing in between then result may not be generated properly')">Seeze Results</a>
+                    <a href="{% url 'seeze_results' item=data.id %}" onclick="return confirm('This will decline all the registrations for this internship.\nYou can see the final students list in My Internships Section\n\nIf you close browser or stopped processing in between then result may not be generated properly, so wait patiently.')">Seeze Results</a>
                     {% endif %}
                     <button type="button" onclick="toexcel('#myTable')" style="width: 170px; text-align: center;">Export to excel</button>
                     <!-- <div id="myTable_filter" class="search-wrapper1">

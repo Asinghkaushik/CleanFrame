@@ -108,7 +108,7 @@
                                 <tr id="tr1" style="text-align: center;">
                                     <td id="td0">Student ID</td>
                                     <td id="td1">Name</td>
-                                    <td id="td1">Email</td>
+                                    <td id="td1" style="padding-left: 150px;">Email</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,7 +116,7 @@
                                 <tr>
                                     <td style="text-align: center;">{{each.id}}</td>
                                     <td style="text-align: center;">{{each.student.first_name}} {{each.student.last_name}}</td>
-                                    <td style="text-align: center;">{{each.student.email}}</td>
+                                    <td style="text-align: center; padding-left: 150px;">{{each.student.email}}</td>
                                   </tr>
                                 {% endfor %}
                             </tbody>

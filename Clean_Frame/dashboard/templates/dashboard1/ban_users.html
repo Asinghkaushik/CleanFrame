@@ -11,7 +11,7 @@
 <div class="sidebar-menu">
     <ul>
         <li>
-            <a href="{% url 'dashboard' %}" class="active"><span class="las la-igloo"></span>
+            <a href="{% url 'dashboard' %}" class=""><span class="las la-igloo"></span>
             <span>Dashboard</span>
           </a>
         </li>
@@ -35,7 +35,7 @@
         </li>
         {% endif %} {% if permissions.can_ban_users %}
         <li>
-            <a href="{% url 'restrict_users' %}"><span class="las la-user-tie"></span>
+            <a href="{% url 'restrict_users' %}" class="active"><span class="las la-user-tie"></span>
             <span>Restrict Users </span>
           </a>
         </li>
@@ -103,6 +103,13 @@
             <div class="card">
                 <div class="card-header">
                     <h3 style="margin-left: 13%;">Restrict users (single at 1 time)</h3>
+                    <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
+                    {% ifequal code '1' %}
+                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 user banned permanently</h6>
+                    {% endifequal %}
+                    {% ifequal code '2' %}
+                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 staff deleted permanently</h6>
+                    {% endifequal %}
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -146,11 +153,8 @@
                                         {% endifequal %}
                                     </td>
                                     <td style="margin-left: 4%;">
-                                        <a href="{% url 'student_account_signup_action' item=each.id type='1' %}" style="text-decoration: none;">
-                                            <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
-                                        </a>
-                                        <a href="{% url 'student_account_signup_action' item=each.id type='2' %}" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-times" style="color: red; font-size: 1.2rem;"></span>
+                                        <a href="{% url 'ban_user_account_permanent' item=each.id %}" onclick="return confirm('This will permanently ban this user\'s account.')" style="text-decoration: none; padding-left: 20%;">
+                                            <span class="fas fa-times" style="color: rgb(255, 60, 0); font-size: 1.2rem;"></span>
                                         </a>
                                     </td>
                                 </tr>
@@ -166,11 +170,9 @@
                                         <p style="color: rgb(155, 17, 113);">Staff</p>
                                     </td>
                                     <td style="margin-left: 4%;">
-                                        <a href="{% url 'student_account_signup_action' item=each.id type='1' %}" style="text-decoration: none;">
-                                            <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
-                                        </a>
-                                        <a href="{% url 'student_account_signup_action' item=each.id type='2' %}" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-times" style="color: red; font-size: 1.2rem;"></span>
+                                        
+                                        <a href="{% url 'delete_staff_account_admin' item=each.id %}"  onclick="return confirm('This will permanently delete this staff\'s account.')" style="text-decoration: none; padding-left: 20%;">
+                                            <span class="fas fa-times" style="color: rgb(173, 24, 24); font-size: 1.2rem;"></span>
                                         </a>
                                     </td>
                                 </tr>

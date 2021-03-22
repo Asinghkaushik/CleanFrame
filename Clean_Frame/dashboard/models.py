@@ -8,6 +8,7 @@ class StaffPermissions(models.Model):
     can_access_student_inactive_accounts=models.BooleanField(default=False)
     can_access_company_inactive_accounts=models.BooleanField(default=False)
     can_ban_users=models.BooleanField(default=False)
+    can_delete_staff_accounts=models.BooleanField(default=False)
     
     def __str__(self):
         if self.user:

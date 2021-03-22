@@ -1114,15 +1114,18 @@ def restrict_users(request):
             return redirect('home')
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
-            if permissions.can_ban_users==False:
+            if permissions.can_ban_users==False and permissions.can_delete_staff_accounts==False:
                 return HttpResponse("404 Error: You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
-        normal_users=get_simple_users(request)
+        normal_users={}
+        if permissions.can_ban_users:
+            normal_users=get_simple_users(request)
         staff_users={}
-        if request.user.is_superuser:
-            staff_users=User.objects.filter(is_active=True, is_staff=True)
+        if request.user.is_superuser and permissions.can_delete_staff_accounts:
+            staff_users=User.objects.filter(is_active=True, is_staff=True, is_superuser=False)
+            staff_users=staff_users.exclude(id=request.user.id)
         return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions})
     return error_detection(request,1)
 
@@ -1133,7 +1136,77 @@ def get_simple_users(request):
     for each in users:
         profile=get_the_profile(each)
         if profile=={}:
-            users.exclude(id=each.id)
-        elif profile.account_banned_permanent or profile.account_banned_temporary:
-            users.exclude(id=each.id)
+            users=users.exclude(id=each.id)
+        else:
+            if profile.account_banned_permanent==True or profile.account_banned_temporary==True:
+                users=users.exclude(id=each.id)
     return users
+
+def ban_user_account_permanent(request,item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_ban_users==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        user_ban=User.objects.get(id=int(item))
+        if user_ban.is_staff or user_ban.is_superuser:
+            return redirect('restrict_users')
+        profile=get_the_profile(user_ban)
+        if profile=={}:
+            return redirect('restrict_users')
+        if profile.account_banned_permanent==True:
+            return redirect('restrict_users')
+        profile.account_banned_permanent=True
+        profile.save()   
+        subject = 'Account Seized'
+        message = f'Hi user, your account has been banned permanently.\nAccount is banned by ' + request.user.email + ' , contact this email for any query.\nThanks'
+        email=user_ban.email
+        SENDMAIL(subject,message,email)
+        normal_users={}
+        if permissions.can_ban_users:
+            normal_users=get_simple_users(request)
+        staff_users={}
+        if request.user.is_superuser and permissions.can_delete_staff_accounts:
+            staff_users=User.objects.filter(is_active=True, is_staff=True, is_superuser=False)
+            staff_users=staff_users.exclude(id=request.user.id)
+        return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "1"})
+    return error_detection(request,1)
+
+def delete_staff_account_admin(request,item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False or request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_delete_staff_accounts==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        try:
+            user_del=User.objects.get(id=int(item))
+        except:
+            return redirect('restrict_users')
+        if user_del.is_superuser==True:
+            return redirect('restrict_users')
+        if user_del.is_staff==False:
+            return redirect('restrict_users')
+        user_del.delete()   
+        subject = 'Account Deleted'
+        message = f'Hi user, your account has been deleted permanently.\nAccount is deleted by ' + request.user.email + ' , contact this email for any query.\nThanks'
+        email=user_del.email
+        SENDMAIL(subject,message,email)
+        normal_users={}
+        if permissions.can_ban_users:
+            normal_users=get_simple_users(request)
+        staff_users={}
+        if request.user.is_superuser and permissions.can_delete_staff_accounts:
+            staff_users=User.objects.filter(is_active=True, is_staff=True, is_superuser=False)
+            staff_users=staff_users.exclude(id=request.user.id)
+        return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "2"})
+    return error_detection(request,1)
