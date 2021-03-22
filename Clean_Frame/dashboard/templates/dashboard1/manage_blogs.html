@@ -35,7 +35,7 @@
         </li>
         {% endif %} {% if permissions.can_ban_users %}
         <li>
-            <a href="{% url 'restrict_users' %}" class="active"><span class="las la-user-tie"></span>
+            <a href="{% url 'restrict_users' %}" class=""><span class="las la-user-tie"></span>
             <span>Restrict Users </span>
           </a>
         </li>
@@ -47,7 +47,13 @@
           </a>
         </li>
         {% endif %} 
-        
+        {% if permissions.can_manage_blogs %}
+        <li>
+            <a href="{% url 'manage_blogs' %}" class="active"><span class="las la-user-tie"></span>
+            <span>Manage Blogs </span>
+          </a>
+        </li>
+        {% endif %} 
         
         {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
@@ -96,7 +102,7 @@
 
 <!--For the text at the top of panel 2-->
 {% block dashboard_title %}
-<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Restrict Users</a> {% endblock %}
+<a href="{% url 'dashboard' %}" style="text-decoration: none; color: black;">Manage Blogs</a> {% endblock %}
 
 <!--For the user details displayed at the top right-->
 
@@ -135,58 +141,20 @@
                         <table id="myTable">
                             <thead id="thead">
                                 <tr id="tr1" style="text-align: center;">
-                                    <td>User ID</td>
-                                    <td id="td1">Email</td>
-                                    <td id="td2">Username</td>
-                                    <td id="td3">Name</td>
-                                    <td id="td4">User Type</td>
-                                    <td>Ban</td>
+                                    <td>Blog ID</td>
+                                    <td id="td1">Topic</td>
+                                    <td id="td2">Short Description</td>
+                                    <td id="td4">#</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for each in normal_users %}
-                                <tr style="text-align: center;">
-                                    <td>{{each.id}}</td>
-                                    <td>{{each.email}}</td>
-                                    <td>{{each.username}}</td>
-                                    <td>{{each.first_name}}
-                                        {% ifequal each.last_name 'This_is_a_company_Associated_account' %}
-                                        {% else %}
-                                        {{each.last_name}}
-                                        {% endifequal %}
-                                    </td>
-                                    <td>
-                                        {% ifequal each.last_name 'This_is_a_company_Associated_account' %}
-                                        <p style="color: rgb(33, 168, 146);">Company</p>
-                                        {% else %}
-                                        <p style="color: rgb(89, 150, 28);">Student</p>
-                                        {% endifequal %}
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'ban_user_account_permanent' item=each.id %}" onclick="return confirm('This will permanently ban this user\'s account.')" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-" style="color: rgb(255, 60, 0); font-size: 1.2rem;">P</span>
-                                        </a>
-                                        <a href="{% url 'ban_user_account_temporary' item=each.id %}" style="margin-left: 8%;" onclick="return confirm('This will ban this user\'s account for some days')" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-" style="color: rgb(255, 60, 0); font-size: 1.2rem;">T</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                                {% for each in staff_users %}
-                                <tr style="text-align: center;">
-                                    <td>{{each.id}}</td>
-                                    <td>{{each.email}}</td>
-                                    <td>{{each.username}}</td>
-                                    <td>{{each.first_name}} {{each.last_name}}
-                                    </td>
-                                    <td>
-                                        <p style="color: rgb(155, 17, 113);">Staff</p>
-                                    </td>
-                                    <td style="margin-left: 4%;">
-                                        
-                                        <a href="{% url 'delete_staff_account_admin' item=each.id %}"  onclick="return confirm('This will permanently delete this staff\'s account.')" style="text-decoration: none; padding-left: 20%;">
-                                            <span class="fas fa-" style="color: rgb(255, 60, 0); font-size: 1.2rem;">D</span>
-                                        </a>
+                                {% for each in blogs %}
+                                <tr>
+                                    <td style="text-align: center;"><a href="#">{{each.id}}</td></div>
+                                    <td style="text-align: center;" id="td1">{{each.topic}}</td>
+                                    <td id="td2" style="text-align: center;">{{each.short_description}}</td>
+                                    <td id="td4" style="text-align: center;">
+                                        <a href="#">Delete</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

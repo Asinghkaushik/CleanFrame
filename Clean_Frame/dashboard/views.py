@@ -8,7 +8,7 @@ import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
-from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions
+from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions, Blog
 from threading import *
 
 class Email_thread(Thread):
@@ -1262,4 +1262,118 @@ def delete_staff_account_admin(request,item):
     return error_detection(request,1)
 
 def unban_user(request,item):
-    pass
+    if error_detection(request,1)==False:
+        if request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_unban_users==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if int(item)==0:
+            banned_users=get_banned_users(request)
+            return render(request,'dashboard1/unban_users.html',context={"banned_users": banned_users, "permissions": permissions})
+
+        try:
+            user_unban=User.objects.get(id=int(item))
+        except:
+            return redirect('unban_user','0')
+        if user_unban.is_superuser==True:
+            return redirect('unban_user','0')
+        if user_unban.is_staff==True:
+            return redirect('unban_user','0')
+        profile=get_the_profile(user_unban)
+        if profile=={}:
+            return redirect('unban_user','0')
+        if profile.account_banned_temporary==True or profile.account_banned_permanent==True:
+            profile.account_banned_temporary=False
+            profile.account_banned_permanent=False
+            profile.save()
+            subject = 'Account Unbanned'
+            message = f'Hi user, your account has been unbanned.\nAccount is unbanned by ' + request.user.email + ' , contact this email for any query.\nThanks'
+            email=user_unban.email
+            Email_thread(subject,message,email).start()
+        banned_users=get_banned_users(request)
+        return render(request,'dashboard1/unban_users.html',context={"banned_users": banned_users, "permissions": permissions, "success": True})
+    return error_detection(request,1)
+
+
+def get_banned_users(request):
+    if request.user.is_superuser==False:
+        return HttpResponse("404: ERROR PAGE NOT FOUND")
+    users=User.objects.filter(is_staff=False, is_active=True, is_superuser=False)
+    for each in users:
+        profile=get_the_profile(each)
+        if profile=={}:
+            users=users.exclude(id=each.id)
+        else:
+            if profile.account_banned_permanent==False and profile.account_banned_temporary==False:
+                users=users.exclude(id=each.id)
+    return users
+
+def create_company_account(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False or request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_create_new_company_account==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if request.method=="POST":
+            username=request.POST.get('username')
+            first_name=request.POST.get('first_name')
+            email=request.POST.get('email')
+            try:
+                user=User.objects.get(email=email)
+                return render(request,'dashboard1/new_company_account.html',context={"permissions": permissions, "error": "Account exists with given email", "username": username, "email": email, "first_name": first_name})
+            except:
+                try:
+                    user=User.objects.get(username=username)
+                    return render(request,'dashboard1/new_company_account.html',context={"permissions": permissions, "error": "Account exists with given username", "username": username, "email": email, "first_name": first_name})
+                except:
+                    pass
+            user=User.objects.create(username=username, email=email, first_name=first_name, last_name=settings.COMPANY_MESSAGE)
+            password=generate_random_password(20)
+            user.set_password(password)
+            user.save()
+            profile=CompanyProfile.objects.create(user=user, verified=True)
+            subject = 'Company Account created'
+            message = f'Hi user, an account has been created for this email in Clean Frame.\nAccount Details are as follows:\nUsername: '+str(user)+'\nPassword: '+str(password)+'\nCompany Name: '+str(user.first_name)+'\nNow you can offer internships by fulfilling minimum profile details.\nThe password is a auto generated password so we suggest you to change it.\nThanks'
+            email=email
+            Email_thread(subject,message,email).start()
+            return render(request,'dashboard1/new_company_account.html',context={"permissions": permissions, "success": "Company Account created succesfully"})
+        else:
+            return render(request,'dashboard1/new_company_account.html',context={"permissions": permissions})
+    return error_detection(request,1)
+
+def generate_random_password(n):
+    digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$!"
+    password = ""
+    for i in range(n) :
+        password += digits[math.floor(random.random() * 62)]
+    password+='@'
+    return password
+
+def manage_blogs(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False or request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_blogs==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if request.method=="POST":
+            
+            pass
+        else:
+            blogs=Blog.objects.all()
+            return render(request,'dashboard1/manage_blogs.html',context={"permissions": permissions, "blogs": blogs})
+    return error_detection(request,1)
