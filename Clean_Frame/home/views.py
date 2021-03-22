@@ -15,9 +15,17 @@ from os import urandom
 from random import choice
 import os
 from django.http import FileResponse
-# from django.contrib.auth.decorators import login_required
+from threading import *
 
-# Create your views here.
+class Email_thread(Thread):
+    def __init__(self,subject,message,email):
+        self.email=email
+        self.subject=subject
+        self.message=message
+        Thread.__init__(self)
+
+    def run(self):
+        SENDMAIL(self.subject,self.message,self.email)
 
 # def secureImage(request, file):
 #     if request.user.is_authenticated==False:
@@ -209,7 +217,7 @@ def signup_student_send_otp(email):
     otp=generate_otp()
     subject = 'OTP for email verification in Clean Frame'
     message = f'Hi user, thank you for creating account, your otp is ' + str(otp) + ', do not share it with anyone.\nIt will expire in 15 minutes.\nThanks'
-    SENDMAIL(subject,message,email)
+    Email_thread(subject,message,email).start()
     try:
         u=StudentProfile.objects.get(user=user)
         u.otp=str(otp)
@@ -354,7 +362,7 @@ def signup_company_send_otp(email):
     otp=generate_otp()
     subject = 'OTP for email verification in Clean Frame'
     message = f'Hi user, thank you for creating account, your otp is ' + str(otp) + ', do not share it with anyone.\nIt will expire in 15 minutes.\nThanks'
-    SENDMAIL(subject,message,email)
+    Email_thread(subject,message,email).start()
     try:
         u=CompanyProfile.objects.get(user=user)
         u.otp=str(otp)
@@ -476,7 +484,7 @@ def forgot_password_send_otp(email, p):
         otp=generate_otp()
         subject = 'OTP for reseting password in Clean Frame'
         message = f'Hi user, your high security password reset otp is ' + str(otp) + ', do not share it with anyone.\nIt will expire in 15 minutes.\nThanks'
-        SENDMAIL(subject,message,email)
+        Email_thread(subject,message,email).start()
         p.otp=str(otp)
         p.otp_time=datetime.datetime.now()
         p.save()
@@ -552,7 +560,7 @@ def reset_password(request):
             return redirect('home')
         subject = 'Password changed in Clean Frame'
         message = f'Hi user, password has been successfully changed.\nThanks'
-        SENDMAIL(subject,message,email)
+        Email_thread(subject,message,email).start()
         return render(request, 'home/forgot_password_page.html', context={'phase': 4})
     else:
         return redirect('forgot_password')
@@ -575,7 +583,7 @@ def change_staff_only(request,email,username):
             user.save()
             subject = 'Password Changed in Clean Frame'
             message = f'Hi user, recently password has been changed.\nNew Password is : ' + new_password + '\nNote: This is auto generated password you are suggested to reset the password from dashboard section of the clean frame with link as https://clean-frame.herokuapp.com/.\nIf you had not given the request then click the following link to reset it again.\nLink to reset password: https://clean-frame.herokuapp.com/changepassword/iamastaff/' + email + '/' + username +'/\nThanks'
-            SENDMAIL(subject,message,email)
+            Email_thread(subject,message,email).start()
         else:
             pass
     except:

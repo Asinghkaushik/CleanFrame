@@ -9,6 +9,16 @@ from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
 from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
 from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions
+from threading import *
+class Email_thread(Thread):
+    def __init__(self,subject,message,email):
+        self.email=email
+        self.subject=subject
+        self.message=message
+        Thread.__init__(self)
+
+    def run(self):
+        SENDMAIL(self.subject,self.message,self.email)
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -485,7 +495,7 @@ def student_account_signup_action(request,type,item):
                     details.save()
                     code=1
                     message = f'Hi user, your request for creating the account has been successfully met. You can login and register for internships\nThanks'
-                    SENDMAIL(subject,message,email)
+                    Email_thread(subject,message,email).start()
             except:
                 code=0
         elif type=="2":
@@ -499,7 +509,7 @@ def student_account_signup_action(request,type,item):
                     u.delete()
                     code=2
                     message = f'Hi user, your request for creating the account has been blocked and your account has been deleted. This may due to some inapropriate data given in the signup form.\nYou can register again on the clean frame. Be sure this time, you give correct details, otherwise the email can be blocked permanently.\nThanks'
-                    SENDMAIL(subject,message,email)
+                    Email_thread(subject,message,email).start()
             except:
                 code=0
         data=StudentProfile.objects.filter(verified=False, account_banned_permanent=False,  account_banned_temporary=False).order_by('signup_date')
@@ -534,7 +544,7 @@ def company_account_signup_action(request,type,item):
                     details.save()
                     code=1
                     message = f'Hi user, your request for creating the account has been successfully met. You can login and register for internships\nThanks'
-                    SENDMAIL(subject,message,email)
+                    Email_thread(subject,message,email).start()
             except:
                 code=0
         elif type=="2":
@@ -548,7 +558,7 @@ def company_account_signup_action(request,type,item):
                     u.delete()
                     code=2
                     message = f'Hi user, your request for creating the account has been blocked and your account has been deleted. This may due to some inapropriate data given in the signup form.\nYou can register again on the clean frame. Be sure this time, you give correct details, otherwise the email can be blocked permanently.\nThanks'
-                    SENDMAIL(subject,message,email)
+                    Email_thread(subject,message,email).start()
             except:
                 code=0
         data=CompanyProfile.objects.filter(verified=False, account_banned_permanent=False,  account_banned_temporary=False).order_by('signup_date')
@@ -625,7 +635,7 @@ def register_students_for_next_round(request, prev, new):
         subject = 'Registration for next Round'
         message = f'Hi user, you have been successfully registered for next round of internship.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
         email=each.student.email
-        SENDMAIL(subject,message,email)
+        Email_thread(subject,message,email).start()
 
 def notify_other_students_for_rejection(request, prev, new):
     get_students=StudentRegistration.objects.filter(company=prev, result_status=0)
@@ -635,7 +645,7 @@ def notify_other_students_for_rejection(request, prev, new):
         subject = 'Internship Round Result'
         message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
         email=each.student.email
-        SENDMAIL(subject,message,email)
+        Email_thread(subject,message,email).start()
 
 def new_announcement_success(request, item):
     if error_detection(request,1)==False:
@@ -804,7 +814,7 @@ def stu_result(request, item):
                         subject = 'Internship Round Cleared'
                         message = f'Hi user, We congratulate you for clearing the round in internship.\nDetails of cleared round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
                         email=get_re.student.email
-                        SENDMAIL(subject,message,email)
+                        Email_thread(subject,message,email).start()
                 return redirect('stu_result', item)
             if int(spliter[1])==2:
                 for each_id in mylist:
@@ -815,7 +825,7 @@ def stu_result(request, item):
                         subject = 'Internship Round Result'
                         message = f'Hi user, We feel apology telling you that you have been rejected in an internship round.\nDetails of this round are as follows:\nCompany Name: '+str(get_re.company.company.first_name)+'\nInternship Name: '+str(get_re.company.internship.internship_name)+'\nRound Number: '+str(get_re.company.internship_round)+'\nThanks'
                         email=get_re.student.email
-                        SENDMAIL(subject,message,email)
+                        Email_thread(subject,message,email).start()
                 return redirect('stu_result', item)
             return HttpResponse("INVALID REQUEST")
         else:
@@ -994,14 +1004,14 @@ def accept_discard_students(request,announcement):
             subject = 'Internship Selection Last Round'
             message = f'Hi user, you have been selected by the company in the last round of internship.\nDetails of the last cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+' (Last Round) \nThanks'
             email=each.student.email
-            SENDMAIL(subject,message,email)
+            Email_thread(subject,message,email).start()
         if each.result_status==0:
             each.result_status=2
             each.save()
             subject = 'Internship Result Last Round'
             message = f'Hi user, you have been rejected in the last round of internship, you can try for another interships.\nDetails of this round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+' (last Round)\nThanks'
             email=each.student.email
-            SENDMAIL(subject,message,email)
+            Email_thread(subject,message,email).start()
     all_ann=CompanyAnnouncement.objects.filter(internship=internship, company=company)
     for each in all_ann:
         each.last_round_result_announced=True
@@ -1058,7 +1068,7 @@ def set_results_for_previous_round(request, old, new, internship):
             subject = 'Reverted back for previous Round'
             message = f'Hi user, you have been reverted back to previous round of internship because company deleted the latest round.\nDetails of the current cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
             email=each.student.email
-            SENDMAIL(subject,message,email)
+            Email_thread(subject,message,email).start()
             
             
 def get_max(a,b):
@@ -1166,7 +1176,7 @@ def ban_user_account_permanent(request,item):
         subject = 'Account Seized'
         message = f'Hi user, your account has been banned permanently.\nAccount is banned by ' + request.user.email + ' , contact this email for any query.\nThanks'
         email=user_ban.email
-        SENDMAIL(subject,message,email)
+        Email_thread(subject,message,email).start()
         normal_users={}
         if permissions.can_ban_users:
             normal_users=get_simple_users(request)
@@ -1200,7 +1210,7 @@ def delete_staff_account_admin(request,item):
         subject = 'Account Deleted'
         message = f'Hi user, your account has been deleted permanently.\nAccount is deleted by ' + request.user.email + ' , contact this email for any query.\nThanks'
         email=user_del.email
-        SENDMAIL(subject,message,email)
+        Email_thread(subject,message,email).start()
         normal_users={}
         if permissions.can_ban_users:
             normal_users=get_simple_users(request)
