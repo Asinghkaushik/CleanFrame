@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 # Create your models here.
 class StudentProfile(models.Model):
@@ -11,14 +12,14 @@ class StudentProfile(models.Model):
     complete_address=models.CharField(max_length=1000, null=True)
     gender=models.CharField(max_length=100, null=True)
     profile_filled=models.BooleanField(default=False)
-    profile_created=models.DateTimeField(auto_now=True)
+    profile_created=models.DateTimeField(default=datetime.datetime.now())
     account_banned_permanent=models.BooleanField(default=False)
     account_banned_temporary=models.BooleanField(default=False)
     account_ban_date=models.DateTimeField(blank=True, null=True)
     account_ban_time=models.IntegerField(default=0)
-    signup_date=models.DateTimeField(auto_now=True)
+    signup_date=models.DateTimeField(default=datetime.datetime.now())
     verified=models.BooleanField(default=False)
-    otp_time=models.DateTimeField(auto_now=True)
+    otp_time=models.DateTimeField(default=datetime.datetime.now())
     otp=models.CharField(max_length=100, null=True)
 
     def __str__(self):
@@ -33,14 +34,14 @@ class CompanyProfile(models.Model):
     complete_address=models.CharField(max_length=1000, null=True)
     image=models.ImageField(upload_to='post_images/', default="us_ma.png")
     profile_filled=models.BooleanField(default=False)
-    profile_created=models.DateTimeField(auto_now=True)
+    profile_created=models.DateTimeField(default=datetime.datetime.now())
     account_banned_permanent=models.BooleanField(default=False)
     account_banned_temporary=models.BooleanField(default=False)
     account_ban_date=models.DateTimeField(blank=True, null=True)
     account_ban_time=models.IntegerField(default=0)
-    signup_date=models.DateTimeField(auto_now=True)
+    signup_date=models.DateTimeField(default=datetime.datetime.now())
     verified=models.BooleanField(default=False)
-    otp_time=models.DateTimeField(auto_now=True)
+    otp_time=models.DateTimeField(default=datetime.datetime.now())
     otp=models.CharField(max_length=100, null=True)
 
     def __str__(self):

@@ -956,6 +956,52 @@ def show_registrations(request):
         return render(request, "dashboard/registrations.html", context={"registrations": registrations})
     return error_detection(request,1)
 
+def internship_action(request,item,type):
+    if error_detection(request,1)==False:
+        if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
+            return redirect('home')
+        data=get_my_profile(request)
+        try:
+            registration=StudentRegistration.objects.get(id=int(item))
+        except:
+            return HttpResponse("Registration not found")
+        if request.user!=registration.student:
+            return HttpResponse("Registration not found")
+        if registration.result_status!=1 or registration.internship_cleared==False:
+            return HttpResponse("Error: may be this is not you are looking for.")
+        try:
+            company_announcement=registration.company
+            internship=registration.company.internship
+        except:
+            return HttpResponse("Error: Internship not found")
+        if company_announcement.last_round==False or company_announcement.last_round_result_announced==False:
+            return HttpResponse("Error: Not a last round or final results have not been seized")
+        if internship.result_announced==False:
+            return HttpResponse("Error: Result of this internship has not been announced")
+        try:
+            internship_result=InternshipFinalResult.objects.filter(internship=internship, student=request.user)
+        except:
+            return HttpResponse("Error: Internship Result not found")
+        if internship_result.count()!=1:
+            return HttpResponse("Error: More than 1 resuls found for this, can\'t fetch which to take")
+        if internship_result[0].student_agrees==0:
+            if int(type)==2:
+                result=internship_result[0]
+                result.student_agrees=1
+                result.save()
+                registration.my_action=1
+                registration.save()
+                subject = 'Reverted Back'
+                message = f'Hi user, you have reverted back your selection in the internship which can\'t be undone, you can try for another interships.\nDetails of this internship round are as follows:\nCompany Name: '+str(registration.company.company.first_name)+'\nInternship Name: '+str(registration.company.internship.internship_name)+'\nRound Number: '+str(registration.company.internship_round)+' (last Round)\nThanks'
+                email=request.user.email
+                Email_thread(subject,message,email).start()
+                return redirect('show_registrations')
+            else:
+                return HttpResponse("404 Error: Page not found")
+        else:
+            return HttpResponse("Error: You have already taken an action which can\'t be undone")
+    return error_detection(request,1)
+
 def delete_internship(request,item):
     if error_detection(request,1)==False:
         if request.user.last_name!=settings.COMPANY_MESSAGE:
