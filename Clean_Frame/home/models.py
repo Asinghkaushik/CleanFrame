@@ -21,6 +21,7 @@ class StudentProfile(models.Model):
     verified=models.BooleanField(default=False)
     otp_time=models.DateTimeField(default=datetime.datetime.now())
     otp=models.CharField(max_length=100, null=True)
+    got_internship=models.BooleanField(default=False)
 
     def __str__(self):
         if self.user:

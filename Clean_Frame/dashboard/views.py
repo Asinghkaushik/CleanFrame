@@ -868,6 +868,8 @@ def show_companies(request):
         if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
+        if data.got_internship==True:
+            return HttpResponse("You can't register for internships this season because you alrady have one")
         eligible_companies=get_eligible_companies_for_me_round_one(request)
         return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies})
     return error_detection(request,1)
@@ -898,6 +900,8 @@ def register_student_first_round_only(request, item):
         if request.user.is_staff or request.user.is_superuser or request.user.last_name==settings.COMPANY_MESSAGE:
             return redirect('home')
         data=get_my_profile(request)
+        if data.got_internship==True:
+            return HttpResponse("You can't register for internships this season because you alrady have one")
         eligible_companies=get_eligible_companies_for_me_round_one(request)
         try:
             ann=CompanyAnnouncement.objects.get(id=int(item))
@@ -995,6 +999,25 @@ def internship_action(request,item,type):
                 message = f'Hi user, you have reverted back your selection in the internship which can\'t be undone, you can try for another interships.\nDetails of this internship round are as follows:\nCompany Name: '+str(registration.company.company.first_name)+'\nInternship Name: '+str(registration.company.internship.internship_name)+'\nRound Number: '+str(registration.company.internship_round)+' (last Round)\nThanks'
                 email=request.user.email
                 Email_thread(subject,message,email).start()
+                return redirect('show_registrations')
+            elif int(type)==1:
+                result=internship_result[0]
+                result.student_agrees=2
+                result.save()
+                registration.my_action=2
+                registration.save()
+                subject = 'Congratulations! intern'
+                message = f'Hi user, you have have been sucessfully selected for the internship, we congratulate for being an intern.\nNote: According to one student one company policy you can\'t regitser for other internships now\nDetails of this internship are as follows:\nCompany Name: '+str(registration.company.company.first_name)+'\nInternship Name: '+str(registration.company.internship.internship_name)+'\nThanks'
+                email=request.user.email
+                Email_thread(subject,message,email).start()
+                my_registrations=StudentRegistration.objects.filter(student=student)
+                my_registrations.exclude(id=int(item))
+                for each in my_registrations:
+                    each.result_status=3
+                    each.save()
+                profile=get_my_profile(request)
+                profile.got_internship=True
+                profile.save()
                 return redirect('show_registrations')
             else:
                 return HttpResponse("404 Error: Page not found")

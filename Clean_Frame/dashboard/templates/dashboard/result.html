@@ -150,6 +150,18 @@
 
                                             </tr>
                                         {% endifequal %} 
+                                        {% ifequal each.result_status 3 %}
+                                            <tr id="tr1 " style="text-align: center; ">
+                                                <td style="width: 5%">
+                                                    -
+                                                </td>
+                                                <td><a href="{% url 'check_student_profile' item=each.student.id %}">{{each.student.id}}</a></td>
+                                                <td>{{each.student.first_name}} {{each.student.last_name}}</td>
+                                                <td>{{each.date_of_registrations}}</td>
+                                                <td style="color: red">Reverted</td>
+
+                                            </tr>
+                                        {% endifequal %} 
                                     {% else %}
                                       {% if data.internship_round > each.company.internship_round %}
                                       {% else %}

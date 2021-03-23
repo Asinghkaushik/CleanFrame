@@ -128,16 +128,22 @@
                                     <td>{{each.date_of_registrations}}</td>
                                     {% ifequal each.result_status 0 %}
                                     <td>Not Announced</td>
-                                    {% else %} {% ifequal each.result_status 1 %}
-                                    <td style="color:green">Cleared</td>
-                                    {% else %}
-                                    <td style="color:red">Rejected</td>
-                                    {% endifequal %} {% endifequal %}
+                                    {% else %} 
+                                      {% ifequal each.result_status 1 %}
+                                      <td style="color:green">Cleared</td>
+                                      {% else %}
+                                        {% ifequal each.result_status 2 %}
+                                        <td style="color:red">Rejected</td>
+                                        {% else %}
+                                        <td style="color:red">Reverted</td>
+                                        {% endifequal %} 
+                                      {% endifequal %} 
+                                    {% endifequal %}
                                     <td>
                                     {% ifequal each.result_status 1 %}
                                       {% if each.internship_cleared %}
                                         {% ifequal each.my_action 0 %}
-                                        <a href="#" style="text-decoration: none;" onclick="return confirm('By clicking you will be registered in this internship and will not able to register in any other internship according to one student one job policy')">
+                                        <a href="{% url 'internship_action' item=each.id type=1 %}" style="text-decoration: none;" onclick="return confirm('By clicking you will be registered in this internship and will not able to register in any other internship according to one student one job policy')">
                                           <span class="fas fa-check" style="color: green; font-size: 1.2rem; "></span>
                                         </a>
                                         <a href="{% url 'internship_action' item=each.id type=2 %}" style="text-decoration: none; padding-left: 15px;" onclick="return confirm('By clicking you cannot register into this internship again')">

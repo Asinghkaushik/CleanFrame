@@ -123,6 +123,7 @@ class StudentRegistration(models.Model):
     #Status 0 : Not Announced
     #Status 1: Cleared
     #Status 2: Rejected
+    #Status 3: Placed in another internship
     
     my_action=models.IntegerField(default=0)
     #0 - Not reacted yet
