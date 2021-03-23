@@ -9,9 +9,11 @@ class StaffPermissions(models.Model):
     can_access_company_inactive_accounts=models.BooleanField(default=False)
     can_ban_users=models.BooleanField(default=False)
     can_delete_staff_accounts=models.BooleanField(default=False)
+    
+    #For admins only
     can_unban_users=models.BooleanField(default=False)
     can_create_new_company_account=models.BooleanField(default=False)
-    can_manage_blogs=models.BooleanField(default=True)
+    can_manage_blogs=models.BooleanField(default=False)
     
     def __str__(self):
         if self.user:
@@ -135,10 +137,10 @@ class ProfilePermissions(models.Model):
                 return "NIL"
 
 class Blog(models.Model):
-    topic=models.CharField(max_length=100000)
+    title=models.CharField(max_length=100000)
     short_description=models.CharField(max_length=100000000)
     brief_description=models.TextField()
     file=models.FileField(upload_to='post_files/', null=True, blank=True)
     
     def __str__(self):
-        return self.topic
+        return self.title

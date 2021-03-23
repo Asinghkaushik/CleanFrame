@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
-from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm
+from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm,BlogForm
 from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions, Blog
 from threading import *
 
@@ -1315,7 +1315,7 @@ def get_banned_users(request):
 
 def create_company_account(request):
     if error_detection(request,1)==False:
-        if request.user.is_staff==False or request.user.is_superuser==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
             return redirect('home')
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
@@ -1361,7 +1361,7 @@ def generate_random_password(n):
 
 def manage_blogs(request):
     if error_detection(request,1)==False:
-        if request.user.is_staff==False or request.user.is_superuser==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
             return redirect('home')
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
@@ -1376,4 +1376,77 @@ def manage_blogs(request):
         else:
             blogs=Blog.objects.all()
             return render(request,'dashboard1/manage_blogs.html',context={"permissions": permissions, "blogs": blogs})
+    return error_detection(request,1)
+
+def create_new_blog(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_blogs==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if request.method=="POST":
+            form=BlogForm(request.POST,request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('manage_blogs')
+            else:
+                error=form.errors
+                return render(request,'dashboard1/new_blog.html',context={"permissions": permissions, "error": error})
+        else:
+            return render(request,'dashboard1/new_blog.html',context={"permissions": permissions})
+    return error_detection(request,1)
+
+def delete_blog(request,item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_blogs==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        try:
+            Blog.objects.get(id=int(item)).delete()
+        except:
+            pass
+        return redirect('manage_blogs')
+    return error_detection(request,1)
+
+def edit_blog(request,item):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_blogs==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        try:
+            blog=Blog.objects.get(id=int(item))
+        except:
+            return HttpResponse("Blog not found")
+        if request.method=="POST":
+            form=BlogForm(request.POST,request.FILES)
+            if form.is_valid():
+                blog.title=form.cleaned_data['title']
+                blog.short_description=form.cleaned_data['short_description']
+                blog.brief_description=form.cleaned_data['brief_description']
+                if form.cleaned_data['file'] != None:
+                    blog.file=form.cleaned_data['file']
+                blog.save()
+                return redirect('manage_blogs')
+            else:
+                error=form.errors
+                return render(request,'dashboard1/new_blog.html',context={"permissions": permissions, "error": error})
+        else:
+            return render(request,'dashboard1/edit_blog.html',context={"permissions": permissions, "data": blog})
     return error_detection(request,1)

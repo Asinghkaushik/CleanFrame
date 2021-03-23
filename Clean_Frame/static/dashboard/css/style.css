@@ -578,3 +578,19 @@ input {
 .action .menu ul li:hover a{
   color: #ff5d94;
 }
+
+.link_to_button_pink {
+  text-decoration: none; 
+  border: 7px solid #ca20da; 
+  background-color: #ca20da; 
+  color: white; 
+  border-radius: 20px;
+}
+
+.link_to_button_red {
+  text-decoration: none; 
+  border: 7px solid #fd436c; 
+  background-color: #fd436c; 
+  color: white; 
+  border-radius: 20px;
+}
