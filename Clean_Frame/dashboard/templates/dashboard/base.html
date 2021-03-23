@@ -83,7 +83,11 @@
                         <ul>
                             {% if request.user.is_staff %} {% else %}
                             <li>
-                                <a href="#"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                                <a href="{% url 'check_company_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% else %}
+                                <a href="{% url 'check_student_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% endifequal %}
                             </li>
                             {% endif %}
                             <li>

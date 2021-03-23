@@ -38,10 +38,10 @@
           <span class="las la-bars"></span>
         </label> {% block dashboard_title %}{% endblock %}
             </h2>
-            <!-- <div class="search-wrapper">
+            <div class="search-wrapper">
         <span class="las la-search"></span>
         <input type="search" placeholder="Search here">
-      </div> -->
+      </div>
             <div class="user-wrapper">
                 <!-- {% if data.image %}
         <img src="{{data.image.url}}" width="40px" height="40px" alt="">
@@ -83,7 +83,11 @@
                         <ul>
                             {% if request.user.is_staff %} {% else %}
                             <li>
-                                <a href="#"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                                <a href="{% url 'check_company_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% else %}
+                                <a href="{% url 'check_student_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                                {% endifequal %}
                             </li>
                             {% endif %}
                             <li>
@@ -115,7 +119,7 @@
     <script>
     function toexcel(id){
         $(id).table2excel({ 
-        filename: "data.xls" 
+        filename: "data.xlsx" 
         }); 
     }
     </script>

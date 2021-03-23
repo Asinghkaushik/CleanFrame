@@ -124,7 +124,7 @@
                                 <tr id="tr1" style="text-align: center;">
                                     <td><a href="{% url 'show_company_round_details' item=each.id %}">{{each.id}}</a></td>
                                     <td>{{each.internship.internship_name}}</td>
-                                    <td>{{each.company}}</td>
+                                    <td><a href="{% url 'check_company_profile' item=each.company.id %}">{{each.company}}</a></td>
                                     <td>{{each.round_name}}</td>
                                     <td>{{each.last_date_to_apply}}</td>
                                     <td style="margin-left: 16%;">

@@ -1156,10 +1156,27 @@ def check_student_profile(request, item):
                 return HttpResponse("Profile Not Found")
         except:
             return HttpResponse("Profile Not Found")
+        if user_profile.last_name==settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
+            return HttpResponse("Profile not found")
         if check_profilepage_permissions(request, item) == False:
             return HttpResponse("You have not permission to view this user's profile page")
         image=data.image
         return render(request,'dashboard/profile_page.html',context={"data": data, "image": image})
+    return error_detection(request,1)
+
+def check_company_profile(request, item):
+    if error_detection(request,1)==False:
+        try:
+            user_profile=User.objects.get(id=int(item))
+            data=get_passed_profile(user_profile)
+            if data=={}:
+                return HttpResponse("Profile Not Found")
+        except:
+            return HttpResponse("Profile Not Found")
+        if user_profile.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
+            return HttpResponse("Profile not found")
+        image=data.image
+        return render(request,'dashboard/profile_page_com.html',context={"data": data, "image": image})
     return error_detection(request,1)
 
 def check_profilepage_permissions(request, item):

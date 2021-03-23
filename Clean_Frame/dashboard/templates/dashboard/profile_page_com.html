@@ -10,14 +10,20 @@
 </head>
 
 <body>
-    {% if data.user.is_authenticated %}{% if data.user.is_staff or data.user.is_superuser %} PROFILE NOT FOUND {% else %} {% ifequal data.user.last_name 'This_is_a_company_Associated_account' %} PROFILE NOT FOUND{% else %}
+    {% if data.user.is_authenticated %}
+    {% if data.user.is_staff or data.user.is_superuser %} 
+    PROFILE NOT FOUND 
+    {% else %} 
+    {% ifnotequal data.user.last_name 'This_is_a_company_Associated_account' %} 
+    PROFILE NOT FOUND
+    {% else %}
 
     <div class="main-content">
         <!-- Top navbar -->
         <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
             <div class="container-fluid">
                 <!-- Brand -->
-                <p style="color: white;">&nbsp;&nbsp; Student profile
+                <p style="color: white;">&nbsp;&nbsp; Company profile
                     <p>
                         <!-- Form -->
                         <!-- <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
@@ -41,7 +47,7 @@
                                             <img src="{% static 'dashboard/img/us_ma.png' %}"  style="border-radius: 50%; height: 35px"  alt=""> {% endif %}
                                         </span>
                                         <div class="media-body ml-2 d-none d-lg-block">
-                                            <span class="mb-0 text-sm  font-weight-bold">{{data.user.first_name}} {{data.user.last_name}}</span>
+                                            <span class="mb-0 text-sm  font-weight-bold">{{data.user.first_name}}</span>
                                         </div>
                                     </div>
                                 </a>
@@ -59,9 +65,12 @@
                     <div class="col-lg-7 col-md-10">
                         <h1 class="display-2 text-white">{{data.user.first_name}} Profile Page</h1>
                         <p class="text-white mt-0 mb-5">Since you have permissions to see this profile page, you are viewing it. Rather no one without permission can see it.</p>
-                        <a onclick="window.history.back();" style="color: white" class="btn btn-primary">Go Back</a> {% if data.cv %}
-                        <a href="{{data.cv.url}}" style="color: white" class="btn btn-info">View CV</a> {% else %}
-                        <a style="color: white" class="btn btn-danger"> CV not available</a> {% endif %}
+                        <a onclick="window.history.back();" style="color: white" class="btn btn-primary">Go Back</a> 
+                        {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
+                        <a href="{% url 'internships' %}" style="color: white" class="btn btn-info"> My Internships</a> 
+                        {% else %}
+                        <a href="{% url 'show_companies' %}" style="color: white" class="btn btn-info"> Register</a> 
+                        {% endifequal %}
                     </div>
                 </div>
             </div>
@@ -150,7 +159,7 @@
                         </div> -->
                 <div class="card-body" style="padding-top: 100px;">
                     <form>
-                        <h6 class="heading-small text-muted mb-4">User information</h6>
+                        <h6 class="heading-small text-muted mb-4">Company information</h6>
                         <div class="pl-lg-4">
                             <div class="row">
                                 <div class="col-lg-6">
@@ -169,14 +178,8 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group focused">
-                                        <label class="form-control-label" for="input-first-name">First name</label>
+                                        <label class="form-control-label" for="input-first-name">Company name</label>
                                         <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="{{data.user.first_name}}" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="input-last-name">Last name</label>
-                                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="{{data.user.last_name}}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -186,32 +189,17 @@
                         <h6 class="heading-small text-muted mb-4">Additional information</h6>
                         <div class="pl-lg-4">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-lg-6">
                                     <div class="form-group focused">
-                                        <label class="form-control-label" for="input-address">Address</label>
+                                        <label class="form-control-label" for="input-address">Company Address</label>
                                         <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="{{data.complete_address}}" type="text" readonly>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group focused">
-                                        <label class="form-control-label" for="input-city">Contact Number</label>
+                                        <label class="form-control-label" for="input-city">Contact Info (For queries)</label>
                                         <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Contact Number" value={{data.contact_number}} readonly>
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="input-country">Gender</label>
-                                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Gender" value="{{data.gender}}" readonly>
-                                    </div>
-                                    <!-- </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="input-country">CGPA</label>
-                                                <input type="text" id="input-postal-code" class="form-control form-control-alternative" placeholder="CGPA" value="{{data.cgpa}}" readonly>
-                                            </div>
-                                        </div> -->
                                 </div>
                             </div>
                             <hr class="my-4">
@@ -234,12 +222,12 @@
         <div class="row align-items-center justify-content-xl-between">
             <div class="col-xl-8 m-auto text-center">
                 <div class="copyright">
-                    <p>If you are viewing from a company account then this user may have given false information about him/ her so, you can eliminate this user from internship or can complaint to the staff and give them his user ID which is: {{data.user.id}}</p>
+                    <p>If you are viewing from a student account then this company may have given false information about him/ her so, you can ignore its internship or can complaint to the staff and give them his user ID which is: {{data.user.id}}</p>
                 </div>
             </div>
         </div>
     </footer>
-    {% endifequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
+    {% endifnotequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
 </body>
 
 </html>
