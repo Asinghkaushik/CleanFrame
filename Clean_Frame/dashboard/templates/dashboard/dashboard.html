@@ -40,7 +40,7 @@
           </a>
         </li>
         {% endif %}
-        {% if permissions.can_unban_users %}
+        {% if permissions.can_unban_users and request.user.is_superuser %}
         <li>
             <a href="{% url 'unban_user' item='0' %}" class=""><span class="las la-user-tie"></span>
             <span>Un-restrict Users </span>
@@ -58,6 +58,13 @@
         <li>
             <a href="{% url 'manage_blogs' %}" class=""><span class="las la-user-tie"></span>
             <span>Manage Blogs </span>
+          </a>
+        </li>
+        {% endif %} 
+        {% if permissions.can_manage_staff_accounts and request.user.is_superuser %}
+        <li>
+            <a href="{% url 'manage_staff_accounts' %}" class=""><span class="las la-user-tie"></span>
+            <span>Manage Staff Accounts </span>
           </a>
         </li>
         {% endif %} 

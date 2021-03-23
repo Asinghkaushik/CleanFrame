@@ -118,15 +118,7 @@
                     <h3 style="margin-left: 13%;">Blogs</h3>
                     <a href="{% url 'create_new_blog' %}" class="link_to_button_pink">+ New Blog</a>
                     <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
-                    {% ifequal code '1' %}
-                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 user banned permanently</h6>
-                    {% endifequal %}
-                    {% ifequal code '2' %}
-                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 staff deleted permanently</h6>
-                    {% endifequal %}
-                    {% ifequal code '3' %}
-                    <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 user banned temporarily</h6>
-                    {% endifequal %}
+                    
                     <!-- <div id="myTable_filter" class="search-wrapper1">
                 <span class="las la-search"></span>
                 <input type="search" aria-controls="myTable" placeholder="Search User">
@@ -151,7 +143,7 @@
                             <tbody>
                                 {% for each in blogs %}
                                 <tr>
-                                    <td style="text-align: center;"><a href="{% url 'edit_blog' item=each.id %}">{{each.id}}</td></div>
+                                    <td style="text-align: center;"><a href="{% url 'edit_blog' item=each.id %}" class="link_to_button_blue">{{each.id}}</td></div>
                                     <td style="text-align: center;" id="td1">{{each.title}}</td>
                                     <td id="td2" style="text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 30px">{{each.short_description}}</td>
                                     <td id="td4" style="text-align: center;">

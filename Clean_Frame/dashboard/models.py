@@ -8,12 +8,16 @@ class StaffPermissions(models.Model):
     can_access_student_inactive_accounts=models.BooleanField(default=False)
     can_access_company_inactive_accounts=models.BooleanField(default=False)
     can_ban_users=models.BooleanField(default=False)
-    can_delete_staff_accounts=models.BooleanField(default=False)
+    
+    can_create_new_company_account=models.BooleanField(default=False)
+    can_manage_blogs=models.BooleanField(default=False)
+    can_manage_technical_support=models.BooleanField(default=False)
+    can_give_notifications=models.BooleanField(default=False)
     
     #For admins only
     can_unban_users=models.BooleanField(default=False)
-    can_create_new_company_account=models.BooleanField(default=False)
-    can_manage_blogs=models.BooleanField(default=False)
+    can_manage_staff_accounts=models.BooleanField(default=False)
+    can_delete_staff_accounts=models.BooleanField(default=False)
     
     def __str__(self):
         if self.user:

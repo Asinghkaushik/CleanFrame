@@ -1227,7 +1227,7 @@ def ban_user_account_temporary(request,item):
         return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "3"})
     return error_detection(request,1)
 
-def delete_staff_account_admin(request,item):
+def delete_staff_account_admin(request,item,type):
     if error_detection(request,1)==False:
         if request.user.is_staff==False or request.user.is_superuser==False:
             return redirect('home')
@@ -1241,25 +1241,31 @@ def delete_staff_account_admin(request,item):
         try:
             user_del=User.objects.get(id=int(item))
         except:
-            return redirect('restrict_users')
+            return HttpResponse("User not Found")
         if user_del.is_superuser==True:
-            return redirect('restrict_users')
+            return HttpResponse("Cannot delete this account")
         if user_del.is_staff==False:
-            return redirect('restrict_users')
+            return HttpResponse("Cannot delete this account")
+        email=user_del.email
         user_del.delete()   
         subject = 'Account Deleted'
         message = f'Hi user, your account has been deleted permanently.\nAccount is deleted by ' + request.user.email + ' , contact this email for any query.\nThanks'
-        email=user_del.email
         Email_thread(subject,message,email).start()
-        normal_users={}
-        if permissions.can_ban_users:
-            normal_users=get_simple_users(request)
-        staff_users={}
-        if request.user.is_superuser and permissions.can_delete_staff_accounts:
-            staff_users=User.objects.filter(is_active=True, is_staff=True, is_superuser=False)
-            staff_users=staff_users.exclude(id=request.user.id)
-        return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "2"})
+        if int(type)==1:
+            normal_users={}
+            if permissions.can_ban_users:
+                normal_users=get_simple_users(request)
+            staff_users={}
+            if request.user.is_superuser and permissions.can_delete_staff_accounts:
+                staff_users=User.objects.filter(is_active=True, is_staff=True, is_superuser=False)
+                staff_users=staff_users.exclude(id=request.user.id)
+            return render(request,'dashboard1/ban_users.html',context={"normal_users": normal_users, "staff_users": staff_users, "permissions": permissions, "code": "2"})
+        if int(type)==2:
+            if request.user.is_superuser and permissions.can_manage_staff_accounts:
+                users=User.objects.filter(is_staff=True, is_superuser=False)
+            return render(request,'dashboard1/manage_staff_accounts.html',context={"permissions": permissions, "data": users, "message": "1 Staff Account deleted"})
     return error_detection(request,1)
+
 
 def unban_user(request,item):
     if error_detection(request,1)==False:
@@ -1371,7 +1377,6 @@ def manage_blogs(request):
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
         if request.method=="POST":
-            
             pass
         else:
             blogs=Blog.objects.all()
@@ -1449,4 +1454,104 @@ def edit_blog(request,item):
                 return render(request,'dashboard1/new_blog.html',context={"permissions": permissions, "error": error})
         else:
             return render(request,'dashboard1/edit_blog.html',context={"permissions": permissions, "data": blog})
+    return error_detection(request,1)
+
+def manage_staff_accounts(request):
+    if error_detection(request,1)==False:
+        if request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_staff_accounts==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if request.method=="POST":
+            pass
+        else:
+            users=User.objects.filter(is_staff=True, is_superuser=False)
+            return render(request,'dashboard1/manage_staff_accounts.html',context={"permissions": permissions, "data": users})
+    return error_detection(request,1)
+
+def edit_staff_permissions(request, item):
+    if error_detection(request,1)==False:
+        if request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_staff_accounts==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        try:
+            staff_data=User.objects.get(id=int(item))
+            try:
+                data=StaffPermissions.objects.get(user=staff_data)
+            except:
+                StaffPermissions.objects.create(user=staff_data)
+                data=StaffPermissions.objects.get(user=staff_data)
+        except:
+            return HttpResponse("Staff Not Found")
+            
+        if request.method=="POST":
+            data.can_access_student_inactive_accounts=True if request.POST.get('can_access_student_inactive_accounts')=="1" else False
+            data.can_access_company_inactive_accounts=True if request.POST.get('can_access_company_inactive_accounts')=="1" else False
+            data.can_ban_users=True if request.POST.get('can_ban_users')=="1" else False
+            data.can_create_new_company_account=True if request.POST.get('can_create_new_company_account')=="1" else False
+            data.can_manage_blogs=True if request.POST.get('can_manage_blogs')=="1" else False
+            data.can_manage_technical_support=True if request.POST.get('can_manage_technical_support')=="1" else False
+            data.can_give_notifications=True if request.POST.get('can_give_notifications')=="1" else False
+            data.save()
+            return redirect('edit_staff_permissions',item)
+        else:
+            return render(request,'dashboard1/edit_staff_permissions.html',context={"permissions": permissions, "data": data, "staff_data": staff_data})
+    return error_detection(request,1)
+
+def create_new_staff_account(request):
+    if error_detection(request,1)==False:
+        if request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_manage_staff_accounts==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')            
+        if request.method=="POST":
+            username=request.POST.get('username')
+            first_name=request.POST.get('first_name')
+            email=request.POST.get('email')
+            try:
+                user=User.objects.get(email=email)
+                return render(request,'dashboard1/new_staff_account.html',context={"permissions": permissions, "error": "Account exists with given email", "username": username, "email": email, "first_name": first_name})
+            except:
+                try:
+                    user=User.objects.get(username=username)
+                    return render(request,'dashboard1/new_staff_account.html',context={"permissions": permissions, "error": "Account exists with given username", "username": username, "email": email, "first_name": first_name})
+                except:
+                    pass
+            user=User.objects.create(username=username, email=email, first_name=first_name)
+            password=generate_random_password(20)
+            user.set_password(password)
+            user.is_staff=True
+            user.save()
+            data=StaffPermissions.objects.create(user=user)
+            subject = 'Staff Account created'
+            message = f'Hi user, an staff account has been created for this email in Clean Frame.\nAccount Details are as follows:\nUsername: '+str(user)+'\nPassword: '+str(password)+'\nName: '+str(user.first_name)+'\nNow you are a staff, visit the website, login and see what permissions you have been provided with.\nThe password is a auto generated password so we suggest you to change it.\nThanks'
+            email=email
+            Email_thread(subject,message,email).start()
+            data.can_access_student_inactive_accounts=True if request.POST.get('can_access_student_inactive_accounts')=="1" else False
+            data.can_access_company_inactive_accounts=True if request.POST.get('can_access_company_inactive_accounts')=="1" else False
+            data.can_ban_users=True if request.POST.get('can_ban_users')=="1" else False
+            data.can_create_new_company_account=True if request.POST.get('can_create_new_company_account')=="1" else False
+            data.can_manage_blogs=True if request.POST.get('can_manage_blogs')=="1" else False
+            data.can_manage_technical_support=True if request.POST.get('can_manage_technical_support')=="1" else False
+            data.can_give_notifications=True if request.POST.get('can_give_notifications')=="1" else False
+            data.save()
+            return redirect('manage_staff_accounts')
+        else:
+            return render(request,'dashboard1/new_staff_account.html',context={"permissions": permissions})
     return error_detection(request,1)
