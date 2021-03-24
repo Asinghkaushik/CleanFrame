@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 import math,random,string,datetime
 from twilio.rest import Client
 from home.models import CompanyProfile,StudentProfile
-from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm,BlogForm
+from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm,BlogForm,CompanyPhotoForm
 from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions, Blog
 from threading import *
 
@@ -394,15 +394,37 @@ def company_profile_2(request):
             return redirect('dashboard')
     else:
         return redirect('dashboard')
+    
+def company_profile_3(request):
+    if request.user.is_authenticated :
+        if request.user.last_name==settings.COMPANY_MESSAGE:
+            form = CompanyPhotoForm(request.POST,request.FILES)
+            if form.is_valid():
+                try:
+                    profile=CompanyProfile.objects.get(user=request.user)
+                    image=request.POST.get("image")
+                    if image!="":
+                        profile.image=form.cleaned_data.get("image")
+                        profile.save()
+                    return redirect('profile')
+                except:
+                    return redirect('profile')
+            else:
+                return redirect('profile')
+        else:
+            return redirect('dashboard')
+    else:
+        return redirect('dashboard')
 
 def student_profile_2(request):
     if request.user.is_authenticated :
-        if request.user.last_name!=settings.COMPANY_MESSAGE:
+        if request.user.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             form = StudentPhotoForm(request.POST,request.FILES)
             if form.is_valid():
                 try:
                     profile=StudentProfile.objects.get(user=request.user)
-                    if form.cleaned_data.get("image"):
+                    image=request.POST.get("image")
+                    if image!="":
                         profile.image=form.cleaned_data.get("image")
                         profile.save()
                     return redirect('profile')

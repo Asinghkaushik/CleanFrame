@@ -140,6 +140,39 @@
                     </form>
                 </td>
             </tr>
+            <!-- <h3>upload your photo</h3> -->
+            <!--PHASE 2, PHOTO-->
+            <!-- for student only -->
+            <!-- form S3 -->
+
+            <tr>
+                <td>
+                    <form class="is-readonly comp_form" method="POST" action="{% url 'company_profile_3' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="comp_table" style="height: 110px !important;">
+                            <tr style="height: 110px !important;">
+                                <td style="height: 110px !important;">
+                                    <div class="container" id="div_img">
+                                        {% if data.image %}
+                                        <img id="btn_img" class="btn-edit1" src="{{data.image.url}}" alt="submit"> {% else %}
+                                        <img id="btn_img" class="btn-edit1" src="{% static 'dashboard/img/us_ma.png' %}" alt="submit"> {% endif %}
+                                        <div class="overlay">Edit</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="btn-save">
+                                <td class="btn-save">
+                                    <div class="" id="profile_btn_2">
+                                        <input type="submit" class="profile_save_changes_btn2 btn-save change_btn_2" value="Upload image">
+                                        <input type="file" class="btn-save cv_upload" name="image" disabled>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </td>
+            </tr>
+
             <!--GO FOR COMPANY PHASE 2-->
             <!-- only for company, it includes editing basic profile details -->
             <!-- form C2 -->

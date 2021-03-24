@@ -11,6 +11,13 @@ class StudentPhotoForm(ModelForm):
         fields = [
             "image"
         ]
+        
+class CompanyPhotoForm(ModelForm):
+    class Meta:
+        model = CompanyProfile
+        fields = [
+            "image"
+        ]
 
 class StudentCVForm(ModelForm):
     class Meta:
