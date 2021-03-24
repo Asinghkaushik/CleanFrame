@@ -932,6 +932,10 @@ def get_eligible_companies_for_me_round_one(request):
     copy=eligible_companies
     data=get_my_profile(request)
     for each in copy:
+        if each.last_round==True:
+            if each.last_round_result_announced==True:
+                eligible_companies=eligible_companies.exclude(id=each.id)
+                continue
         try:
             min_cgpa=each.internship.minimum_cgpa
             if data.cgpa<min_cgpa:
@@ -948,6 +952,11 @@ def get_eligible_companies_for_me_round_one(request):
                         continue
         except:
             eligible_companies=eligible_companies.exclude(id=each.id)
+        try:
+            next_round=CompanyAnnouncement.objects.get(internship=each.internship, company=each.company, internship_round=2)
+            eligible_companies=eligible_companies.exclude(id=each.id)
+        except:
+            pass
     return eligible_companies
 
 def show_registrations(request):
@@ -1010,8 +1019,8 @@ def internship_action(request,item,type):
                 message = f'Hi user, you have have been sucessfully selected for the internship, we congratulate for being an intern.\nNote: According to one student one company policy you can\'t regitser for other internships now\nDetails of this internship are as follows:\nCompany Name: '+str(registration.company.company.first_name)+'\nInternship Name: '+str(registration.company.internship.internship_name)+'\nThanks'
                 email=request.user.email
                 Email_thread(subject,message,email).start()
-                my_registrations=StudentRegistration.objects.filter(student=student)
-                my_registrations.exclude(id=int(item))
+                my_registrations=StudentRegistration.objects.filter(student=request.user)
+                my_registrations=my_registrations.exclude(id=int(item))
                 for each in my_registrations:
                     each.result_status=3
                     each.save()
