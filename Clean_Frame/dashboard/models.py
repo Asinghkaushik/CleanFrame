@@ -158,3 +158,26 @@ class Blog(models.Model):
     
     def __str__(self):
         return self.title
+    
+class TechnicalSupportRequest(models.Model):
+    support_requester=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='support_requester')
+    continued_support=models.BooleanField(default=False)
+    previous_support_id=models.IntegerField(default=0)
+    question=models.TextField()
+    responded=models.BooleanField(default=False)
+    date=models.DateTimeField(default=datetime.datetime.now())
+    
+class TechnicalSupportResponse(models.Model):
+    support_request=models.ForeignKey(TechnicalSupportRequest, on_delete=models.CASCADE, null=True, blank=True)
+    support_responder=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='support_responder')
+    answer=models.TextField()
+    date=models.DateTimeField(default=datetime.datetime.now())
+
+class Notification(models.Model):
+    notification_sender=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='notification_sender')
+    notification_receiver=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='notification_receiver')
+    notification=models.TextField()
+    date=models.DateTimeField(default=datetime.datetime.now())
+    
+    def __str__(self):
+        return str(self.notification_sender) + '->' + str(self.notification_receiver)

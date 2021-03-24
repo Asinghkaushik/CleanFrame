@@ -6,10 +6,11 @@ from django.conf import settings
 from django.core.mail import send_mail
 import math,random,string,datetime
 from twilio.rest import Client
-from home.models import CompanyProfile,StudentProfile
-from .forms import StudentPhotoForm,StudentCVForm,CompanyAnnouncementForm,BlogForm,CompanyPhotoForm
-from .models import StaffPermissions, CompanyAnnouncement, InternshipFinalResult, StudentRegistration, Internship, ProfilePermissions, Blog
+from home.models import *
+from .forms import *
+from .models import *
 from threading import *
+
 
 class Email_thread(Thread):
     def __init__(self,subject,message,email):
@@ -1671,4 +1672,63 @@ def create_new_staff_account(request):
             return redirect('manage_staff_accounts')
         else:
             return render(request,'dashboard1/new_staff_account.html',context={"permissions": permissions})
+    return error_detection(request,1)
+
+def notifications(request):
+    if error_detection(request,1)==False:
+        notifications=Notification.objects.filter(notification_receiver=request.user).order_by('-date')
+        if notifications.count()==0:
+            notifications="0"
+        support="0"
+        # support=TechnicalSupportResponse.objects.filter(support_request_support_requester=request.user, sdf)
+        return render(request,'dashboard1/notifications.html',context={"notifications": notifications, "support": support})
+    return error_detection(request,1)
+
+def give_notifications(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_give_notifications==False:
+                return HttpResponse("404 Error: You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if request.method=="POST":
+            message=request.POST.get("message")
+            user_id=int(request.POST.get("user_id"))
+            if user_id>0:
+                try:
+                    user=User.objects.get(id=int(user_id))
+                except:
+                    return HttpResponse("User not exists")
+                Notification.objects.create(notification_sender=request.user, notification_receiver=user, notification=message)
+            else:
+                if user_id==-1:
+                    users=User.objects.filter(is_staff=True, is_superuser=False)
+                elif user_id==-2:
+                    users=User.objects.filter(is_staff=False, is_superuser=False, last_name=settings.COMPANY_MESSAGE)
+                elif user_id==-3:
+                    users=User.objects.filter(is_staff=False, is_superuser=False).exclude(last_name=settings.COMPANY_MESSAGE)
+                else:
+                    return HttpResponse("URL NOT FOUND")
+                for each in users:
+                    Notification.objects.create(notification_sender=request.user, notification_receiver=each, notification=message)
+            return redirect('give_notifications')
+        else:
+            data=User.objects.all()
+            data=data.exclude(id=request.user.id)
+            return render(request,'dashboard1/send_notifications.html',context={"permissions": permissions, "data": data})
+    return error_detection(request,1)
+
+def notification_delete(request, item):
+    if error_detection(request,1)==False:
+        try:
+            notification=Notification.objects.get(id=int(item))
+        except:
+            return redirect('notifications')
+        if notification.notification_receiver==request.user:
+            notification.delete()
+        return redirect('notifications')
     return error_detection(request,1)

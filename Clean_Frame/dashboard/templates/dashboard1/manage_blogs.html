@@ -143,7 +143,7 @@
                             <tbody>
                                 {% for each in blogs %}
                                 <tr>
-                                    <td style="text-align: center;"><a href="{% url 'edit_blog' item=each.id %}" class="link_to_button_blue">{{each.id}}</td></div>
+                                    <td style="text-align: center;"><a href="{% url 'edit_blog' item=each.id %}" class="link_to_button_blue">{{each.id}}</a></td></div>
                                     <td style="text-align: center;" id="td1">{{each.title}}</td>
                                     <td id="td2" style="text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 30px">{{each.short_description}}</td>
                                     <td id="td4" style="text-align: center;">

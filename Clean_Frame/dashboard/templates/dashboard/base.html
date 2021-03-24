@@ -91,7 +91,7 @@
                             </li>
                             {% endif %}
                             <li>
-                                <a href="#"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a>
+                                <a href="{% url 'notifications' %}"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a>
                             </li>
                             <li>
                                 <a href="{% url 'settings_home' %}"><img src="{% static 'dashboard/img/settings.png' %}" alt=""> Settings</a>
@@ -110,6 +110,7 @@
         </header>
         {% block section_main %}{% endblock %}
     </div>
+    {% block outside %}{% endblock %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous"></script>
     <script src="{% static 'dashboard/js/app.js' %}"></script>
     <script src="{% static 'dashboard/js/timer.js' %}"></script>
@@ -123,7 +124,7 @@
         }); 
     }
     </script>
-    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script> -->
 </body>
 
 </html>

@@ -68,6 +68,13 @@
           </a>
         </li>
         {% endif %} 
+        {% if permissions.can_give_notifications and request.user.is_superuser %}
+        <li>
+            <a href="{% url 'give_notifications' %}" class=""><span class="las la-user-tie"></span>
+            <span>Float Notification </span>
+          </a>
+        </li>
+        {% endif %} 
         
         {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>

@@ -118,14 +118,14 @@
     </div>
     {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
     <!--COPY OF PHONE VERIFICATION FORM-->
-    <div class="cards_form_comp1" id="cr11">
-        <h6 id="time_error">{{error}}</h6>
-        <table class="comp_table1">
+    <div class="cards_form_comp" id="cr1">
+    <h6>{{error}}</h6>
+    <table class="comp_table">
             <tr>
                 <td>
-                    <form class="is-readonly comp_form1" id="form_phone1" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
+                    <form class="is-readonly comp_form" id="form_phone" method="POST" action="{% url 'student_company_number' %}" onsubmit="return validate_number()">
                         {% csrf_token %}
-                        <table class="comp_table1">
+                        <table class="comp_table">
                             <tr>
                                 <td>
                                     <label>Phone :</label>
@@ -135,8 +135,9 @@
                                 </td>
                             </tr>
                         </table>
-                        <input class="submit-btn profile_save_changes_btn3 btn-save" type="submit" value="Send OTP">
-                        <button class="profile_save_changes_btn3 btn-edit js-edit" type="button">Change</button>
+
+                        <input class="submit-btn profile_save_changes_btn1 btn-save" type="submit" value="Send OTP">
+                        <button class="profile_save_changes_btn1 btn-edit js-edit" type="button">Change</button>
                     </form>
                 </td>
             </tr>
@@ -207,8 +208,8 @@
                             </tr>
 
                         </table>
-                        <input class="profile_save_changes_btn4 btn-save" type="submit" value="Save Changes">
-                        <button class="profile_save_changes_btn4 btn-edit js-edit" type="button">Edit Details</button>
+                        <input class="profile_save_changes_btn btn-save" type="submit" value="Save Changes">
+                        <button class="profile_save_changes_btn btn-edit js-edit" type="button">Edit Details</button>
                     </form>
                 </td>
             </tr>
