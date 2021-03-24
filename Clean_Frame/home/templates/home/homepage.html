@@ -23,7 +23,8 @@
 
 </head>
 
-<body>
+<body oncontextmenu="return false;">
+    <!-- <body> -->
 
     <!-- ----------------------------  Navigation ---------------------------------------------- -->
     <div id="progressbar"></div>
@@ -226,6 +227,7 @@
             $('#progressbar').css('height', scrollPercent + '%');
         })
     </script>
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
 </body>
 
 </html>

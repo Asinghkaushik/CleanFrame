@@ -9,7 +9,7 @@
     <title></title>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     {% if data.user.is_authenticated %}
     {% if data.user.is_staff or data.user.is_superuser %} 
     PROFILE NOT FOUND 
@@ -228,6 +228,7 @@
         </div>
     </footer>
     {% endifnotequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
 </body>
 
 </html>

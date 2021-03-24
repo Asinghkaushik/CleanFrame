@@ -19,7 +19,7 @@
     <link rel="icon" href="{% static 'img/logo.ico' %}" type="image/x-icon"> {% block title %}{% endblock %}
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     <div id="progressbar"></div>
     <input type="checkbox" id="nav-toggle" />
     <div class="sidebar">
@@ -123,6 +123,7 @@
         }); 
     }
     </script>
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
 </body>
 
 </html>

@@ -7,11 +7,12 @@
     <title>Password Change</title>
     <link rel="stylesheet" href="{% static 'css/success_message.css' %}">
   </head>
-  <body>
+  <body oncontextmenu="return false;">
     <div class="container">
       <h1>{{message}}</h1>
       <br><br>
       <a href="{% url 'home' %}">Go back home</a>
     </div>
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
   </body>
 </html>

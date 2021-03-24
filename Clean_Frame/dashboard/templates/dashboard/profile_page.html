@@ -9,7 +9,7 @@
     <title></title>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     {% if data.user.is_authenticated %}{% if data.user.is_staff or data.user.is_superuser %} PROFILE NOT FOUND {% else %} {% ifequal data.user.last_name 'This_is_a_company_Associated_account' %} PROFILE NOT FOUND{% else %}
 
     <div class="main-content">
@@ -240,6 +240,7 @@
         </div>
     </footer>
     {% endifequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
 </body>
 
 </html>
