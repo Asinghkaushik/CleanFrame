@@ -7,8 +7,6 @@
 <link rel="stylesheet" href="{% static 'css/notification.css' %}">
 {% endblock %}
 
-
-<!--Make the class active for the link you want-->
 {% block sidebar_menu %}
 <div class="sidebar-menu">
     <ul>
@@ -37,15 +35,22 @@
         </li>
         {% endif %} {% if permissions.can_ban_users %}
         <li>
-            <a href="{% url 'restrict_users' %}" class=""><span class="las la-user-tie"></span>
+            <a href="{% url 'restrict_users' %}"><span class="las la-user-tie"></span>
             <span>Restrict Users </span>
           </a>
         </li>
         {% endif %}
-        {% if permissions.can_unban_users %}
+        {% if permissions.can_unban_users and request.user.is_superuser %}
         <li>
             <a href="{% url 'unban_user' item='0' %}" class=""><span class="las la-user-tie"></span>
             <span>Un-restrict Users </span>
+          </a>
+        </li>
+        {% endif %} 
+        {% if permissions.can_create_new_company_account %}
+        <li>
+            <a href="{% url 'create_company_account' %}" class=""><span class="las la-user-tie"></span>
+            <span>New company account </span>
           </a>
         </li>
         {% endif %} 
@@ -56,12 +61,24 @@
           </a>
         </li>
         {% endif %} 
-
-
-        {% if permissions.can_give_notifications and request.user.is_superuser %}
+        {% if permissions.can_manage_staff_accounts and request.user.is_superuser %}
+        <li>
+            <a href="{% url 'manage_staff_accounts' %}" class=""><span class="las la-user-tie"></span>
+            <span>Manage Staff Accounts </span>
+          </a>
+        </li>
+        {% endif %} 
+        {% if permissions.can_give_notifications %}
         <li>
             <a href="{% url 'give_notifications' %}" class="active"><span class="las la-user-tie"></span>
             <span>Float Notification </span>
+          </a>
+        </li>
+        {% endif %} 
+        {% if permissions.can_manage_technical_support %}
+        <li>
+            <a href="{% url 'technical_support_assist' %}" class=""><span class="las la-user-tie"></span>
+            <span>Manage Support </span>
           </a>
         </li>
         {% endif %} 

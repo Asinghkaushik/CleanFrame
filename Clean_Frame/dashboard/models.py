@@ -160,18 +160,14 @@ class Blog(models.Model):
         return self.title
     
 class TechnicalSupportRequest(models.Model):
-    support_requester=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='support_requester')
+    user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     continued_support=models.BooleanField(default=False)
-    previous_support_id=models.IntegerField(default=0)
-    question=models.TextField()
-    responded=models.BooleanField(default=False)
-    date=models.DateTimeField(default=datetime.datetime.now())
+    main_support_id=models.IntegerField(default=0)
+    message=models.TextField()
+    date=models.DateTimeField(auto_now=True)
     
-class TechnicalSupportResponse(models.Model):
-    support_request=models.ForeignKey(TechnicalSupportRequest, on_delete=models.CASCADE, null=True, blank=True)
-    support_responder=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='support_responder')
-    answer=models.TextField()
-    date=models.DateTimeField(default=datetime.datetime.now())
+    def __str__(self):
+        return str(self.user)
 
 class Notification(models.Model):
     notification_sender=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='notification_sender')

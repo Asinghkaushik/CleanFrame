@@ -9,7 +9,7 @@
 {% endblock %}
 
 
-<!--Make the class active for the link you want-->
+
 {% block sidebar_menu %}
 <div class="sidebar-menu">
     <ul>
@@ -36,14 +36,14 @@
             <span>Company Accounts</span>
           </a>
         </li>
-        {% endif %}  {% if permissions.can_ban_users %}
+        {% endif %} {% if permissions.can_ban_users %}
         <li>
             <a href="{% url 'restrict_users' %}"><span class="las la-user-tie"></span>
             <span>Restrict Users </span>
           </a>
         </li>
         {% endif %}
-        {% if permissions.can_unban_users %}
+        {% if permissions.can_unban_users and request.user.is_superuser %}
         <li>
             <a href="{% url 'unban_user' item='0' %}" class=""><span class="las la-user-tie"></span>
             <span>Un-restrict Users </span>
@@ -56,13 +56,14 @@
             <span>New company account </span>
           </a>
         </li>
-        {% endif %}{% if permissions.can_manage_blogs %}
+        {% endif %} 
+        {% if permissions.can_manage_blogs %}
         <li>
             <a href="{% url 'manage_blogs' %}" class=""><span class="las la-user-tie"></span>
             <span>Manage Blogs </span>
           </a>
         </li>
-        {% endif %}  
+        {% endif %} 
         {% if permissions.can_manage_staff_accounts and request.user.is_superuser %}
         <li>
             <a href="{% url 'manage_staff_accounts' %}" class="active"><span class="las la-user-tie"></span>
@@ -70,9 +71,24 @@
           </a>
         </li>
         {% endif %} 
+        {% if permissions.can_give_notifications %}
+        <li>
+            <a href="{% url 'give_notifications' %}" class=""><span class="las la-user-tie"></span>
+            <span>Float Notification </span>
+          </a>
+        </li>
+        {% endif %} 
+        {% if permissions.can_manage_technical_support %}
+        <li>
+            <a href="{% url 'technical_support_assist' %}" class=""><span class="las la-user-tie"></span>
+            <span>Manage Support </span>
+          </a>
+        </li>
+        {% endif %} 
+        
         {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
-            <a href="{% url 'announcements' %}" class=""><span class="las la-users"></span>
+            <a href="{% url 'announcements' %}"><span class="las la-users"></span>
             <span>My Announcements</span>
           </a>
         </li>
@@ -92,11 +108,10 @@
           </a>
         </li>
         <li>
-            <a href="{% url 'internships' %}" class=""><span class="las la-users"></span>
+            <a href="{% url 'internships' %}"><span class="las la-users"></span>
             <span>My Internships</span>
           </a>
         </li>
-
         <!--Student only-->
         {% else %}
         <li>

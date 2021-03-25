@@ -248,10 +248,7 @@ main .blog-post .blog-content {
     margin: 3rem 2rem;
     box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
 }
-main .blog-content img{
-    width:307px;
-    height: 187px;
-}
+
 main .blog-content .blog-title {
     padding: 2rem 0;
 }
