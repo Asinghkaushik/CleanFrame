@@ -105,8 +105,10 @@ class CompanyAnnouncement(models.Model):
 
 class ProfileVisibilty(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    to_other_student=models.BooleanField(default=True)
-    to_company=models.BooleanField(default=True)
+    to_registered_companies=models.BooleanField(default=False)
+    to_all_companies=models.BooleanField(default=False)
+    to_all_students=models.BooleanField(default=False)
+    to_all=models.BooleanField(default=True)
 
     def __str__(self):
         if self.user:

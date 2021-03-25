@@ -92,16 +92,16 @@ def settings_home(request):
         return render(request,'Settings/settings.html',context={"data": data, "permissions": get_permissions(request)})
     return error_detection(request,1)
 
-def delete_account(request):
-    if error_detection(request,1)==False:
-        try:
-            u=User.objects.get(username=request.user)
-            email=u.email
-            u.delete()
-        except:
-            return error_message(request,"User Not Found")
-        subject = 'Account Deletion Notice'
-        message = f'Hey, user!\nYour account has been sucessfully deleted from Clean Frame.\nMoreover all the records related are also deleted.\nIf you create a new account then previous effects or changes would not be shown.\nThanks'
-        SENDMAIL(subject,message,email)
-        return redirect('home')
-    return error_detection(request,1)
+# def delete_account(request):
+#     if error_detection(request,1)==False:
+#         try:
+#             u=User.objects.get(username=request.user)
+#             email=u.email
+#             u.delete()
+#         except:
+#             return error_message(request,"User Not Found")
+#         subject = 'Account Deletion Notice'
+#         message = f'Hey, user!\nYour account has been sucessfully deleted from Clean Frame.\nMoreover all the records related are also deleted.\nIf you create a new account then previous effects or changes would not be shown.\nThanks'
+#         SENDMAIL(subject,message,email)
+#         return redirect('home')
+#     return error_detection(request,1)

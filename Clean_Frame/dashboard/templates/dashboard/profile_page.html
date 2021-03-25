@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/profile_page_style.css' %}">
-    <title></title>
+    <link rel="stylesheet" href="{% static 'settings/css/modal.css' %}" />
+    <title>PROFILE {{data.user.email}}</title>
 </head>
 
 <body oncontextmenu="return false;">
@@ -61,7 +62,10 @@
                         <p class="text-white mt-0 mb-5">Since you have permissions to see this profile page, you are viewing it. Rather no one without permission can see it.</p>
                         <a onclick="window.history.back();" style="color: white" class="btn btn-primary">Go Back</a> {% if data.cv %}
                         <a href="{{data.cv.url}}" style="color: white" class="btn btn-info">View CV</a> {% else %}
-                        <a style="color: white" class="btn btn-danger"> CV not available</a> {% endif %}
+                        <a style="color: white" class="btn btn-info"> CV not available</a> {% endif %}
+                        {% ifequal request.user data.user %}
+                            <a style="color: white" class="btn btn-danger" id="delete_account"> Delete Account</a> 
+                        {% endifequal %}
                     </div>
                 </div>
             </div>
@@ -214,16 +218,70 @@
                                         </div> -->
                                 </div>
                             </div>
+                        </form>
+                    {% ifequal request.user data.user %}
+                    <form >
+                    <hr class="my-4">
+                    <!-- Address -->
+                    <h6 class="heading-small text mb-4">Settings</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group focused">
+                                    <label class="form-control-label" for="input-city">Profile Visibility</label>
+                                    <select name="profile_visibility" class="form-control form-control-alternative">
+                                        {% if permissions.to_registered_companies %}
+                                        <option value="1">To registered companies</option>
+                                        <option value="2">To all companies</option>
+                                        <option value="3">To all students</option>
+                                        <option value="4">To all companies and students</option>
+                                        {% else %}
+
+                                            {% if permissions.to_all_companies %}
+                                            <option value="2">To all companies</option>
+                                            <option value="1">To registered companies</option>
+                                            <option value="3">To all students</option>
+                                            <option value="4">To all companies and students</option>
+                                            {% else %}
+
+                                                {% if permissions.to_all_students %}
+                                                <option value="3">To all students</option>
+                                                <option value="1">To registered companies</option>
+                                                <option value="2">To all companies</option>
+                                                <option value="4">To all companies and students</option>
+                                                {% else %}
+
+                                                    {% if permissions.to_all %}
+                                                    <option value="4">To all companies and students</option>
+                                                    <option value="1">To registered companies</option>
+                                                    <option value="2">To all companies</option>
+                                                    <option value="3">To all students</option>
+                                                    {% else %}
+            
+                                                    
+            
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group focused">
+                                    <button type="submit" style="color: white; width: fit-content; margin-top: 33px;" class="btn btn-primary" >Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        {% endifequal %}
+
                             <hr class="my-4">
-                            <!-- Description -->
-                            <!-- <h6 class="heading-small text-muted mb-4">About me</h6>
-                                    <div class="pl-lg-4">
-                                        <div class="form-group focused">
-                                            <label>About Me</label>
-                                            <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
-                                        </div>
-                                    </div> -->
-                    </form>
+                        </form>
+                    
                     </div>
                 </div>
             </div>
@@ -239,8 +297,28 @@
             </div>
         </div>
     </footer>
-    {% endifequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
+    {% endifequal %} {% endif %} 
+    
+
+    {% ifequal request.user data.user %}
+    <!-- The Delete account Modal -->
+    <p style="display: none" id="usersname">{{request.user}}</p>
+    <div id="deleteModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p class="mypara">This is the final Warning after which you will not be able to recover the account. All the progress would be lost.If you are sure to delete your account permanently, then write your username in the text box</p>
+            <input type="text" id="myusername" style="width: 80%;" onkeyup="text_changed(this.value)">
+            <div id="buttn">
+                <a class="btn" id="deel" style="text-decoration: none; background-color: #FFECEC; color: white" href="{% url 'delete_account' %}">Delete Account</a>
+                <button type="button" class="btn btn-primary" onclick="close_modal()">cancel</button>
+            </div>
+        </div>
+    </div>
+    {% endifequal %}{% else %} PROFILE NOT FOUND {% endif %}
+    
     <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <script type="text/javascript" src="{% static 'settings/js/modal.js' %}"></script>
 </body>
 
 </html>

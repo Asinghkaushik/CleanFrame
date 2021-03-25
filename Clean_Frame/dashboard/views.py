@@ -1190,10 +1190,15 @@ def check_student_profile(request, item):
             return HttpResponse("Profile Not Found")
         if user_profile.last_name==settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             return HttpResponse("Profile not found")
-        if check_profilepage_permissions(request, item) == False:
-            return HttpResponse("You have not permission to view this user's profile page")
+        try:
+            my_permissions=ProfileVisibilty.objects.get(user=user_profile)
+            if request.user.is_staff==False:
+                if check_profilepage_permissions(request, item) == False:
+                    return HttpResponse("You have not permission to view this user's profile page")
+        except:
+            ProfileVisibilty.objects.create(user=user_profile, to_all=True)
         image=data.image
-        return render(request,'dashboard/profile_page.html',context={"data": data, "image": image})
+        return render(request,'dashboard/profile_page.html',context={"data": data, "image": image, "permissions": my_permissions})
     return error_detection(request,1)
 
 def check_company_profile(request, item):
@@ -1214,6 +1219,7 @@ def check_company_profile(request, item):
 def check_profilepage_permissions(request, item):
     try:
         user_profile=User.objects.get(id=int(item))
+        my_permissions=ProfileVisibilty.objects.get(user=user_profile)
     except:
         return HttpResponse("Profile Not Found")
     try:
@@ -1224,7 +1230,14 @@ def check_profilepage_permissions(request, item):
             ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user_profile)
             return True
         except:
-            #Check the permissions give by user
+            if my_permissions.to_all==True:
+                return True
+            if my_permissions.to_all_students==True:
+                if request.user.last_name!=settings.COMPANY_MESSAGE:
+                    return True
+            if my_permissions.to_all_companies==True:
+                if request.user.last_name==settings.COMPANY_MESSAGE:
+                    return True
             return False
 
 def get_passed_profile(user):
@@ -1823,3 +1836,17 @@ def get_all_threads(id):
     thread_responses=TechnicalSupportRequest.objects.filter(continued_support=True, main_support_id=support.id).order_by('date')
     threads.append(thread_responses)
     return threads
+
+def delete_account(request):
+    if error_detection(request,1)==False:
+        try:
+            u=User.objects.get(username=request.user)
+            email=u.email
+            u.delete()
+        except:
+            return error_message(request,"User Not Found")
+        subject = 'Account Deletion Notice'
+        message = f'Hey, user!\nYour account has been sucessfully deleted from Clean Frame.\nMoreover all the records related are also deleted.\nIf you create a new account then previous effects or changes would not be shown.\nThanks'
+        SENDMAIL(subject,message,email)
+        return redirect('home')
+    return error_detection(request,1)

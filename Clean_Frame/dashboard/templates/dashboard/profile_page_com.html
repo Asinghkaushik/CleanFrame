@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/profile_page_style.css' %}">
+    <link rel="stylesheet" href="{% static 'settings/css/modal.css' %}" />
     <title></title>
 </head>
 
@@ -70,6 +71,9 @@
                         <a href="{% url 'internships' %}" style="color: white" class="btn btn-info"> My Internships</a> 
                         {% else %}
                         <a href="{% url 'show_companies' %}" style="color: white" class="btn btn-info"> Register</a> 
+                        {% endifequal %}
+                        {% ifequal request.user data.user %}
+                            <a style="color: white" class="btn btn-danger" id="delete_account"> Delete Account</a> 
                         {% endifequal %}
                     </div>
                 </div>
@@ -228,7 +232,27 @@
         </div>
     </footer>
     {% endifnotequal %} {% endif %} {% else %} PROFILE NOT FOUND {% endif %}
+
+
+    {% ifequal request.user data.user %}
+    <!-- The Delete account Modal -->
+    <p style="display: none" id="usersname">{{request.user}}</p>
+    <div id="deleteModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p class="mypara">This is the final Warning after which you will not be able to recover the account. All the progress would be lost.If you are sure to delete your account permanently, then write your username in the text box</p>
+            <input type="text" id="myusername" style="width: 80%;" onkeyup="text_changed(this.value)">
+            <div id="buttn">
+                <a class="btn" id="deel" style="text-decoration: none; background-color: #FFECEC; color: white" href="{% url 'delete_account' %}">Delete Account</a>
+                <button type="button" class="btn btn-primary" onclick="close_modal()">cancel</button>
+            </div>
+        </div>
+    </div>
+    {% endifequal %}
+    
     <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <script type="text/javascript" src="{% static 'settings/js/modal.js' %}"></script>
 </body>
 
 </html>
