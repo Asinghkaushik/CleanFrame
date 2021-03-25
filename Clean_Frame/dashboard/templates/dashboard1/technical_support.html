@@ -137,7 +137,7 @@
 {% block outside %}
 
       <div id="supportform" class="modal" >
-            <div style="width: 40%;" class="modal-content" >
+            <div class="modal-content" >
               <p style="text-align: center;" id="enter_user_id"></p>
               <form action="{% url 'technical_support' %}" method="POST" enctype="multipart/form-data" style="text-align: center;">
                 {% csrf_token %}
@@ -146,8 +146,8 @@
                 Enter support message / reply to be sent" style="width: 100%; border-radius: 4px; background-color: rgb(235, 232, 232);"  required></textarea>
                 <input type="hidden" name="support_id" id="support_id" readonly>
                 <div>
-                  <input type="submit" style="color: white; width: 30%; float: left;" class="link_to_button_blue" value="Send">
-                  <button onclick="close_modal()" style="color: white; width: 25%; float: right; border-radius: 10px;" class="link_to_button_red">Close</button>
+                  <input type="submit" id="submit_box"  class="link_to_button_blue" value="Send">
+                  <button onclick="close_modal()" id="close_box" class="link_to_button_red">Close</button>
                 </div>
               </form>
               
