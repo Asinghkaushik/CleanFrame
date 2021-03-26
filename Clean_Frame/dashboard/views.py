@@ -1267,7 +1267,7 @@ def check_company_profile(request, item):
         if user_profile.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             return HttpResponse("Profile not found")
         image=data.image
-        return render(request,'dashboard/profile_page_company.html.html',context={"data": data, "image": image})
+        return render(request,'dashboard/profile_page_company.html',context={"data": data, "image": image})
     return error_detection(request,1)
 
 def check_staff_profile(request,item):

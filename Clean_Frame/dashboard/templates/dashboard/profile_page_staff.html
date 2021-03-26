@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/profile_page_style.css' %}">
-    <link rel="stylesheet" href="{% static 'settings/css/modal.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/profile_modal.css' %}" />
     <title>PROFILE {{request.user.email}}</title>
 </head>
 
@@ -100,7 +100,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-email">Email address</label>
-                                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="Email" value={{request.user.email}} readonly>
+                                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="Email" readonly value={{request.user.email}}>
                                     </div>
                                 </div>
                             </div>
@@ -129,35 +129,17 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_access_student_inactive_accounts %} style="background-color: rgb(168, 241, 168); color: white" value="Can Manage Student Registrations" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Manage Student Registrations" {% endif %} class="form-control form-control-alternative" readonly>
+                                        <input type="text" {% if permissions.can_access_student_inactive_accounts %} style="background-color: rgb(64, 201, 64); color: white" value="Can Manage Student Registrations" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Manage Student Registrations" {% endif %} class="form-control form-control-alternative" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_access_company_inactive_accounts %} style="background-color: rgb(168, 241, 168); color: white" value="Can Manage Company Registrations" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Manage Company Registrations" {% endif %} class="form-control form-control-alternative" readonly>
+                                        <input type="text" {% if permissions.can_access_company_inactive_accounts %} style="background-color: rgb(64, 201, 64); color: white" value="Can Manage Company Registrations" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Manage Company Registrations" {% endif %} class="form-control form-control-alternative" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_ban_users %} style="background-color: rgb(168, 241, 168); color: white" value="Can restrict Users" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't restrict Users" {% endif %} class="form-control form-control-alternative" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_create_new_company_account %} style="background-color: rgb(168, 241, 168); color: white" value="Can Create New Company Account" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Create New Company Account" {% endif %} class="form-control form-control-alternative" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_manage_blogs %} style="background-color: rgb(168, 241, 168); color: white" value="Can Manage Blogs" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Manage Blogs" {% endif %} class="form-control form-control-alternative" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_manage_technical_support %} style="background-color: rgb(168, 241, 168); color: white" value="Can Manage Technical Support" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Manage Technical Support" {% endif %} class="form-control form-control-alternative" readonly>
+                                        <input type="text" {% if permissions.can_ban_users %} style="background-color: rgb(64, 201, 64); color: white" value="Can restrict Users" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't restrict Users" {% endif %} class="form-control form-control-alternative" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -165,17 +147,35 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_give_notifications %} style="background-color: rgb(168, 241, 168); color: white" value="Can Manage Notifications Section" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Manage Notification Section" {% endif %} class="form-control form-control-alternative" readonly>
+                                        <input type="text" {% if permissions.can_create_new_company_account %} style="background-color: rgb(64, 201, 64); color: white" value="Can Create New Company Account" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Create New Company Account" {% endif %} class="form-control form-control-alternative" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_unban_users %} style="background-color: rgb(168, 241, 168); color: white" value="Can Un-Restrct Users" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Un-Restrct Users" {% endif %} class="form-control form-control-alternative" readonly>
+                                        <input type="text" {% if permissions.can_manage_blogs %} style="background-color: rgb(64, 201, 64); color: white" value="Can Manage Blogs" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Manage Blogs" {% endif %} class="form-control form-control-alternative" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group focused">
-                                        <input type="text" {% if permissions.can_manage_staff_accounts %} style="background-color: rgb(168, 241, 168); color: white" value="Can Manage Staff Accounts" {% else %} style="background-color: rgb(241, 168, 168); color: white" value="Can't Manage Staff Accounts" {% endif %} class="form-control form-control-alternative" readonly>
+                                        <input type="text" {% if permissions.can_manage_technical_support %} style="background-color: rgb(64, 201, 64); color: white" value="Can Manage Technical Support" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Manage Technical Support" {% endif %} class="form-control form-control-alternative" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group focused">
+                                        <input type="text" {% if permissions.can_give_notifications %} style="background-color: rgb(64, 201, 64); color: white" value="Can Manage Notifications Section" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Manage Notification Section" {% endif %} class="form-control form-control-alternative" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group focused">
+                                        <input type="text" {% if permissions.can_unban_users %} style="background-color: rgb(64, 201, 64); color: white" value="Can Un-Restrct Users" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Un-Restrct Users" {% endif %} class="form-control form-control-alternative" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group focused">
+                                        <input type="text" {% if permissions.can_manage_staff_accounts %} style="background-color: rgb(64, 201, 64); color: white" value="Can Manage Staff Accounts" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Manage Staff Accounts" {% endif %} class="form-control form-control-alternative" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -217,7 +217,7 @@
     {% endifequal %} 
     
     <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
-    <script type="text/javascript" src="{% static 'settings/js/modal.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/profile_modal.js' %}"></script>
 </body>
 
 </html>
