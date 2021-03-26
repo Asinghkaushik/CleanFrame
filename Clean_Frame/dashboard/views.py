@@ -63,12 +63,25 @@ def get_the_profile(user):
 def dashboard(request):
     if error_detection(request,1)==False:
         data=get_my_profile(request)
-        staff = User.objects.filter(is_staff=True,is_superuser=False).count()
-        admin = User.objects.filter(is_staff=True,is_superuser=True).count()
-        company = User.objects.filter(is_staff=False,is_superuser=False,last_name=settings.COMPANY_MESSAGE).count()
-        student = User.objects.filter(is_staff=False,is_superuser=False).count() - int(company)
-        students_with_internship=StudentProfile.objects.filter(got_internship=True).count()
-        return render(request,'dashboard/dashboard.html',context={"data": data, "staff_count": staff, "admin_count": admin, "company_count": company, "student_count": student, "permissions": get_permissions(request), "students_with_internship": students_with_internship})
+        if request.user.is_staff:
+            staff = User.objects.filter(is_staff=True,is_superuser=False).count()
+            admin = User.objects.filter(is_staff=True,is_superuser=True).count()
+            company = User.objects.filter(is_staff=False,is_superuser=False,last_name=settings.COMPANY_MESSAGE).count()
+            student = User.objects.filter(is_staff=False,is_superuser=False).count() - int(company)
+            students_with_internship=StudentProfile.objects.filter(got_internship=True).count()
+            return render(request,'dashboard1/dashboard_staff.html',context={"data": data, "staff_count": staff, "admin_count": admin, "company_count": company, "student_count": student, "permissions": get_permissions(request), "students_with_internship": students_with_internship})
+        if request.user.last_name==settings.COMPANY_MESSAGE:
+            internships_with_result=Internship.objects.filter(company=request.user, result_announced=True).count()
+            internships_without_result=Internship.objects.filter(company=request.user, result_announced=False).count()
+            internships=Internship.objects.filter(company=request.user)
+            registrations=0
+            for each in internships:
+                registrations+=StudentRegistration.objects.filter(company__internship=each).count()
+            selected_students=InternshipFinalResult.objects.filter(company=request.user,student_agrees=True).count()
+            unselected_students=registrations-selected_students
+            return render(request,'dashboard1/dashboard_company.html',context={"data": data, "internships_with_result": internships_with_result, "internships_without_result": internships_without_result, "selected_students": selected_students, "unselected_students": unselected_students, "internships": internships.count(), "registrations": registrations})
+        else:
+            return HttpResponse("Student Account")
     return error_detection(request,1)
 
 def get_permissions(request):

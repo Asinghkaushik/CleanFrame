@@ -8,7 +8,7 @@ import math,random,string,datetime,array,secrets
 from twilio.rest import Client
 from .forms import UserForm
 from .models import StudentProfile, CompanyProfile
-from dashboard.models import CompanyAnnouncement, ProfilePermissions, Blog
+from dashboard.models import CompanyAnnouncement, ProfilePermissions, Blog, ProfileVisibility
 from dashboard.views import dashboard
 import math,random,string,array,secrets
 from os import urandom
@@ -67,23 +67,25 @@ def secureFile(request, file):
     except:
         try:
             document=CompanyAnnouncement.objects.get(file="post_files/"+file)
-            if document.company==request.user or request.user.is_staff:
-                return FileResponse(document.file)
-            else:
-                if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
-                    return FileResponse(document.file)
-                else:
-                    return redirect('home')
+            return FileResponse(document.file)
+            # if document.company==request.user or request.user.is_staff:
+            #     return FileResponse(document.file)
+            # else:
+            #     if check_profile_permissions(request, document.user)==True:
+            #         return FileResponse(document.file)
+            #     else:
+            #         return redirect('home')
         except:
             try:
                 document=CompanyAnnouncement.objects.get(file_for_prev_result="post_files/"+file)
-                if document.company==request.user or request.user.is_staff:
-                    return FileResponse(document.file_for_prev_result)
-                else:
-                    if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
-                        return FileResponse(document.file_for_prev_result)
-                    else:
-                        return redirect('home')
+                return FileResponse(document.file)
+                # if document.company==request.user or request.user.is_staff:
+                #     return FileResponse(document.file_for_prev_result)
+                # else:
+                #     if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+                #         return FileResponse(document.file_for_prev_result)
+                #     else:
+                #         return redirect('home')
             except:
                 try:
                     document=Blog.objects.get(file="post_files/"+file)
@@ -92,11 +94,27 @@ def secureFile(request, file):
                     return redirect('home')
     
 def check_profile_permissions(request, user):
+    if request.user == user:
+        return True
     try:
         ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user)
         return True
     except:    
+        pass
+    try:
+        my_permissions=ProfileVisibility.objects.get(user=user)
+        if my_permissions.to_all==True:
+            return True
+        if my_permissions.to_all_students==True:
+            if request.user.last_name!=settings.COMPANY_MESSAGE:
+                return True
+        if my_permissions.to_all_companies==True:
+            if request.user.last_name==settings.COMPANY_MESSAGE:
+                return True
         return False
+    except:
+        return False
+
     
 def check_student_permissions(user):
     return False
