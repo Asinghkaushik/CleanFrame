@@ -1190,17 +1190,70 @@ def check_student_profile(request, item):
             return HttpResponse("Profile Not Found")
         if user_profile.last_name==settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             return HttpResponse("Profile not found")
+        
+        if request.method=="POST":
+            permission=int(request.POST.get('profile_visibility'))
+            user_id=int(request.POST.get('user_id'))
+            try:
+                user=User.objects.get(id=user_id)
+            except:
+                return HttpResponse("User not found")
+            if request.user!=user:
+                return HttpResponse("User Profile is Hidden")
+            try:
+                per=ProfileVisibility.objects.get(user=request.user)
+            except:
+                per=ProfileVisibility.objects.create(user=request.user)
+                per.save()
+            per.to_registered_companies=False
+            per.to_all_companies=False
+            per.to_all_students=False
+            per.to_all=False
+            if permission==1:
+                per.to_registered_companies=True
+            elif permission==2:
+                per.to_all_companies=True
+            elif permission==3:
+                per.to_all_students=True
+            elif permission==4:
+                per.to_all=True
+            per.save()
+            return redirect('check_student_profile',request.user.id)
         try:
-            my_permissions=ProfileVisibilty.objects.get(user=user_profile)
+            my_permissions=ProfileVisibility.objects.get(user=user_profile)
             if request.user.is_staff==False:
                 if check_profilepage_permissions(request, item) == False:
-                    return HttpResponse("You have not permission to view this user's profile page")
+                    return HttpResponse("You do not not permission to view this user's profile page")
         except:
-            ProfileVisibilty.objects.create(user=user_profile, to_all=True)
+            ProfileVisibility.objects.create(user=user_profile, to_all=True)
+            my_permissions=ProfileVisibility.objects.get(user=user_profile)
         image=data.image
         return render(request,'dashboard/profile_page.html',context={"data": data, "image": image, "permissions": my_permissions})
     return error_detection(request,1)
 
+def check_profilepage_permissions(request, item):
+    try:
+        user_profile=User.objects.get(id=int(item))
+        my_permissions=ProfileVisibility.objects.get(user=user_profile)
+    except:
+        return False
+    if request.user == user_profile:
+        return True
+    else:
+        try:
+            ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user_profile)
+            return True
+        except:
+            if my_permissions.to_all==True:
+                return True
+            if my_permissions.to_all_students==True:
+                if request.user.last_name!=settings.COMPANY_MESSAGE:
+                    return True
+            if my_permissions.to_all_companies==True:
+                if request.user.last_name==settings.COMPANY_MESSAGE:
+                    return True
+            return False
+        
 def check_company_profile(request, item):
     if error_detection(request,1)==False:
         try:
@@ -1215,30 +1268,6 @@ def check_company_profile(request, item):
         image=data.image
         return render(request,'dashboard/profile_page_com.html',context={"data": data, "image": image})
     return error_detection(request,1)
-
-def check_profilepage_permissions(request, item):
-    try:
-        user_profile=User.objects.get(id=int(item))
-        my_permissions=ProfileVisibilty.objects.get(user=user_profile)
-    except:
-        return HttpResponse("Profile Not Found")
-    try:
-        if request.user == user_profile:
-            return True
-    except:
-        try:
-            ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user_profile)
-            return True
-        except:
-            if my_permissions.to_all==True:
-                return True
-            if my_permissions.to_all_students==True:
-                if request.user.last_name!=settings.COMPANY_MESSAGE:
-                    return True
-            if my_permissions.to_all_companies==True:
-                if request.user.last_name==settings.COMPANY_MESSAGE:
-                    return True
-            return False
 
 def get_passed_profile(user):
     data={}

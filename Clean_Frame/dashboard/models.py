@@ -103,7 +103,7 @@ class CompanyAnnouncement(models.Model):
 #             else:
 #                 return "NIL"
 
-class ProfileVisibilty(models.Model):
+class ProfileVisibility(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     to_registered_companies=models.BooleanField(default=False)
     to_all_companies=models.BooleanField(default=False)

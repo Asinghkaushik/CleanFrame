@@ -220,7 +220,8 @@
                             </div>
                         </form>
                     {% ifequal request.user data.user %}
-                    <form >
+                    <form method="POST" action="{% url 'check_student_profile' item=data.user.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
                     <hr class="my-4">
                     <!-- Address -->
                     <h6 class="heading-small text mb-4">Settings</h6>
@@ -228,6 +229,7 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="form-group focused">
+                                    <input type="hidden" name="user_id" value={{data.user.id}} required>
                                     <label class="form-control-label" for="input-city">Profile Visibility</label>
                                     <select name="profile_visibility" class="form-control form-control-alternative">
                                         {% if permissions.to_registered_companies %}
@@ -256,10 +258,6 @@
                                                     <option value="1">To registered companies</option>
                                                     <option value="2">To all companies</option>
                                                     <option value="3">To all students</option>
-                                                    {% else %}
-            
-                                                    
-            
                                                     {% endif %}
 
                                                 {% endif %}
