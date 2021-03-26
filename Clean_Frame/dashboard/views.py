@@ -67,7 +67,8 @@ def dashboard(request):
         admin = User.objects.filter(is_staff=True,is_superuser=True).count()
         company = User.objects.filter(is_staff=False,is_superuser=False,last_name=settings.COMPANY_MESSAGE).count()
         student = User.objects.filter(is_staff=False,is_superuser=False).count() - int(company)
-        return render(request,'dashboard/dashboard.html',context={"data": data, "staff_count": staff, "admin_count": admin, "company_count": company, "student_count": student, "permissions": get_permissions(request)})
+        students_with_internship=StudentProfile.objects.filter(got_internship=True).count()
+        return render(request,'dashboard/dashboard.html',context={"data": data, "staff_count": staff, "admin_count": admin, "company_count": company, "student_count": student, "permissions": get_permissions(request), "students_with_internship": students_with_internship})
     return error_detection(request,1)
 
 def get_permissions(request):
