@@ -1228,7 +1228,7 @@ def check_student_profile(request, item):
             ProfileVisibility.objects.create(user=user_profile, to_all=True)
             my_permissions=ProfileVisibility.objects.get(user=user_profile)
         image=data.image
-        return render(request,'dashboard/profile_page.html',context={"data": data, "image": image, "permissions": my_permissions})
+        return render(request,'dashboard/profile_page_student.html',context={"data": data, "image": image, "permissions": my_permissions})
     return error_detection(request,1)
 
 def check_profilepage_permissions(request, item):
@@ -1266,7 +1266,25 @@ def check_company_profile(request, item):
         if user_profile.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             return HttpResponse("Profile not found")
         image=data.image
-        return render(request,'dashboard/profile_page_com.html',context={"data": data, "image": image})
+        return render(request,'dashboard/profile_page_company.html.html',context={"data": data, "image": image})
+    return error_detection(request,1)
+
+def check_staff_profile(request,item):
+    if error_detection(request,1)==False:
+        try:
+            user_profile=User.objects.get(id=int(item))
+        except:
+            return HttpResponse("Profile Not Found")
+        if request.user.is_staff==False:
+            return HttpResponse("Profile not found")
+        if request.user!=user_profile:
+            return HttpResponse("Profile not found")
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            permissions=StaffPermissions.objects.get(user=request.user)
+        return render(request,'dashboard/profile_page_staff.html',context={"permissions": permissions})
     return error_detection(request,1)
 
 def get_passed_profile(user):

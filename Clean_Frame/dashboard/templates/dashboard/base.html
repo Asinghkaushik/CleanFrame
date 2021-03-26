@@ -81,7 +81,11 @@
                         </h3>
                         {% if request.user.is_authenticated %}
                         <ul>
-                            {% if request.user.is_staff %} {% else %}
+                            {% if request.user.is_staff %} 
+                            <li>
+                                <a href="{% url 'check_staff_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
+                            </li>
+                            {% else %}
                             <li>
                                 {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
                                 <a href="{% url 'check_company_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
@@ -92,9 +96,6 @@
                             {% endif %}
                             <li>
                                 <a href="{% url 'notifications' %}"><img src="{% static 'dashboard/img/notification.png' %}" alt=""> Notification</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'settings_home' %}"><img src="{% static 'dashboard/img/settings.png' %}" alt=""> Settings</a>
                             </li>
                             <li>
                                 <a href="{% url 'technical_support' %}"><img src="{% static 'dashboard/img/support.png' %}" alt=""> Support</a>

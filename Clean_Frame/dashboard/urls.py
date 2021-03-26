@@ -2,7 +2,7 @@ from django.urls import path
 from .views import dashboard,profile,send_otp_to_phone_stu,verify_otp_phone_stu,resend_otp_to_phone_stu,send_otp_to_phone_com,verify_otp_phone_com,resend_otp_to_phone_com, staff_profile,student_profile_3,company_profile_2, student_profile_2,student_profile_1,student_company_number,change_password,student_account_signup_permit,student_account_signup_action,company_account_signup_permit,company_account_signup_action
 from .views import new_announcement_round, new_announcement,new_announcement_success, announcements, edit_announcement,stu_result, show_companies, show_company_round_details, register_student_first_round_only, show_registrations, announce_internship, internships, edit_internship, company_profile_3
 from .views import delete_internship, delete_announcement, check_student_profile, seeze_results, internship_result, restrict_users, ban_user_account_permanent, delete_staff_account_admin, ban_user_account_temporary, unban_user, create_company_account, manage_blogs, create_new_blog, delete_blog, edit_blog, manage_staff_accounts, edit_staff_permissions, create_new_staff_account, internship_action, check_company_profile
-from .views import notifications, give_notifications, notification_delete, technical_support, technical_support_assist, respond_support, delete_account
+from .views import notifications, give_notifications, notification_delete, technical_support, technical_support_assist, respond_support, delete_account, check_staff_profile
 
 urlpatterns = [
     path('',dashboard,name="dashboard"),
@@ -42,6 +42,7 @@ urlpatterns = [
     path('announcement/delete/<str:item>',delete_announcement,name="delete_announcement"),
     path('profile/student/<str:item>',check_student_profile,name="check_student_profile"),
     path('profile/company/<str:item>',check_company_profile,name="check_company_profile"),
+    path('profile/staff/<str:item>',check_staff_profile,name="check_staff_profile"),
     path('results/seeze/<str:item>',seeze_results,name="seeze_results"),
     path('internships/result/<str:item>',internship_result,name="internship_result"),
     path('staff/restrict/users/',restrict_users,name="restrict_users"),
@@ -65,5 +66,6 @@ urlpatterns = [
     path('technical_support/assist/',technical_support_assist,name="technical_support_assist"),
     path('technical_support/respond/<str:item>',respond_support,name="respond_support"),
     path('account/delete/',delete_account,name="delete_account"),
+    
 
 ]
