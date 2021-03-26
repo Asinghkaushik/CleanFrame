@@ -81,7 +81,11 @@ def dashboard(request):
             unselected_students=registrations-selected_students
             return render(request,'dashboard1/dashboard_company.html',context={"data": data, "internships_with_result": internships_with_result, "internships_without_result": internships_without_result, "selected_students": selected_students, "unselected_students": unselected_students, "internships": internships.count(), "registrations": registrations})
         else:
-            return HttpResponse("Student Account")
+            my_registrations=StudentRegistration.objects.filter(student=request.user).count()
+            my_selections=InternshipFinalResult.objects.filter(student=request.user).count()
+            internships_accepted=InternshipFinalResult.objects.filter(student=request.user, student_agrees=2).count()
+            internships_reverted=InternshipFinalResult.objects.filter(student=request.user, student_agrees=1).count()
+            return render(request,'dashboard1/dashboard_student.html',context={"data": data, "my_registrations": my_registrations, "my_selections": my_selections, "internships_accepted": internships_accepted, "internships_reverted": internships_reverted})
     return error_detection(request,1)
 
 def get_permissions(request):
