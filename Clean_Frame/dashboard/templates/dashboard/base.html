@@ -40,7 +40,11 @@
             </h2>
             <div class="search-wrapper">
         <span class="las la-search"></span>
-        <input type="search" placeholder="Search here">
+        <form action="{% url 'search_users' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input id="myInput" name="search" type="search" placeholder="Search here">
+            <button type="submit" value="" style="display: none;">
+        </form>
       </div>
             <div class="user-wrapper">
                 <!-- {% if data.image %}

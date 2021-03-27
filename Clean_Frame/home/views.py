@@ -54,7 +54,7 @@ class Email_thread(Thread):
         
 def secureFile(request, file):
     if request.user.is_authenticated==False:
-        return redirect('home')
+        return error(request,"You are currently logged out")
     try:
         document=StudentProfile.objects.get(cv="post_files/"+file)
         if document.user==request.user or request.user.is_staff:
@@ -63,7 +63,7 @@ def secureFile(request, file):
             if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
                 return FileResponse(document.cv)
             else:
-                return redirect('home')
+                return error(request,"You have not permissions to view this link")
     except:
         try:
             document=CompanyAnnouncement.objects.get(file="post_files/"+file)
@@ -91,7 +91,7 @@ def secureFile(request, file):
                     document=Blog.objects.get(file="post_files/"+file)
                     return FileResponse(document.file)
                 except:
-                    return redirect('home')
+                    return error(request,"You have not permissions to view this link")
     
 def check_profile_permissions(request, user):
     if request.user == user:
@@ -585,7 +585,7 @@ def reset_password(request):
         return redirect('forgot_password')
 
 def error(request, message):
-    return render(request,"home/error_code.html",context={"error": message})
+    return render(request,"home/error_page.html",context={"error": message})
 
 def generate_password():
     alphabet = string.ascii_letters + string.digits

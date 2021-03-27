@@ -152,9 +152,9 @@ def send_otp_to_phone_stu(request):
             phone_number=request.POST.get('contact_number')
             address=request.POST.get('address')
             gender=request.POST.get('gender')
-            if StudentProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+            if StudentProfile.objects.filter(contact_number=int(phone_number),profile_filled=True).count() >= 1:
                 return profile_i(request,'Account with given mobile number already exists')
-            if CompanyProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+            if CompanyProfile.objects.filter(contact_number=int(phone_number),profile_filled=True).count() >= 1:
                 return profile_i(request,'Account with given mobile number already exists')
             if(otp_sender_to_student(request, phone_number)==False):
                 return redirect('dashboard')
@@ -184,7 +184,10 @@ def otp_sender_to_student(request, phone_number):
     except:
         return False
     otp=str(generate_otp())
-    SEND_OTP_TO_PHONE(phone_number,'+91',"OTP to verify phone number for the student account in Clean Frame is : " + str(otp) + ".\nDo not share it with anyone. It will expire in 15 minutes.\nThanks")
+    try:
+        SEND_OTP_TO_PHONE(phone_number,'+91',"OTP to verify phone number for the student account in Clean Frame is : " + str(otp) + ".\nDo not share it with anyone. It will expire in 15 minutes.\nThanks")
+    except:
+        return error(request,"Unable to Send OTP to this phone number, contact Administrator")
     try:
         u=StudentProfile.objects.get(user=user)
         u.otp=str(otp)
@@ -255,9 +258,9 @@ def send_otp_to_phone_com(request):
         if request.method=="POST":
             phone_number=request.POST.get('contact_number')
             address=request.POST.get('address')
-            if StudentProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+            if StudentProfile.objects.filter(contact_number=int(phone_number),profile_filled=True).count() >= 1:
                 return profile_i(request,'Account with given mobile number already exists')
-            if CompanyProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+            if CompanyProfile.objects.filter(contact_number=int(phone_number),profile_filled=True).count() >= 1:
                 return profile_i(request,'Account with given mobile number already exists')
             if(otp_sender_to_company(request, phone_number)==False):
                 return redirect('dashboard')
@@ -281,7 +284,10 @@ def otp_sender_to_company(request, phone_number):
     except:
         return False
     otp=str(generate_otp())
-    SEND_OTP_TO_PHONE(phone_number,'+91',"OTP to verify phone number for the student account in Clean Frame is : " + str(otp) + ".\nDo not share it with anyone. It will expire in 15 minutes.\nThanks")
+    try:
+        SEND_OTP_TO_PHONE(phone_number,'+91',"OTP to verify phone number for the student account in Clean Frame is : " + str(otp) + ".\nDo not share it with anyone. It will expire in 15 minutes.\nThanks")
+    except:
+        return error(request,"Unable to Send OTP to this phone number, contact Administrator")
     try:
         u=CompanyProfile.objects.get(user=user)
         u.otp=str(otp)
@@ -480,9 +486,9 @@ def student_company_number(request):
     if request.user.is_authenticated:
         if request.method=="POST":
             phone_number=request.POST.get('contact_number')
-            if StudentProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+            if StudentProfile.objects.filter(contact_number=int(phone_number),profile_filled=True).count() >= 1:
                 return profile_i(request,'Account with given mobile number already exists')
-            if CompanyProfile.objects.filter(contact_number=int(phone_number)).count() >= 1:
+            if CompanyProfile.objects.filter(contact_number=int(phone_number),profile_filled=True).count() >= 1:
                 return profile_i(request,'Account with given mobile number already exists')
             u=User.objects.get(username=request.user)
             if u.last_name==settings.COMPANY_MESSAGE:
@@ -702,7 +708,7 @@ def new_announcement_success(request, item):
             if item=='2':
                 return render(request, 'dashboard/new_announcement.html', context={"data": data, "success": "Announcement Created", "internships": internships})
             else:
-                return HttpResponse("404: page not found")
+                return error(request,"Page Not Found")
     return error_detection(request,1)
 
 def announce_internship(request):
@@ -754,7 +760,7 @@ def edit_internship(request, item):
             try:
                 data=Internship.objects.get(id=int(item))
                 if data.company!=request.user:
-                    return HttpResponse("Announcement not found")
+                    return error(request,"Announcement not found")
                 data.internship_name=request.POST.get('internship_name')
                 data.internship_duration=int(request.POST.get('duration'))
                 data.students_required=int(request.POST.get('number_of_students'))
@@ -765,14 +771,14 @@ def edit_internship(request, item):
                 data.save()
                 return render(request, 'dashboard/edit_internships.html', context={"data": data, "success": "Internship Details Updated"})
             except:
-                return HttpResponse("Error in details entered by you or Announcement not found")
+                return error(request,"Error in details entered by you or Announcement not found")
         else:
             try:
                 data=Internship.objects.get(id=int(item))
                 if data.company!=request.user:
-                    return HttpResponse("Internship not found")
+                    return error(request,"Internship not found")
             except:
-                return HttpResponse("Internship not found")
+                return error(request,"Internship not found")
             return render(request, 'dashboard/edit_internships.html', context={"data": data})
     return error_detection(request,1)
 
@@ -783,7 +789,7 @@ def edit_announcement(request, item):
         if request.method=="POST":
             data=CompanyAnnouncement.objects.get(id=int(item))
             if data.company!=request.user:
-                return HttpResponse("Announcement not found")
+                return error(request,"Announcement not found")
             internship_round=int(request.POST.get('internship_round'))
             form = CompanyAnnouncementForm(request.POST,request.FILES)
             if form.is_valid():
@@ -811,9 +817,9 @@ def edit_announcement(request, item):
             try:
                 data=CompanyAnnouncement.objects.get(id=int(item))
                 if data.company!=request.user:
-                    return HttpResponse("Announcement not found")
+                    return error(request,"Announcement not found")
             except:
-                return HttpResponse("Announcement not found")
+                return error(request,"Announcement not found")
             return render(request, 'dashboard/edit_announcements.html', context={"data": data})
     return error_detection(request,1)
 
@@ -870,14 +876,14 @@ def stu_result(request, item):
                         email=get_re.student.email
                         Email_thread(subject,message,email).start()
                 return redirect('stu_result', item)
-            return HttpResponse("INVALID REQUEST")
+            return error(request,"INVALID REQUEST")
         else:
             try:
                 data=CompanyAnnouncement.objects.get(id=int(item))
             except:
-                return HttpResponse("Announcement Not Found")
+                return error(request,"Announcement Not Found")
             if data.company!=request.user:
-                return HttpResponse("Announcement not found")
+                return error(request,"Announcement Not Found")
             students=get_students(request, data)
             return render(request, 'dashboard/result.html', context={"data": data, "students": students})
     return error_detection(request,1)
@@ -889,9 +895,9 @@ def internship_result(request,item):
         try:
             internship=Internship.objects.get(id=int(item))
         except:
-            return HttpResponse("Result Not Found")
+            return error(request,"Result Not Found")
         if internship.company!=request.user:
-            return HttpResponse("Announcement not found")
+            return error(request,"Announcement Not Found")
         students=InternshipFinalResult.objects.filter(internship=internship)
         data=get_my_profile(request)
         return render(request, 'dashboard/internship_result.html', context={"students": students})
@@ -910,7 +916,7 @@ def show_companies(request):
             return redirect('home')
         data=get_my_profile(request)
         if data.got_internship==True:
-            return HttpResponse("You can't register for internships this season because you alrady have one")
+            return error(request,"You can't register for internships this season because you alrady have one")
         eligible_companies=get_eligible_companies_for_me_round_one(request)
         return render(request, 'dashboard/show_companies.html', context={"data": data, "companies": eligible_companies})
     return error_detection(request,1)
@@ -942,7 +948,7 @@ def register_student_first_round_only(request, item):
             return redirect('home')
         data=get_my_profile(request)
         if data.got_internship==True:
-            return HttpResponse("You can't register for internships this season because you alrady have one")
+            return error(request,"You can't register for internships this season because you alrady have one")
         eligible_companies=get_eligible_companies_for_me_round_one(request)
         try:
             ann=CompanyAnnouncement.objects.get(id=int(item))
@@ -1018,26 +1024,26 @@ def internship_action(request,item,type):
         try:
             registration=StudentRegistration.objects.get(id=int(item))
         except:
-            return HttpResponse("Registration not found")
+            return error(request,"Registration not found")
         if request.user!=registration.student:
-            return HttpResponse("Registration not found")
+            return error(request,"Registration not found")
         if registration.result_status!=1 or registration.internship_cleared==False:
-            return HttpResponse("Error: may be this is not you are looking for.")
+            return error(request,"May be this is not you are looking for.")
         try:
             company_announcement=registration.company
             internship=registration.company.internship
         except:
-            return HttpResponse("Error: Internship not found")
+            return error(request,"Internship not found")
         if company_announcement.last_round==False or company_announcement.last_round_result_announced==False:
-            return HttpResponse("Error: Not a last round or final results have not been seized")
+            return error(request,"Not a last round or final results have not been seized")
         if internship.result_announced==False:
-            return HttpResponse("Error: Result of this internship has not been announced")
+            return error(request,"Result of this internship has not been announced")
         try:
             internship_result=InternshipFinalResult.objects.filter(internship=internship, student=request.user)
         except:
-            return HttpResponse("Error: Internship Result not found")
+            return error(request,"Internship Result not found")
         if internship_result.count()!=1:
-            return HttpResponse("Error: More than 1 resuls found for this, can\'t fetch which to take")
+            return error(request,"More than 1 resuls found for this, can\'t fetch which to take")
         if internship_result[0].student_agrees==0:
             if int(type)==2:
                 result=internship_result[0]
@@ -1070,9 +1076,9 @@ def internship_action(request,item,type):
                 profile.save()
                 return redirect('show_registrations')
             else:
-                return HttpResponse("404 Error: Page not found")
+                return error(request,"Page not found")
         else:
-            return HttpResponse("Error: You have already taken an action which can\'t be undone")
+            return error(request,"You have already taken an action which can\'t be undone")
     return error_detection(request,1)
 
 def delete_internship(request,item):
@@ -1085,9 +1091,9 @@ def delete_internship(request,item):
                 inter.delete()
                 return redirect('internships')
             else:
-                return HttpResponse("This account has no Permission to delete it")
+                return error(request,"This account has no Permission to delete it")
         except:
-            return HttpResponse("Internship Details not found")
+            return error(request,"Internship Details not found")
     return error_detection(request,1)
 
 
@@ -1098,16 +1104,16 @@ def seeze_results(request,item):
         try:
             comann=CompanyAnnouncement.objects.get(id=int(item))
             if comann.company!=request.user:
-                return HttpResponse("Announcement Details not found")
+                return error(request,"Announcement Details not found")
             if comann.last_round==False:
-                return HttpResponse("Not a last round")
+                return error(request,"Not a last round")
             internship=comann.internship
             if internship.result_announced==True:
-                return HttpResponse("Final Result has been announced")
+                return error(request,"Final Result has been announced")
             accept_discard_students(request,comann)
             return redirect('stu_result',item)
         except:
-            return HttpResponse("Announcement Details not found")
+            return error(request,"Announcement Details not found")
     return error_detection(request,1)
 
 def accept_discard_students(request,announcement):
@@ -1148,7 +1154,7 @@ def delete_announcement(request, item):
         try:
             comann=CompanyAnnouncement.objects.get(id=int(item))
             if comann.company!=request.user:
-                return HttpResponse("Announcement Details not found")
+                return error(request,"Announcement Details not found")
             previous_round = comann.prev_round_for_result
             round_no=int(comann.internship_round)
             if comann.company==request.user:
@@ -1166,9 +1172,9 @@ def delete_announcement(request, item):
                 comann.delete()
                 return redirect('announcements')
             else:
-                return HttpResponse("This account has no Permission to delete it")
+                return error(request,"This account has no Permission to delete it")
         except:
-            return HttpResponse("Announcement Details not found")
+            return error(request,"Announcement Details not found")
     return error_detection(request,1)
 
 def set_results_for_previous_round(request, old, new, internship):
@@ -1203,11 +1209,11 @@ def check_student_profile(request, item):
             user_profile=User.objects.get(id=int(item))
             data=get_passed_profile(user_profile)
             if data=={}:
-                return HttpResponse("Profile Not Found")
+                return error(request,"Profile Not Found")
         except:
-            return HttpResponse("Profile Not Found")
+            return error(request,"Profile Not Found")
         if user_profile.last_name==settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
-            return HttpResponse("Profile not found")
+            return error(request,"Profile Not Found")
         
         if request.method=="POST":
             permission=int(request.POST.get('profile_visibility'))
@@ -1215,9 +1221,9 @@ def check_student_profile(request, item):
             try:
                 user=User.objects.get(id=user_id)
             except:
-                return HttpResponse("User not found")
+                return error(request,"User not found")
             if request.user!=user:
-                return HttpResponse("User Profile is Hidden")
+                return error(request,"User Profile is Hidden")
             try:
                 per=ProfileVisibility.objects.get(user=request.user)
             except:
@@ -1241,7 +1247,7 @@ def check_student_profile(request, item):
             my_permissions=ProfileVisibility.objects.get(user=user_profile)
             if request.user.is_staff==False:
                 if check_profilepage_permissions(request, item) == False:
-                    return HttpResponse("You do not not permission to view this user's profile page")
+                    return error(request,"You do not not permission to view this user's profile page")
         except:
             ProfileVisibility.objects.create(user=user_profile, to_all=True)
             my_permissions=ProfileVisibility.objects.get(user=user_profile)
@@ -1278,11 +1284,11 @@ def check_company_profile(request, item):
             user_profile=User.objects.get(id=int(item))
             data=get_passed_profile(user_profile)
             if data=={}:
-                return HttpResponse("Profile Not Found")
+                return error(request,"Profile Not Found")
         except:
-            return HttpResponse("Profile Not Found")
+            return error(request,"Profile Not Found")
         if user_profile.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
-            return HttpResponse("Profile not found")
+            return error(request,"Profile Not Found")
         image=data.image
         return render(request,'dashboard/profile_page_company.html',context={"data": data, "image": image})
     return error_detection(request,1)
@@ -1292,11 +1298,11 @@ def check_staff_profile(request,item):
         try:
             user_profile=User.objects.get(id=int(item))
         except:
-            return HttpResponse("Profile Not Found")
+            return error(request,"Profile Not Found")
         if request.user.is_staff==False:
-            return HttpResponse("Profile not found")
+            return error(request,"Profile Not Found")
         if request.user!=user_profile:
-            return HttpResponse("Profile not found")
+            return error(request,"Profile Not Found")
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
         except:
@@ -1323,7 +1329,7 @@ def restrict_users(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_ban_users==False and permissions.can_delete_staff_accounts==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1339,7 +1345,7 @@ def restrict_users(request):
 
 def get_simple_users(request):
     if request.user.is_staff==False:
-        return HttpResponse("404: ERROR")
+        return error(request,"Not a Staff Account")
     users=User.objects.filter(is_staff=False, is_active=True, is_superuser=False)
     for each in users:
         profile=get_the_profile(each)
@@ -1357,7 +1363,7 @@ def ban_user_account_permanent(request,item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_ban_users==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1392,7 +1398,7 @@ def ban_user_account_temporary(request,item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_ban_users==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1430,18 +1436,18 @@ def delete_staff_account_admin(request,item,type):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_delete_staff_accounts==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
         try:
             user_del=User.objects.get(id=int(item))
         except:
-            return HttpResponse("User not Found")
+            return error(request,"User not Found")
         if user_del.is_superuser==True:
-            return HttpResponse("Cannot delete this account")
+            return error(request,"Cannot delete this account")
         if user_del.is_staff==False:
-            return HttpResponse("Cannot delete this account")
+            return error(request,"")
         email=user_del.email
         user_del.delete()   
         subject = 'Account Deleted'
@@ -1470,7 +1476,7 @@ def unban_user(request,item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_unban_users==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1504,7 +1510,7 @@ def unban_user(request,item):
 
 def get_banned_users(request):
     if request.user.is_superuser==False:
-        return HttpResponse("404: ERROR PAGE NOT FOUND")
+        return error(request,"PAGE NOT FOUND")
     users=User.objects.filter(is_staff=False, is_active=True, is_superuser=False)
     for each in users:
         profile=get_the_profile(each)
@@ -1522,7 +1528,7 @@ def create_company_account(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_create_new_company_account==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1568,7 +1574,7 @@ def manage_blogs(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_blogs==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1586,7 +1592,7 @@ def create_new_blog(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_blogs==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1609,7 +1615,7 @@ def delete_blog(request,item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_blogs==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1627,14 +1633,14 @@ def edit_blog(request,item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_blogs==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
         try:
             blog=Blog.objects.get(id=int(item))
         except:
-            return HttpResponse("Blog not found")
+            return error(request,"Blog not found")
         if request.method=="POST":
             form=BlogForm(request.POST,request.FILES)
             if form.is_valid():
@@ -1659,7 +1665,7 @@ def manage_staff_accounts(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_staff_accounts==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1677,7 +1683,7 @@ def edit_staff_permissions(request, item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_staff_accounts==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1689,7 +1695,7 @@ def edit_staff_permissions(request, item):
                 StaffPermissions.objects.create(user=staff_data)
                 data=StaffPermissions.objects.get(user=staff_data)
         except:
-            return HttpResponse("Staff Not Found")
+            return error(request,"Staff Not Found")
             
         if request.method=="POST":
             data.can_access_student_inactive_accounts=True if request.POST.get('can_access_student_inactive_accounts')=="1" else False
@@ -1712,7 +1718,7 @@ def create_new_staff_account(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_staff_accounts==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')            
@@ -1767,7 +1773,7 @@ def give_notifications(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_give_notifications==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1778,7 +1784,7 @@ def give_notifications(request):
                 try:
                     user=User.objects.get(id=int(user_id))
                 except:
-                    return HttpResponse("User not exists")
+                    return error(request,"User not exists")
                 Notification.objects.create(notification_sender=request.user, notification_receiver=user, notification=message)
             else:
                 if user_id==-1:
@@ -1788,7 +1794,7 @@ def give_notifications(request):
                 elif user_id==-3:
                     users=User.objects.filter(is_staff=False, is_superuser=False).exclude(last_name=settings.COMPANY_MESSAGE)
                 else:
-                    return HttpResponse("URL NOT FOUND")
+                    return error(request,"URL NOT FOUND")
                 for each in users:
                     Notification.objects.create(notification_sender=request.user, notification_receiver=each, notification=message)
             return redirect('give_notifications')
@@ -1820,11 +1826,11 @@ def technical_support(request):
                 try:
                     first_support=TechnicalSupportRequest.objects.get(id=int(support_id))
                 except:
-                    return HttpResponse("ERROR: Can't Reply on it")
+                    return error(request,"Can't Reply on it")
                 if first_support.continued_support==True:
-                    return HttpResponse("Support details not found")
+                    return error(request,"Support details not found")
                 if first_support.user!=request.user:
-                    return HttpResponse("You never initiated this support message")
+                    return error(request,"You never initiated this support message")
                 TechnicalSupportRequest.objects.create(user=request.user, continued_support=True, main_support_id=support_id, message=message)
             return redirect('technical_support')
         else:
@@ -1852,7 +1858,7 @@ def technical_support_assist(request):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_technical_support==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
@@ -1862,9 +1868,9 @@ def technical_support_assist(request):
             try:
                 first_support=TechnicalSupportRequest.objects.get(id=int(support_id))
             except:
-                return HttpResponse("ERROR: Can't Reply on it")
+                return error(request,"Can't Reply on it")
             if first_support.continued_support==True:
-                return HttpResponse("Support details not found")
+                return error(request,"Support details not found")
             TechnicalSupportRequest.objects.create(user=request.user, continued_support=True, main_support_id=support_id, message=message)
             return redirect('respond_support',support_id)
         else:
@@ -1881,16 +1887,16 @@ def respond_support(request,item):
         try:
             permissions=StaffPermissions.objects.get(user=request.user)
             if permissions.can_manage_technical_support==False:
-                return HttpResponse("404 Error: You don't have permission to access this page")
+                return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
             return redirect('dashboard')
         try:
             support=TechnicalSupportRequest.objects.get(id=int(item))
         except:
-            return HttpResponse("Support Details Not Found")
+            return error(request,"Support Details Not Found")
         if support.continued_support==True:
-            return HttpResponse("Support Details Not Found")
+            return error(request,"Support Details Not Found")
         threads=get_all_threads(int(item))
         return render(request,'dashboard1/show_all_threads.html',context={"support": support, "threads": threads, "permissions": permissions})
     return error_detection(request,1)
@@ -1915,3 +1921,24 @@ def delete_account(request):
         SENDMAIL(subject,message,email)
         return redirect('home')
     return error_detection(request,1)
+
+def search_users(request):
+    if error_detection(request,1)==False:
+        if request.method=="POST":
+            item=request.POST.get('search')
+            usernames=User.objects.filter(is_staff=False, is_superuser=False,username__icontains=item)
+            first_names=User.objects.filter(is_staff=False, is_superuser=False,first_name__icontains=item)
+            emails=User.objects.filter(is_staff=False, is_superuser=False,email__icontains=item)
+            users=usernames | first_names | emails
+            print(usernames)
+            print(first_names)
+            print(emails)
+            print(users)
+            return render(request,"dashboard1/search.html",context={"users": users, "search": item, "total_users": users.count()})
+        else:
+            return redirect('dashboard')
+    return error_detection(request,1)
+
+
+def error(request, message):
+    return render(request,"home/error_page.html",context={"error": message})
