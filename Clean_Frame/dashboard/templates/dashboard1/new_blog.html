@@ -166,7 +166,7 @@
                                     <label for="short_description">Short Description </label>
                                 </td>
                                 <td>
-                                    <textarea class="input-field" name="short_description" rows="3" placeholder="Enter short description" required></textarea>
+                                    <textarea maxlength="100" class="input-field" name="short_description" rows="3" placeholder="Enter short description" required></textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -174,15 +174,15 @@
                                     <label for="brief_description">Brief Description </label>
                                 </td>
                                 <td>
-                                    <textarea class="input-field" name="brief_description" rows="7" placeholder="Enter brief description" required></textarea>
+                                    <textarea maxlength="10000" class="input-field" name="brief_description" rows="7" placeholder="Enter brief description" required></textarea>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="file">File: </label>
+                                    <label for="file">Image: </label>
                                 </td>
                                 <td>
-                                    <input type="file" id="file" value="{{file}}" class="input-field" name="file" placeholder="Upload file" required>
+                                    <input type="file" id="image" value="{{image}}" class="input-field" name="image" placeholder="Upload image" required>
                                 </td>
                             </tr>
                             

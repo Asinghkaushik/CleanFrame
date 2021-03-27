@@ -89,7 +89,18 @@
             <div class="blog">
                 <div class="container">
                     <div class="owl-carousel owl-theme blog-post">
-                        <div class="blog-content" data-aos="fade-right" data-aos-delay="200">
+                        {% for each in blogs %}
+                        <div class="blog-content" data-aos="fade-left" data-aos-delay="200">
+                            <img src="{{each.image.url}}" alt="post-1">
+                            <div class="blog-title">
+                                <h3>{{each.title}}</h3>
+                                <div>{{each.short_description}}</div>
+                                <!-- <p class="" style="max-width: 99%; ">{{each.short_description}}</p> -->
+                                <button class="btn btn-blog">Read More...</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!-- <div class="blog-content" data-aos="fade-right" data-aos-delay="200">
                             <img src="{% static 'home/assets/Blog-post/post-1.jpg' %}" alt="post-1">
                             <div class="blog-title">
                                 <h3>London Fashion week's continued the evolution</h3>
@@ -120,7 +131,7 @@
                                 <button class="btn btn-blog">Fashion</button>
                                 <span>2 minutes</span>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

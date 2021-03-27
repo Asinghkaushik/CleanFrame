@@ -166,7 +166,7 @@
                                     <label for="short_description">Short Description </label>
                                 </td>
                                 <td>
-                                    <textarea class="input-field" name="short_description" rows="3" placeholder="Enter short description" required>{{data.short_description}}</textarea>
+                                    <textarea maxlength="100" class="input-field" name="short_description" rows="3" placeholder="Enter short description" required>{{data.short_description}}</textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -174,12 +174,12 @@
                                     <label for="brief_description">Brief Description </label>
                                 </td>
                                 <td>
-                                    <textarea class="input-field" name="brief_description" rows="7" placeholder="Enter brief description" required>{{data.brief_description}}</textarea>
+                                    <textarea maxlength="10000" class="input-field" name="brief_description" rows="7" placeholder="Enter brief description" required>{{data.brief_description}}</textarea>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="file">File {% if data.file %}(<a href="{{data.file.url}}">Current-Link</a>){% endif %} </label>
+                                    <label for="file">File {% if data.image %}(<a href="{{data.image.url}}">Current-Link</a>){% endif %} </label>
                                 </td>
                                 <td>
                                     <input type="file" id="file" value="{{file}}" class="input-field" name="file" placeholder="Upload file">

@@ -156,7 +156,8 @@ class Blog(models.Model):
     title=models.CharField(max_length=100000)
     short_description=models.CharField(max_length=100000000)
     brief_description=models.TextField()
-    file=models.FileField(upload_to='post_files/', null=True, blank=True)
+    image=models.ImageField(upload_to='post_images/', null=True, blank=True)
+    date_of_announcement=models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.title

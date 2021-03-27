@@ -128,7 +128,8 @@ def home(request):
 
 def home_(request):
     data=get_my_profile(request)
-    return render(request, 'home/homepage.html', context={"data": data})
+    blogs=Blog.objects.all().order_by('-date_of_announcement')
+    return render(request, 'home/homepage.html', context={"data": data, "blogs": blogs})
 
 def get_my_profile(request):
     data={}

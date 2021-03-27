@@ -1647,8 +1647,8 @@ def edit_blog(request,item):
                 blog.title=form.cleaned_data['title']
                 blog.short_description=form.cleaned_data['short_description']
                 blog.brief_description=form.cleaned_data['brief_description']
-                if form.cleaned_data['file'] != None:
-                    blog.file=form.cleaned_data['file']
+                if form.cleaned_data['image'] != None:
+                    blog.file=form.cleaned_data['image']
                 blog.save()
                 return redirect('manage_blogs')
             else:

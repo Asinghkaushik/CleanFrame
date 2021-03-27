@@ -45,5 +45,5 @@ class BlogForm(ModelForm):
             "title",
             "short_description",
             "brief_description",
-            "file",
+            "image",
         ]
