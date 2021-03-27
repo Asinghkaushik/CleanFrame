@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <!-- ------------ AOS Library ------------------------- -->
     <link rel="stylesheet" href="{% static 'home/css/aos.css' %}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>CleanFrame</title>
     <!-- Custom Style   -->
     <link rel="stylesheet" type="text/css" href="{% static 'home/css/style.css' %}">
@@ -95,43 +96,12 @@
                             <div class="blog-title">
                                 <h3>{{each.title}}</h3>
                                 <div>{{each.short_description}}</div>
+                                <p style="display: none;" id={{each.id}}>{{each.brief_description}}</p>
                                 <!-- <p class="" style="max-width: 99%; ">{{each.short_description}}</p> -->
-                                <button class="btn btn-blog">Read More...</button>
+                                <button onclick="open_description({{each.id}})" class="btn btn-blog">Read More...</button>
                             </div>
                         </div>
                         {% endfor %}
-                        <!-- <div class="blog-content" data-aos="fade-right" data-aos-delay="200">
-                            <img src="{% static 'home/assets/Blog-post/post-1.jpg' %}" alt="post-1">
-                            <div class="blog-title">
-                                <h3>London Fashion week's continued the evolution</h3>
-                                <button class="btn btn-blog">Fashion</button>
-                                <span>2 minutes</span>
-                            </div>
-                        </div>
-                        <div class="blog-content" data-aos="fade-in" data-aos-delay="200">
-                            <img src="{% static 'home/assets/Blog-post/post-3.jpg' %}" alt="post-1">
-                            <div class="blog-title">
-                                <h3>London Fashion week's continued the evolution</h3>
-                                <button class="btn btn-blog">Fashion</button>
-                                <span>2 minutes</span>
-                            </div>
-                        </div>
-                        <div class="blog-content" data-aos="fade-left" data-aos-delay="200">
-                            <img src="{% static 'home/assets/Blog-post/post-2.jpg' %}" alt="post-1">
-                            <div class="blog-title">
-                                <h3>London Fashion week's continued the evolution</h3>
-                                <button class="btn btn-blog">Fashion</button>
-                                <span>2 minutes</span>
-                            </div>
-                        </div>
-                        <div class="blog-content" data-aos="fade-right" data-aos-delay="200">
-                            <img src="{% static 'home/assets/Blog-post/post-5.png' %}" alt="post-1">
-                            <div class="blog-title">
-                                <h3>London Fashion week's continued the evolution</h3>
-                                <button class="btn btn-blog">Fashion</button>
-                                <span>2 minutes</span>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -140,20 +110,8 @@
                 <span class="owl-nav-next"><i class="fas fa-long-arrow-alt-right"></i></span>
             </div>
         </section>
-
-        <!-- ----------x---------- Blog Carousel --------x-------- -->
-
-        <!-- ---------------------- Site Content -------------------------->
-
-        <!-- -----------x---------- Site Content -------------x------------>
-
     </main>
-
-    <!---------------x------------- Main Site Section ---------------x-------------->
-
-
-    <!-- --------------------------- Footer ---------------------------------------- -->
-
+    <br><br>
     <footer class="footer">
         <div class="container">
             <div class="about-us" data-aos="fade-right" data-aos-delay="200">
@@ -165,9 +123,6 @@
                 <p>Stay update with our latest</p>
                 <div class="form-element">
                     <input type="text" placeholder="Email"><span><i class="fas fa-chevron-right"></i></span>
-                </div>
-                <div class="newsletter" data-aos="fade-right" data-aos-delay="200">
-                    <h2>Announcements</h2>
                 </div>
             </div>
             <div class="about-us" data-aos="fade-left" data-aos-delay="200">
@@ -211,6 +166,15 @@
             <span><i class="fas fa-arrow-circle-up fa-2x"></i></span>
         </div>
     </footer>
+    <div id="blog" class="w3-modal">
+        <div class="w3-modal-content">
+          <div class="w3-container">
+            <span onclick="document.getElementById('blog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+            
+            <p id="blog_description"></p>
+          </div>
+        </div>
+    </div>
 
     <!-- -------------x------------- Footer --------------------x------------------- -->
 
@@ -238,6 +202,7 @@
             $('#progressbar').css('height', scrollPercent + '%');
         })
     </script>
+    <script type="text/javascript" src="{% static 'home/js/modal.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
 </body>
 
