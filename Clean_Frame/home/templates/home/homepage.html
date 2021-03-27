@@ -43,19 +43,16 @@
             <div>
                 <ul class="nav-items">
                     <li class="nav-link">
-                        <a href="#">Home</a>
+                        <a href="#home">Home</a>
                     </li>
                     <li class="nav-link">
-                        <a href="#">Category</a>
+                        <a href="#blogs">Blogs</a>
                     </li>
                     <li class="nav-link">
-                        <a href="#">Archive</a>
+                        <a href="#about_us">About Us</a>
                     </li>
                     <li class="nav-link">
-                        <a href="#">Pages</a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#">Contact Us</a>
+                        <a onclick="open_description('contact_us')">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -66,7 +63,7 @@
 
     <!----------------------------- Main Site Section ------------------------------>
 
-    <main>
+    <main id="home">
 
         <!------------------------ Site Title ---------------------->
 
@@ -86,7 +83,7 @@
 
         <!-- --------------------- Blog Carousel ----------------- -->
 
-        <section>
+        <section id="blogs">
             <div class="blog">
                 <div class="container">
                     <div class="owl-carousel owl-theme blog-post">
@@ -112,11 +109,11 @@
         </section>
     </main>
     <br><br>
-    <footer class="footer">
+    <footer class="footer" id="about_us">
         <div class="container">
             <div class="about-us" data-aos="fade-right" data-aos-delay="200">
                 <h2>About us</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia atque nemo ad modi officiis iure, autem nulla tenetur repellendus.</p>
+                <p>Here, we provide a stand for companies for offering internships to students and students can register them and fought to get it.</p>
             </div>
             <div class="newsletter" data-aos="fade-right" data-aos-delay="200">
                 <h2>Newsletter</h2>
