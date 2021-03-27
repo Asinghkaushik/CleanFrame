@@ -50,3 +50,11 @@ class CompanyProfile(models.Model):
             return self.user.username
         else:
             return 'NILL'
+
+class Query(models.Model):
+    email=models.CharField(max_length=1000, null=True)
+    query=models.TextField()
+    date_of_query=models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.email

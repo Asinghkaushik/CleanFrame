@@ -32,7 +32,7 @@
     <nav class="nav">
         <div class="nav-menu flex-row">
             <div class="nav-brand">
-                <a href="#" class="text-gray" style="display: flex;">
+                <a href="{% url 'home' %}" class="text-gray" style="display: flex;">
                     <div class="comp1"><span class="lab la-accusoft myicon"></span></div>CleanFrame</a>
             </div>
             <div class="toggle-collapse">
@@ -50,6 +50,9 @@
                     </li>
                     <li class="nav-link">
                         <a href="#about_us">About Us</a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="#about_us">Query</a>
                     </li>
                     <li class="nav-link">
                         <a onclick="open_description('contact_us')">Contact Us</a>
@@ -76,6 +79,7 @@
                 <a href="{% url 'logout_request' %}" id="mybtnlink"><button class="btn">Logout</button></a> {% else %}
                 <a href="{% url 'login_request' %}" id="mybtnlink"><button class="btn">Login</button></a>
                 <a href="{% url 'signup_student' %}" id="mybtnlink"><button class="btn">SignUp</button></a> {% endif %}
+                <p style="color: white; " id="disappear">{{info}}</p>
             </div>
         </section>
 
@@ -116,10 +120,16 @@
                 <p>Here, we provide a stand for companies for offering internships to students and students can register them and fought to get it.</p>
             </div>
             <div class="newsletter" data-aos="fade-right" data-aos-delay="200">
-                <h2>Newsletter</h2>
-                <p>Stay update with our latest</p>
+                <h2>Query</h2>
                 <div class="form-element">
-                    <input type="text" placeholder="Email"><span><i class="fas fa-chevron-right"></i></span>
+                    <form action="{% url 'post_query' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="email" name="email" style="width: 300px; background-color: white; color: black; border-radius: 10px;" placeholder="Start by Email" required>
+
+                        <textarea name="query" placeholder="Post your query here" style="max-width: 300px; min-width: 300px; border-radius: 10px ; width: 300px; background-color: white; color: black; border: none; margin-top: 5px;" required></textarea>
+                            <!-- <a href="#"><span><i class="fas fa-chevron-right"></i></span></a> -->
+                        <input type="submit" style="width: 300px" value="Post the Query">
+                    </form>
                 </div>
             </div>
             <div class="about-us" data-aos="fade-left" data-aos-delay="200">

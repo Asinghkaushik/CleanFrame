@@ -7,3 +7,10 @@ function open_description(blog_id){
     }
     document.getElementById('blog').style.display='block'
 }
+
+
+$(document).ready(function() {
+    $("#disappear").fadeIn('slow', function() {
+        $("#disappear").delay(500).fadeOut(2500);
+    });
+});

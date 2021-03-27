@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 import math,random,string,datetime,array,secrets
 from twilio.rest import Client
 from .forms import UserForm
-from .models import StudentProfile, CompanyProfile
+from .models import StudentProfile, CompanyProfile, Query
 from dashboard.models import CompanyAnnouncement, ProfilePermissions, Blog, ProfileVisibility
 from dashboard.views import dashboard
 import math,random,string,array,secrets
@@ -123,13 +123,14 @@ def check_company_permissions(user):
     return False
 
 def home(request):
-    data={}
-    return home_(request)
-
-def home_(request):
     data=get_my_profile(request)
     blogs=Blog.objects.all().order_by('-date_of_announcement')
     return render(request, 'home/homepage.html', context={"data": data, "blogs": blogs})
+
+def home_(request,info):
+    data=get_my_profile(request)
+    blogs=Blog.objects.all().order_by('-date_of_announcement')
+    return render(request, 'home/homepage.html', context={"data": data, "blogs": blogs, "info": info})
 
 def get_my_profile(request):
     data={}
@@ -609,3 +610,11 @@ def change_staff_only(request,email,username):
     except:
         pass
     return render(request,"home/success_message.html",context={"message": "If correct credentials have been entered then new password would be sent to the registered email."})
+
+def post_query(request):
+    if request.method=="POST":
+        email=request.POST.get('email')
+        query=request.POST.get('query')
+        Query.objects.create(email=email,query=query)
+        return redirect('home_',"Query Submitted Successfully, you will get response within 2 days")
+    return redirect('home')
