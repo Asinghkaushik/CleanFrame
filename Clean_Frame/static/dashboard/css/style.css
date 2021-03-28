@@ -38,7 +38,8 @@
   position: absolute;
   left:0;
   top: 0;
-  /* height: 100vh; */
+  height: 140vh !important;
+  white-space:nowrap;
   background: var(--main-color1);
   z-index: 100;
   transition: width 300ms;
@@ -580,26 +581,26 @@ input {
 }
 
 .link_to_button_pink {
-  text-decoration: none; 
-  border: 7px solid #ca20da; 
-  background-color: #ca20da; 
-  color: white; 
+  text-decoration: none;
+  border: 7px solid #ca20da;
+  background-color: #ca20da;
+  color: white;
   border-radius: 20px;
 }
 
 .link_to_button_red {
-  text-decoration: none; 
-  border: 7px solid #fd436c; 
-  background-color: #fd436c; 
-  color: white; 
+  text-decoration: none;
+  border: 7px solid #fd436c;
+  background-color: #fd436c;
+  color: white;
   border-radius: 20px;
 }
 
 .link_to_button_blue {
-  text-decoration: none; 
-  border: 7px solid #5a8bd4; 
-  background-color: #5a8bd4; 
-  color: white; 
+  text-decoration: none;
+  border: 7px solid #5a8bd4;
+  background-color: #5a8bd4;
+  color: white;
   border-radius: 10px;
   padding-left: 10px;
   padding-right: 10px;

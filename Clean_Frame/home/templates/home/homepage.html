@@ -9,7 +9,6 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'home/css/all.css' %}">
-
     <link rel="icon" href="{% static 'home/assets/logo.ico' %}" type="image/x-icon">
     <!-- --------- Owl-Carousel ------------------->
     <link rel="stylesheet" href="{% static 'home/css/owl.carousel.min.css' %}">
@@ -42,21 +41,31 @@
             </div>
             <div>
                 <ul class="nav-items">
+                  <a href="#home">
                     <li class="nav-link">
-                        <a href="#home">Home</a>
+                        Home
                     </li>
+                  </a>
+                  <a href="#blogs">
                     <li class="nav-link">
-                        <a href="#blogs">Blogs</a>
+                        Blogs
                     </li>
+                  </a>
+                  <a href="#about_us">
                     <li class="nav-link">
-                        <a href="#about_us">About Us</a>
+                        About Us
                     </li>
+                  </a>
+                  <a href="#about_us">
                     <li class="nav-link">
-                        <a href="#about_us">Query</a>
+                        Query
                     </li>
+                  </a>
+                  <a onclick="open_description('contact_us')">
                     <li class="nav-link">
-                        <a onclick="open_description('contact_us')">Contact Us</a>
+                        Contact Us
                     </li>
+                  </a>
                 </ul>
             </div>
         </div>
@@ -121,7 +130,7 @@
             </div>
             <div class="newsletter" data-aos="fade-right" data-aos-delay="200">
                 <h2>Query</h2>
-                <div class="form-element">
+                <div class="form-element" style="display: inline;">
                     <form action="{% url 'post_query' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="email" name="email" style="width: 300px; background-color: white; color: black; border-radius: 10px;" placeholder="Start by Email" required>
@@ -177,7 +186,7 @@
         <div class="w3-modal-content">
           <div class="w3-container">
             <span onclick="document.getElementById('blog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-            
+
             <p id="blog_description"></p>
           </div>
         </div>
@@ -210,7 +219,7 @@
         })
     </script>
     <script type="text/javascript" src="{% static 'home/js/modal.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script> -->
 </body>
 
 </html>

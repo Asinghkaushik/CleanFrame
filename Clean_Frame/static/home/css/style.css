@@ -158,7 +158,7 @@ p {
     background-color: var(--midnight);
 }
 
-.nav .nav-items .nav-link:hover a {
+.nav .nav-items a:hover {
     color: var(--white);
 }
 
