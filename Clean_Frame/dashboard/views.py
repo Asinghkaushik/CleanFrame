@@ -1930,10 +1930,6 @@ def search_users(request):
             first_names=User.objects.filter(is_staff=False, is_superuser=False,first_name__icontains=item)
             emails=User.objects.filter(is_staff=False, is_superuser=False,email__icontains=item)
             users=usernames | first_names | emails
-            print(usernames)
-            print(first_names)
-            print(emails)
-            print(users)
             return render(request,"dashboard1/search.html",context={"users": users, "search": item, "total_users": users.count()})
         else:
             return redirect('dashboard')
