@@ -27,6 +27,7 @@ function close_modal(){
     modal.style.display = "none";
     document.getElementById("support_id").value=""
     document.getElementById("enter_user_id").innerHTML=myid
+    return false;
 }
 
 function new_thread(){

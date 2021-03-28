@@ -85,7 +85,7 @@
                         </h3>
                         {% if request.user.is_authenticated %}
                         <ul>
-                            {% if request.user.is_staff %} 
+                            {% if request.user.is_staff %}
                             <li>
                                 <a href="{% url 'check_staff_profile' item=request.user.id %}"><img src="{% static 'dashboard/img/profile.png' %}" alt=""> View Profile</a>
                             </li>
@@ -120,16 +120,16 @@
     <script src="{% static 'dashboard/js/app.js' %}"></script>
     <script src="{% static 'dashboard/js/timer.js' %}"></script>
     <script type="text/javascript" src="{% static 'dashboard/js/table.js' %}"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"> </script> 
-    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"> </script> 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"> </script>
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"> </script>
     <script>
     function toexcel(id){
-        $(id).table2excel({ 
-        filename: "data.xlsx" 
-        }); 
+        $(id).table2excel({
+        filename: "data.xlsx"
+        });
     }
     </script>
-    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script> -->
 </body>
 
 </html>

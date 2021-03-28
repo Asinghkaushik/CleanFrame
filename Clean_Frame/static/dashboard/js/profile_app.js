@@ -145,7 +145,18 @@ function validate_cgpa(str) {
         return true;
     return false;
 }
-
+// function validate_cgpa(str) {
+//     if (validate_float(str)){
+//       var fg=str.length();
+//       if(parseInt(str)<10){
+//         return true;
+//       }
+//       else if (parseFloat(str)==10) {
+//         return true;
+//       }
+//     }
+//     return false;
+// }
 $(document).ready(function() {
     $('#time_error1').fadeIn('slow', function() {
         $('#time_error1').delay(4000).fadeOut(4000);

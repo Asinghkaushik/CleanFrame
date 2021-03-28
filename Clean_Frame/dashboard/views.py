@@ -21,7 +21,7 @@ class Email_thread(Thread):
 
     def run(self):
         SENDMAIL(self.subject,self.message,self.email)
-        
+
 # Create your views here.
 def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
     client = Client(settings.PHONE_ACCOUNT_SID_TWILIO, settings.PHONE_ACCOUNT_AUTH_TOKEN_TWILIO)
@@ -108,21 +108,21 @@ def error_detection(request,id):
     if request.user.is_staff or request.user.is_superuser:
         return False
     if request.user.is_active==False:
-        return error_code(request,"500")
+        return error(request,"Your account is not yet been active.")
     if request.user.last_name==settings.COMPANY_MESSAGE:
         try:
             p=CompanyProfile.objects.get(user=request.user)
         except:
-            return error_message(request,"Profile Not Found")
+            return error(request,"Profile Not Found")
     else:
         try:
             p=StudentProfile.objects.get(user=request.user)
         except:
-            return error_message(request,"Profile Not Found")
+            return error(request,"Profile Not Found")
     if p.account_banned_permanent:
-        return error_message(request,"Your account is banned permanently")
+        return error(request,"Your account is banned permanently")
     if p.account_banned_temporary:
-        return error_message(request,"Your account is banned temporarily, login again")
+        return error(request,"Your account is banned temporarily, login again")
     if p.profile_filled==False and id==1:
         return redirect('profile')
     return False
@@ -419,7 +419,7 @@ def company_profile_2(request):
             return redirect('dashboard')
     else:
         return redirect('dashboard')
-    
+
 def company_profile_3(request):
     if request.user.is_authenticated :
         if request.user.last_name==settings.COMPANY_MESSAGE:
@@ -1145,7 +1145,7 @@ def accept_discard_students(request,announcement):
         each.save()
     internship.result_announced=True
     internship.save()
-            
+
 
 def delete_announcement(request, item):
     if error_detection(request,1)==False:
@@ -1162,11 +1162,11 @@ def delete_announcement(request, item):
                     try:
                         internship = comann.internship
                         abcd = CompanyAnnouncement.objects.filter(internship = internship)
-                        mx=0
-                        for each in abcd:
-                            mx=get_max(int(mx),int(each.internship_round))
-                        if mx==int(comann.internship_round):
-                            set_results_for_previous_round(request, int(previous_round), int(comann.internship_round), comann.internship)
+                        # mx=0
+                        # for each in abcd:
+                        #     mx=get_max(int(mx),int(each.internship_round))
+                        # if mx==int(comann.internship_round):
+                        set_results_for_previous_round(request, int(previous_round), int(comann.internship_round), comann.internship)
                     except:
                         pass
                 comann.delete()
@@ -1196,13 +1196,13 @@ def set_results_for_previous_round(request, old, new, internship):
             message = f'Hi user, you have been reverted back to previous round of internship because company deleted the latest round.\nDetails of the current cleared round are as follows:\nCompany Name: '+str(each.company.company.first_name)+'\nInternship Name: '+str(each.company.internship.internship_name)+'\nRound Number: '+str(each.company.internship_round)+'\nThanks'
             email=each.student.email
             Email_thread(subject,message,email).start()
-            
-            
+
+
 def get_max(a,b):
     if a>b:
         return a
     return b
-            
+
 def check_student_profile(request, item):
     if error_detection(request,1)==False:
         try:
@@ -1214,7 +1214,7 @@ def check_student_profile(request, item):
             return error(request,"Profile Not Found")
         if user_profile.last_name==settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             return error(request,"Profile Not Found")
-        
+
         if request.method=="POST":
             permission=int(request.POST.get('profile_visibility'))
             user_id=int(request.POST.get('user_id'))
@@ -1277,7 +1277,7 @@ def check_profilepage_permissions(request, item):
                 if request.user.last_name==settings.COMPANY_MESSAGE:
                     return True
             return False
-        
+
 def check_company_profile(request, item):
     if error_detection(request,1)==False:
         try:
@@ -1376,7 +1376,7 @@ def ban_user_account_permanent(request,item):
         if profile.account_banned_permanent==True:
             return redirect('restrict_users')
         profile.account_banned_permanent=True
-        profile.save()   
+        profile.save()
         subject = 'Account Seized'
         message = f'Hi user, your account has been banned permanently.\nAccount is banned by ' + request.user.email + ' , contact this email for any query.\nThanks'
         email=user_ban.email
@@ -1414,7 +1414,7 @@ def ban_user_account_temporary(request,item):
         profile.account_banned_temporary=True
         profile.account_ban_time=ban_time
         profile.account_ban_date=datetime.datetime.now()
-        profile.save()   
+        profile.save()
         subject = 'Account Seized'
         message = f'Hi user, your account has been banned temporarily for ' + str(ban_time) + ' days.\nAccount is banned by ' + request.user.email + ' , contact this email for any query.\nThanks'
         email=user_ban.email
@@ -1449,7 +1449,7 @@ def delete_staff_account_admin(request,item,type):
         if user_del.is_staff==False:
             return error(request,"")
         email=user_del.email
-        user_del.delete()   
+        user_del.delete()
         subject = 'Account Deleted'
         message = f'Hi user, your account has been deleted permanently.\nAccount is deleted by ' + request.user.email + ' , contact this email for any query.\nThanks'
         Email_thread(subject,message,email).start()
@@ -1648,7 +1648,7 @@ def edit_blog(request,item):
                 blog.short_description=form.cleaned_data['short_description']
                 blog.brief_description=form.cleaned_data['brief_description']
                 if form.cleaned_data['image'] != None:
-                    blog.file=form.cleaned_data['image']
+                    blog.image=form.cleaned_data['image']
                 blog.save()
                 return redirect('manage_blogs')
             else:
@@ -1696,7 +1696,7 @@ def edit_staff_permissions(request, item):
                 data=StaffPermissions.objects.get(user=staff_data)
         except:
             return error(request,"Staff Not Found")
-            
+
         if request.method=="POST":
             data.can_access_student_inactive_accounts=True if request.POST.get('can_access_student_inactive_accounts')=="1" else False
             data.can_access_company_inactive_accounts=True if request.POST.get('can_access_company_inactive_accounts')=="1" else False
@@ -1721,7 +1721,7 @@ def create_new_staff_account(request):
                 return error(request,"You don't have permission to access this page")
         except:
             StaffPermissions.objects.create(user=request.user)
-            return redirect('dashboard')            
+            return redirect('dashboard')
         if request.method=="POST":
             username=request.POST.get('username')
             first_name=request.POST.get('first_name')
@@ -1763,7 +1763,7 @@ def notifications(request):
         notifications=Notification.objects.filter(notification_receiver=request.user).order_by('-date')
         if notifications.count()==0:
             notifications="0"
-        return render(request,'dashboard1/notifications.html',context={"notifications": notifications})
+        return render(request,'dashboard1/notifications.html',context={"notifications": notifications, "permissions": get_permissions(request)})
     return error_detection(request,1)
 
 def give_notifications(request):
@@ -1839,7 +1839,7 @@ def technical_support(request):
             threads=responses[1]
             if support.count()==0:
                 support="0"
-            return render(request,'dashboard1/technical_support.html',context={"support": support, "threads": threads})
+            return render(request,'dashboard1/technical_support.html',context={"support": support, "threads": threads, "permissions": get_permissions(request)})
     return error_detection(request,1)
 
 def get_my_support_responses(request):
@@ -1915,7 +1915,7 @@ def delete_account(request):
             email=u.email
             u.delete()
         except:
-            return error_message(request,"User Not Found")
+            return error(request,"User Not Found")
         subject = 'Account Deletion Notice'
         message = f'Hey, user!\nYour account has been sucessfully deleted from Clean Frame.\nMoreover all the records related are also deleted.\nIf you create a new account then previous effects or changes would not be shown.\nThanks'
         SENDMAIL(subject,message,email)
@@ -1930,7 +1930,7 @@ def search_users(request):
             first_names=User.objects.filter(is_staff=False, is_superuser=False,first_name__icontains=item)
             emails=User.objects.filter(is_staff=False, is_superuser=False,email__icontains=item)
             users=usernames | first_names | emails
-            return render(request,"dashboard1/search.html",context={"users": users, "search": item, "total_users": users.count()})
+            return render(request,"dashboard1/search.html",context={"users": users, "search": item, "total_users": users.count(), "permissions": get_permissions(request)})
         else:
             return redirect('dashboard')
     return error_detection(request,1)

@@ -51,7 +51,7 @@ class Email_thread(Thread):
 #                     return redirect('home')
 #         except:
 #             return redirect('home')
-        
+
 def secureFile(request, file):
     if request.user.is_authenticated==False:
         return error(request,"You are currently logged out")
@@ -92,14 +92,14 @@ def secureFile(request, file):
                     return FileResponse(document.file)
                 except:
                     return error(request,"You have not permissions to view this link")
-    
+
 def check_profile_permissions(request, user):
     if request.user == user:
         return True
     try:
         ProfilePermissions.objects.get(user_who_can_see=request.user,user_whose_to_see=user)
         return True
-    except:    
+    except:
         pass
     try:
         my_permissions=ProfileVisibility.objects.get(user=user)
@@ -115,10 +115,10 @@ def check_profile_permissions(request, user):
     except:
         return False
 
-    
+
 def check_student_permissions(user):
     return False
-    
+
 def check_company_permissions(user):
     return False
 
@@ -245,7 +245,7 @@ def signup_student_send_otp(email):
         u.otp_time=datetime.datetime.now()
         u.save()
     except:
-        u=StudentProfile.objects.create(user=user, otp=str(otp))
+        u=StudentProfile.objects.create(user=user, otp=str(otp), otp_time=datetime.datetime.now())
         u.save()
     return True
 
