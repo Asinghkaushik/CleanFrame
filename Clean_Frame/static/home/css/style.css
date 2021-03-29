@@ -1,4 +1,4 @@
-@import url('../css/fonts.css');
+
 html,
 body {
     margin: 0%;
@@ -192,7 +192,7 @@ p {
 /* --------------- Site title ---------------- */
 
 main .site-title {
-    background: url('../assets/Background-image.png');
+    background: url('../assets/Background-image.jpg');
     background-size: cover;
     height: 110vh;
     display: flex;
