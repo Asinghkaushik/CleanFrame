@@ -38,7 +38,7 @@
   position: absolute;
   left:0;
   top: 0;
-  height: 140vh !important;
+  /* height: 140vh !important; */
   white-space:nowrap;
   background: var(--main-color1);
   z-index: 100;

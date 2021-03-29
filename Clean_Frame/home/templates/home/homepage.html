@@ -56,7 +56,7 @@
                         About Us
                     </li>
                   </a>
-                  <a href="#about_us">
+                  <a href="#query">
                     <li class="nav-link">
                         Query
                     </li>
@@ -122,13 +122,13 @@
         </section>
     </main>
     <br><br>
-    <footer class="footer" id="about_us">
+    <footer class="footer" >
         <div class="container">
-            <div class="about-us" data-aos="fade-right" data-aos-delay="200">
+            <div class="about-us" id="about_us" data-aos="fade-right" data-aos-delay="200">
                 <h2>About us</h2>
-                <p>Here, we provide a stand for companies for offering internships to students and students can register them and fought to get it.</p>
+                <p>Here, we provide a stand for companies for offering internships to students and students can register them and compete to get it.</p>
             </div>
-            <div class="newsletter" data-aos="fade-right" data-aos-delay="200">
+            <div class="newsletter" id="query" data-aos="fade-right" data-aos-delay="200">
                 <h2>Query</h2>
                 <div class="form-element" style="display: inline;">
                     <form action="{% url 'post_query' %}" method="POST" enctype="multipart/form-data">

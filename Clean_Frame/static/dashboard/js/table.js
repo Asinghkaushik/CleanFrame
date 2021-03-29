@@ -1,33 +1,25 @@
 $(window).scroll(function() {
-    var scroll = $(window).scrollTop(),
-      dh = $(document).height(),
-      wh = $(window).height();
-    scrollPercent = (scroll / (dh - wh)) * 100;
-    $('#progressbar').css('height', scrollPercent + '%');
-  })
-  // $(document).ready(function() {
-  //   // var scroll = $(window).scrollTop(),
-  //     // dh = $(document).height();
-  //     // wh = $(window).height();
-  //     // gh = Math.max(dh,wh);
-  //     gf=document.getElementById("main_ch");
-  //     gd=gf.offsetHeight;
-  //     $('.sidebar-menu').css('height', gd + 'px !important');
-  //     // alert(gd);
-  //   // $('.sidebar-menu').css('height', gd + 'px !important');
-  // })
-  // $(document).ready(function() {
-  //   $('#myTable').dataTable();
-  // });
-  // $(document).ready(function() {
-  //   $('#myTable').dataTable({
-  //     'sDom': '"top"i'
-  //   });
-  // });
+  var scroll = $(window).scrollTop(),
+    dh = $(document).height(),
+    wh = $(window).height();
+  scrollPercent = (scroll / (dh - wh)) * 100;
+  $('#progressbar').css('height', scrollPercent + '%');
+})
+$(window).scroll(function() {
+  var scroll = $(window).scrollTop(),
+    dh = $(document).height();
+    wh = $(window).height();
+    gh = Math.max(dh,wh);
+  $('.sidebar').css('height', gh + 'px');
+})
+$(document).ready(function() {
+  $('.sidebar').css('height',screen.height);
+});
+
   $("#myTable").DataTable({
     "paging": true,
     "ordering": true,
-    "bLengthChange": false,
+    "bLengthChange": true,
     "searching": true
   });
 
