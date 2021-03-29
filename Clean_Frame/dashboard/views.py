@@ -120,8 +120,10 @@ def error_detection(request,id):
         except:
             return error(request,"Profile Not Found")
     if p.account_banned_permanent:
+        logout(request)
         return error(request,"Your account is banned permanently")
     if p.account_banned_temporary:
+        logout(request)
         return error(request,"Your account is banned temporarily, login again")
     if p.profile_filled==False and id==1:
         return redirect('profile')
@@ -513,7 +515,17 @@ def student_company_number(request):
 def change_password(request):
     if error_detection(request,1)==False:
         data=get_my_profile(request)
-        return render(request,'dashboard/change_password.html',context={ "permissions": get_permissions(request), "data": data})
+        if request.method=="POST":
+            password=request.POST.get('password2')
+            user=request.user
+            user.set_password(password)
+            user.save()
+            subject = 'Password changed in Clean Frame'
+            message = f'Hi user, password has been successfully changed.\nThanks'
+            Email_thread(subject,message,user.email).start()
+            return redirect('dashboard')
+        else:
+            return render(request,'dashboard/change_password.html',context={ "permissions": get_permissions(request), "data": data})
     return error_detection(request,1)
 
 def student_account_signup_permit(request):
