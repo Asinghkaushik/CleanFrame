@@ -1304,7 +1304,8 @@ def check_company_profile(request, item):
         if user_profile.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
             return error(request,"Profile Not Found")
         image=data.image
-        return render(request,'dashboard/profile_page_company.html',context={"data": data, "image": image})
+        general_announcements=CompanyAnnouncement.objects.filter(company=user_profile, general_announcement=True).order_by('-announcement_date')
+        return render(request,'dashboard/profile_page_company.html',context={"data": data, "image": image, "general_announcements": general_announcements})
     return error_detection(request,1)
 
 def check_staff_profile(request,item):

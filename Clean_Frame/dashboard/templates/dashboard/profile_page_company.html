@@ -206,15 +206,34 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                             <hr class="my-4">
-                            <!-- Description -->
-                            <!-- <h6 class="heading-small text-muted mb-4">About me</h6>
-                                    <div class="pl-lg-4">
+                            <h6 class="heading-small text-muted mb-4">Announcements</h6>
+                            <div class="pl-lg-4">
+                                <div class="row">
+
+                                    {% for each in general_announcements %}
+                                    <div class="col-lg-6">
                                         <div class="form-group focused">
-                                            <label>About Me</label>
-                                            <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                                            <label class="form-control-label" for="input-username">Posted on {{each.announcement_date}}</label>
+                                            <b>{% if each.file %}
+                                                <a href="{{each.file.url}}" style="margin-left: 80px;">File 1</a>
+                                                {% if each.file_for_prev_result %}
+                                                    <a href="{{each.file_for_prev_result.url}}" style="float: right">File 2</a>
+                                                {% endif %}
+                                            
+                                            {% else %}
+                                                {% if each.file_for_prev_result %}
+                                                    <a href="{{each.file_for_prev_result.url}}" style="float: right">File 1</a>
+                                                {% endif %}
+                                            {% endif %}
+                                            </b>
+                                            <textarea  class="form-control form-control-alternative" placeholder="Announcement message" rows=10 readonly>{{each.message}}</textarea>
                                         </div>
-                                    </div> -->
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                     </form>
                     </div>
                 </div>
@@ -251,7 +270,7 @@
     </div>
     {% endifequal %}
     
-    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/profile_modal.js' %}"></script>
 </body>
 
