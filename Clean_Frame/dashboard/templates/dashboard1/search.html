@@ -148,19 +148,26 @@
         {% for each in users %}
             <div class="container" rows="10" style=" background-color: rgba(233, 148, 176, 0.74); width: 60%; text-align: left;  border-radius: 10px; margin-top: 10px; overflow-wrap: break-word;" readonly>
                 <br>
-                {% ifequal each.last_name 'This_is_a_company_Associated_account' %}
-                <h5 style="color: rgb(66, 46, 175);">Company Account</h5><br><br>
-                <p style="color: rgb(11, 104, 81);">Username : {{each}}</p>
-                <p style="color: rgb(11, 104, 81);">Name of Company: {{each.first_name}}</p>
-                <p style="color: rgb(11, 104, 81);">Email Address : {{each.email}}</p>
-                <a href="{% url 'check_company_profile' item=each.id %}" class="link_to_button_blue" style="position: relative; float: right">View Profile</a><br><br>
+                {% if each.is_staff %}
+                  <h5 style="color: rgb(66, 46, 175);">Staff Account</h5><br><br>
+                  <p style="color: rgb(11, 104, 81);">Username : {{each}}</p>
+                  <p style="color: rgb(11, 104, 81);">Name of Company: {{each.first_name}}</p>
+                  <p style="color: rgb(11, 104, 81);">Email Address : {{each.email}}</p><br><br>
                 {% else %}
-                <h5 style="color: rgb(66, 46, 175);;">Student Account</h5><br><br>
-                <p style="color: rgb(11, 104, 81);">Username : {{each}}</p>
-                <p style="color: rgb(11, 104, 81);">Name : {{each.first_name}} {{each.last_name}}</p>
-                <p style="color: rgb(11, 104, 81);">Email Address : {{each.email}}</p>
-                <a href="{% url 'check_student_profile' item=each.id %}" class="link_to_button_blue" style="position: relative; float: right">View Profile</a><br><br>
-                {% endifequal %}
+                  {% ifequal each.last_name 'This_is_a_company_Associated_account' %}
+                  <h5 style="color: rgb(66, 46, 175);">Company Account</h5><br><br>
+                  <p style="color: rgb(11, 104, 81);">Username : {{each}}</p>
+                  <p style="color: rgb(11, 104, 81);">Name of Company: {{each.first_name}}</p>
+                  <p style="color: rgb(11, 104, 81);">Email Address : {{each.email}}</p>
+                  <a href="{% url 'check_company_profile' item=each.id %}" class="link_to_button_blue" style="position: relative; float: right">View Profile</a><br><br>
+                  {% else %}
+                  <h5 style="color: rgb(66, 46, 175);;">Student Account</h5><br><br>
+                  <p style="color: rgb(11, 104, 81);">Username : {{each}}</p>
+                  <p style="color: rgb(11, 104, 81);">Name : {{each.first_name}} {{each.last_name}}</p>
+                  <p style="color: rgb(11, 104, 81);">Email Address : {{each.email}}</p>
+                  <a href="{% url 'check_student_profile' item=each.id %}" class="link_to_button_blue" style="position: relative; float: right">View Profile</a><br><br>
+                  {% endifequal %}
+                {% endif %}
             </div>
         {% endfor %}
 

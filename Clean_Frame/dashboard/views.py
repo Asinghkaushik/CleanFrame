@@ -77,7 +77,7 @@ def dashboard(request):
             registrations=0
             for each in internships:
                 registrations+=StudentRegistration.objects.filter(company__internship=each).count()
-            selected_students=InternshipFinalResult.objects.filter(company=request.user,student_agrees=True).count()
+            selected_students=InternshipFinalResult.objects.filter(company=request.user,student_agrees=2).count()
             unselected_students=registrations-selected_students
             return render(request,'dashboard1/dashboard_company.html',context={"data": data, "internships_with_result": internships_with_result, "internships_without_result": internships_without_result, "selected_students": selected_students, "unselected_students": unselected_students, "internships": internships.count(), "registrations": registrations})
         else:
@@ -1170,6 +1170,8 @@ def delete_announcement(request, item):
             previous_round = comann.prev_round_for_result
             round_no=int(comann.internship_round)
             if comann.company==request.user:
+                if comann.last_round==True and comann.last_round_result_announced==True:
+                    return error(request,"This Announcement can't be deleted because its results are seized")
                 if round_no > 1:
                     try:
                         internship = comann.internship
@@ -1942,6 +1944,11 @@ def search_users(request):
             first_names=User.objects.filter(is_staff=False, is_superuser=False,first_name__icontains=item)
             emails=User.objects.filter(is_staff=False, is_superuser=False,email__icontains=item)
             users=usernames | first_names | emails
+            if request.user.is_staff==True:
+                usernames=User.objects.filter(is_staff=True, username__icontains=item)
+                first_names=User.objects.filter(is_staff=True, first_name__icontains=item)
+                emails=User.objects.filter(is_staff=True, email__icontains=item)
+                users=usernames | first_names | emails | users
             return render(request,"dashboard1/search.html",context={"users": users, "search": item, "total_users": users.count(), "permissions": get_permissions(request)})
         else:
             return redirect('dashboard')

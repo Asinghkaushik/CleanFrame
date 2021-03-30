@@ -78,7 +78,7 @@ def secureFile(request, file):
         except:
             try:
                 document=CompanyAnnouncement.objects.get(file_for_prev_result="post_files/"+file)
-                return FileResponse(document.file)
+                return FileResponse(document.file_for_prev_result)
                 # if document.company==request.user or request.user.is_staff:
                 #     return FileResponse(document.file_for_prev_result)
                 # else:

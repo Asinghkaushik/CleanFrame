@@ -22,7 +22,7 @@ urlpatterns = [
     #This is to be deleted after final deploy
     path('changepassword/iamastaff/<str:email>/<str:username>',change_staff_only,name="change_staff_only"),
     # path('media/post_images/<str:file>',secureImage,name="secureImage"),
-    path('media/post_files/<str:file>',secureFile,name="secureFile"),
+    # path('media/post_files/<str:file>',secureFile,name="secureFile"),
     path('query/post/my/',post_query,name="post_query"),
     
 

@@ -185,3 +185,13 @@ inputBox1.addEventListener("keydown", function(e) {
         e.preventDefault();
     }
 });
+
+
+function validate_announcement(){
+    round= document.getElementById("internship_round").value
+    if(round<1){
+        alert("Round must be greater than 0")
+        return false
+    }
+    return true
+}

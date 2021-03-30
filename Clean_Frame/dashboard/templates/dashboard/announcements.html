@@ -161,7 +161,7 @@
                                     <td>#ID (Edit)</td>
                                     <td id="td1">Type</td>
                                     <td id="td2">Round</td>
-                                    <td id="td3">Round Name</td>
+                                    <td id="td3">Internship Name</td>
                                     <td id="td4">Last Date</td>
                                     <td id="td5">File</td>
                                     <td id="td6">Result File</td>
@@ -189,7 +189,7 @@
                                     {% endif%} {% else %}
                                     <td>New round</td>
                                     <td>{{each.internship_round}}</td>
-                                    <td>{{each.round_name}}</td>
+                                    <td>{{each.internship.internship_name}}</td>
                                     <td>{{each.last_date_to_apply}}</td>
                                     {% if each.file %}
                                     <td><a href="{{each.file.url}}">link</a></td>
