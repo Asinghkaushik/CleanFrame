@@ -213,7 +213,7 @@
                                 <div class="row">
 
                                     {% for each in general_announcements %}
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group focused">
                                             <label class="form-control-label" for="input-username">Posted on {{each.announcement_date}}</label>
                                             <b>{% if each.file %}
@@ -228,7 +228,7 @@
                                                 {% endif %}
                                             {% endif %}
                                             </b>
-                                            <textarea  class="form-control form-control-alternative" placeholder="Announcement message" rows=10 readonly>{{each.message}}</textarea>
+                                            <textarea  class="form-control form-control-alternative" placeholder="Announcement message" rows=6 readonly>{{each.message}}</textarea>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -270,7 +270,7 @@
     </div>
     {% endifequal %}
     
-    <!-- <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/disable_all_inspections.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/profile_modal.js' %}"></script>
 </body>
 

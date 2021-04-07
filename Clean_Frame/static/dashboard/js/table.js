@@ -12,9 +12,14 @@ $(window).scroll(function() {
     gh = Math.max(dh,wh);
   $('.sidebar').css('height', gh + 'px');
 })
+
 $(document).ready(function() {
-  $('.sidebar').css('height',screen.height);
+  window.setTimeout(doc_height, 10);
 });
+function doc_height() {
+  alpha=Math.max($(document).height(), $(window).height())
+  $('.sidebar').css('height',Math.max(screen.height,alpha))
+};
 
   $("#myTable").DataTable({
     "paging": true,

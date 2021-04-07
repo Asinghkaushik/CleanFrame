@@ -143,6 +143,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 style="margin-left: 13%;">Restrict users (single at 1 time)</h3>
+                    <button type="button" onclick="toexcel('#myTable')" style="width: 170px; text-align: center;">Export to excel</button>
                     <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
                     {% ifequal code '1' %}
                     <h6 id="time_error2" style="text-align: center; padding-bottom: 5px; color: green">1 user banned permanently</h6>

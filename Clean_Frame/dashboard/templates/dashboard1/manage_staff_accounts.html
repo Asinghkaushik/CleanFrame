@@ -145,6 +145,7 @@
                 <div class="card-header">
                     <h3 style="margin-left: 13%;">Accounts</h3>
                     <a href="{% url 'create_new_staff_account' %}" class="link_to_button_pink">+ New Account</a>
+                    <button type="button" onclick="toexcel('#myTable')" style="width: 170px; text-align: center;">Export to excel</button>
                     <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: red">{{error}}</h6>
                     <h6 id="time_error1" style="text-align: center; padding-bottom: 5px; color: green">{{message}}</h6>
                     <!-- <div id="myTable_filter" class="search-wrapper1">
