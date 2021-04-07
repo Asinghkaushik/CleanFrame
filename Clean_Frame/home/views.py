@@ -16,7 +16,18 @@ from random import choice
 import os
 from django.http import FileResponse
 from threading import *
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from email.mime.image import MIMEImage
+from django.contrib.staticfiles import finders
+from functools import lru_cache
 
+
+def email(request):
+    message =f'Your account has been banned temporarily for days.<br> Account is banned by, contact this email for any query.'
+    user_name=f'fdsfsf'
+    return render(request,'home/email.html',{'user_name': user_name, 'message':message})
 class Email_thread(Thread):
     def __init__(self,subject,message,email):
         self.email=email
@@ -154,7 +165,16 @@ def SEND_OTP_TO_PHONE(mobile_number, country_code, message):
 def SENDMAIL(subject, message, email):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email, ]
-    send_mail( subject, message, email_from, recipient_list )
+    checker = User.objects.get(email=email)
+    username = checker.username
+    html_content = render_to_string("home/email.html",{'message': message, 'user_name': username})
+    text_content = strip_tags(html_content)
+    email = EmailMultiAlternatives(subject,text_content,email_from,recipient_list)
+    email.mixed_subtype = 'related'
+    email.attach_alternative(html_content,"text/html")
+    email.send()
+    # return render(request,'home/email.html',{'title':'send an email'})
+    # send_mail( subject, message, email_from, recipient_list )
 
 def signup_student(request):
     if request.user.is_authenticated != True:
@@ -237,7 +257,7 @@ def signup_student_send_otp(email):
         return False
     otp=generate_otp()
     subject = 'OTP for email verification in Clean Frame'
-    message = f'Hi user, thank you for creating account, your otp is ' + str(otp) + ', do not share it with anyone.\nIt will expire in 15 minutes.\nThanks'
+    message = f'Thank you for creating account, your otp is ' + str(otp) + ', do not share it with anyone.<br>It will expire in 15 minutes.'
     Email_thread(subject,message,email).start()
     try:
         u=StudentProfile.objects.get(user=user)
@@ -382,7 +402,7 @@ def signup_company_send_otp(email):
         return False
     otp=generate_otp()
     subject = 'OTP for email verification in Clean Frame'
-    message = f'Hi user, thank you for creating account, your otp is ' + str(otp) + ', do not share it with anyone.\nIt will expire in 15 minutes.\nThanks'
+    message = f'Thank you for creating account, your otp is ' + str(otp) + ', do not share it with anyone.<br>It will expire in 15 minutes.'
     Email_thread(subject,message,email).start()
     try:
         u=CompanyProfile.objects.get(user=user)
@@ -504,7 +524,7 @@ def forgot_password_send_otp(email, p):
     try:
         otp=generate_otp()
         subject = 'OTP for reseting password in Clean Frame'
-        message = f'Hi user, your high security password reset otp is ' + str(otp) + ', do not share it with anyone.\nIt will expire in 15 minutes.\nThanks'
+        message = f'Your high security password reset otp is ' + str(otp) + ', do not share it with anyone.<br>It will expire in 15 minutes.'
         Email_thread(subject,message,email).start()
         p.otp=str(otp)
         p.otp_time=datetime.datetime.now()
@@ -580,7 +600,7 @@ def reset_password(request):
         except:
             return redirect('home')
         subject = 'Password changed in Clean Frame'
-        message = f'Hi user, password has been successfully changed.\nThanks'
+        message = f'Password has been successfully changed.'
         Email_thread(subject,message,email).start()
         return render(request, 'home/forgot_password_page.html', context={'phase': 4})
     else:
@@ -603,7 +623,7 @@ def change_staff_only(request,email,username):
             user.set_password(new_password)
             user.save()
             subject = 'Password Changed in Clean Frame'
-            message = f'Hi user, recently password has been changed.\nNew Password is : ' + new_password + '\nNote: This is auto generated password you are suggested to reset the password from dashboard section of the clean frame with link as https://clean-frame.herokuapp.com/.\nIf you had not given the request then click the following link to reset it again.\nLink to reset password: https://clean-frame.herokuapp.com/changepassword/iamastaff/' + email + '/' + username +'/\nThanks'
+            message = f'Recently password has been changed.<br>New Password is : ' + new_password + '<br>Note: This is auto generated password you are suggested to reset the password from dashboard section of the clean frame with link as https://clean-frame.herokuapp.com/.<br>If you had not given the request then click the following link to reset it again.<br>Link to reset password: https://clean-frame.herokuapp.com/changepassword/iamastaff/' + email + '/' + username +'/'
             Email_thread(subject,message,email).start()
         else:
             pass
