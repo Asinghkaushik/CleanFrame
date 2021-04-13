@@ -28,6 +28,7 @@ def email(request):
     message =f'Your account has been banned temporarily for days.<br> Account is banned by, contact this email for any query.'
     user_name=f'fdsfsf'
     return render(request,'home/email.html',{'user_name': user_name, 'message':message})
+
 class Email_thread(Thread):
     def __init__(self,subject,message,email):
         self.email=email
@@ -38,30 +39,35 @@ class Email_thread(Thread):
     def run(self):
         SENDMAIL(self.subject,self.message,self.email)
 
-# def secureImage(request, file):
-#     if request.user.is_authenticated==False:
-#         return redirect('home')
-#     try:
-#         document=StudentProfile.objects.get(image="post_images/"+file)
-#         if document.user==request.user:
-#             return FileResponse(document.image)
-#         else:
-#             if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
-#                 return FileResponse(document.image)
-#             else:
-#                 return redirect('home')
-#     except:
-#         try:
-#             document=CompanyProfile.objects.get(image="post_images/"+file)
-#             if document.user==request.user:
-#                 return FileResponse(document.image)
-#             else:
-#                 if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
-#                     return FileResponse(document.image)
-#                 else:
-#                     return redirect('home')
-#         except:
-#             return redirect('home')
+def secureImage(request, file):
+    if request.user.is_authenticated==False:
+        return redirect('home')
+    try:
+        document=StudentProfile.objects.get(image="post_images/"+file)
+        if document.user==request.user:
+            return FileResponse(document.image)
+        else:
+            if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+                return FileResponse(document.image)
+            else:
+                return redirect('home')
+    except:
+        try:
+            document=CompanyProfile.objects.get(image="post_images/"+file)
+            if document.user==request.user:
+                return FileResponse(document.image)
+            else:
+                if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+                    return FileResponse(document.image)
+                else:
+                    return redirect('home')
+        except:
+            try:
+                document=Blog.objects.get(image="post_images/"+file)
+                # return HttpResponse("ERROR")
+                return FileResponse(document.image)
+            except:
+                return redirect('home')
 
 def secureFile(request, file):
     if request.user.is_authenticated==False:
