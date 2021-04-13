@@ -40,34 +40,35 @@ class Email_thread(Thread):
         SENDMAIL(self.subject,self.message,self.email)
 
 def secureImage(request, file):
-    if request.user.is_authenticated==False:
-        return redirect('home')
-    try:
-        document=StudentProfile.objects.get(image="post_images/"+file)
-        if document.user==request.user:
-            return FileResponse(document.image)
-        else:
-            if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
-                return FileResponse(document.image)
-            else:
-                return redirect('home')
-    except:
+    if request.user.is_authenticated==True:
         try:
-            document=CompanyProfile.objects.get(image="post_images/"+file)
+            document=StudentProfile.objects.get(image="post_images/"+file)
             if document.user==request.user:
                 return FileResponse(document.image)
             else:
-                if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+                if check_student_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
                     return FileResponse(document.image)
                 else:
                     return redirect('home')
         except:
             try:
-                document=Blog.objects.get(image="post_images/"+file)
-                # return HttpResponse("ERROR")
-                return FileResponse(document.image)
+                document=CompanyProfile.objects.get(image="post_images/"+file)
+                if document.user==request.user:
+                    return FileResponse(document.image)
+                else:
+                    if check_company_permissions(document.user)==True or check_profile_permissions(request, document.user)==True:
+                        return FileResponse(document.image)
+                    else:
+                        return redirect('home')
             except:
                 return redirect('home')
+    else:        
+        try:
+            document=Blog.objects.get(image="post_images/"+file)
+            # return HttpResponse("ERROR")
+            return FileResponse(document.image)
+        except:
+            return redirect('home')
 
 def secureFile(request, file):
     if request.user.is_authenticated==False:
