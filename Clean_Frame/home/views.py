@@ -646,3 +646,6 @@ def post_query(request):
         Query.objects.create(email=email,query=query)
         return redirect('home_',"Query Submitted Successfully, you will get response within 2 days")
     return redirect('home')
+
+def error_404_page(request,exception):
+    return error(request,"404 Page Not Found")
