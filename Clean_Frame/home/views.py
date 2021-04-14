@@ -40,6 +40,12 @@ class Email_thread(Thread):
         SENDMAIL(self.subject,self.message,self.email)
 
 def secureImage(request, file):
+    try:
+        document=Blog.objects.get(image="post_images/"+file)
+        # return HttpResponse("ERROR")
+        return FileResponse(document.image)
+    except:
+        pass
     if request.user.is_authenticated==True:
         try:
             document=StudentProfile.objects.get(image="post_images/"+file)
@@ -62,13 +68,8 @@ def secureImage(request, file):
                         return redirect('home')
             except:
                 return redirect('home')
-    else:        
-        try:
-            document=Blog.objects.get(image="post_images/"+file)
-            # return HttpResponse("ERROR")
-            return FileResponse(document.image)
-        except:
-            return redirect('home')
+    else:
+        return redirect('home')
 
 def secureFile(request, file):
     if request.user.is_authenticated==False:
