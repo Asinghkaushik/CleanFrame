@@ -436,6 +436,7 @@ def company_profile_3(request):
                     profile=CompanyProfile.objects.get(user=request.user)
                     image=request.POST.get("image")
                     if image!="":
+                        # delete_image(profile.image)
                         profile.image=form.cleaned_data.get("image")
                         profile.save()
                     return redirect('profile')
@@ -448,6 +449,28 @@ def company_profile_3(request):
     else:
         return redirect('dashboard')
 
+# def delete_image(image):
+#     if request.method == 'POST':
+#         physical_files = set()
+#         media_root = getattr(settings, 'MEDIA_ROOT', None)
+#         # get all the files
+#         if media_root is not None:
+#             for relative_root, dirs, files in os.walk(media_root):
+#                 for file_ in files:
+#                     relative_file = os.path.join(os.path.relpath(relative_root, media_root), file_)
+#                     physical_files.add(relative_file)
+#         deletables = physical_files
+#         if deletables:
+#             for file_ in deletables:
+#                 os.remove(os.path.join(media_root, file_))
+
+#             # Bottom-up - delete all empty folders
+#             for relative_root, dirs, files in os.walk(media_root, topdown=False):
+#                 for dir_ in dirs:
+#                     if not os.listdir(os.path.join(relative_root, dir_)):
+#                         os.rmdir(os.path.join(relative_root, dir_))
+#     return HttpResponse("Done")
+
 def student_profile_2(request):
     if request.user.is_authenticated :
         if request.user.last_name!=settings.COMPANY_MESSAGE or user_profile.is_staff or user_profile.is_superuser:
@@ -457,6 +480,7 @@ def student_profile_2(request):
                     profile=StudentProfile.objects.get(user=request.user)
                     image=request.POST.get("image")
                     if image!="":
+                        # delete_image(profile.image)
                         profile.image=form.cleaned_data.get("image")
                         profile.save()
                     return redirect('profile')
