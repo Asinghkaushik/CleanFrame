@@ -1966,14 +1966,13 @@ def delete_account(request):
         try:
             u=User.objects.get(username=request.user)
             email=u.email
+            subject = 'Account Deletion Notice'
+            message = f'Your account has been sucessfully deleted from Clean Frame.<br/>Moreover all the records related are also deleted.<br/>If you create a new account then previous effects or changes would not be shown.'
+            SENDMAIL(subject,message,email)            
             u.delete()
         except:
             return error(request,"User Not Found")
-        subject = 'Account Deletion Notice'
-        message = f'Your account has been sucessfully deleted from Clean Frame.<br/>Moreover all the records related are also deleted.<br/>If you create a new account then previous effects or changes would not be shown.'
-        SENDMAIL(subject,message,email)
-        return redirect('home')
-    return error_detection(request,1)
+    return redirect('home')
 
 def search_users(request):
     if error_detection(request,1)==False:
