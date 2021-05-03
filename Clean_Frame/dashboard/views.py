@@ -1783,6 +1783,7 @@ def edit_staff_permissions(request, item):
             data.can_manage_blogs=True if request.POST.get('can_manage_blogs')=="1" else False
             data.can_manage_technical_support=True if request.POST.get('can_manage_technical_support')=="1" else False
             data.can_give_notifications=True if request.POST.get('can_give_notifications')=="1" else False
+            data.can_activate_session=True if request.POST.get('can_activate_session')=="1" else False
             data.save()
             return redirect('edit_staff_permissions',item)
         else:
@@ -1830,6 +1831,7 @@ def create_new_staff_account(request):
             data.can_manage_blogs=True if request.POST.get('can_manage_blogs')=="1" else False
             data.can_manage_technical_support=True if request.POST.get('can_manage_technical_support')=="1" else False
             data.can_give_notifications=True if request.POST.get('can_give_notifications')=="1" else False
+            data.can_activate_session=True if request.POST.get('can_activate_session')=="1" else False
             data.save()
             return redirect('manage_staff_accounts')
         else:

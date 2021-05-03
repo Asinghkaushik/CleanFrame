@@ -297,6 +297,23 @@
                                     </select>
                                 </td>
                             </tr>
+                            <!-- 8 -->
+                            <tr>
+                                <td>
+                                    <label for="can_activate_session">Can activate session</label>
+                                </td>
+                                <td>
+                                    <select name="can_activate_session" class="input-field" required>
+                                        {% if data.can_activate_session %}
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                        {% else %}
+                                        <option value="2">No</option>
+                                        <option value="1">Yes</option>
+                                        {% endif %}
+                                    </select>
+                                </td>
+                            </tr>
                             
                         </table>
                         <br>
