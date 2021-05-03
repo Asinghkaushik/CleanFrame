@@ -179,6 +179,14 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group focused">
+                                        <input type="text" {% if permissions.can_activate_session %} style="background-color: rgb(64, 201, 64); color: white" value="Can Activate Sessions" {% else %} style="background-color: rgb(212, 79, 79); color: white" value="Can't Activate Sessions" {% endif %} class="form-control form-control-alternative" readonly>
+                                    </div>
+                                </div>
+                            </div>
                             
                         </div>
                     </form>

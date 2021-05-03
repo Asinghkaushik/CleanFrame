@@ -84,6 +84,13 @@
           </a>
         </li>
         {% endif %}
+        {% if permissions.can_activate_session %}
+        <li>
+            <a href="{% url 'activate_new_session' %}" class=""><span class="las la-info-circle"></span>
+            <span>Activate New Session </span>
+          </a>
+        </li>
+        {% endif %} 
 
         {% if request.user.is_superuser or request.user.is_staff %} {% else %} {% ifequal request.user.last_name 'This_is_a_company_Associated_account' %}
         <li>
