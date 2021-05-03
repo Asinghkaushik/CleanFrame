@@ -1638,6 +1638,31 @@ def manage_blogs(request):
             return render(request,'dashboard1/manage_blogs.html',context={"permissions": permissions, "blogs": blogs})
     return error_detection(request,1)
 
+def activate_new_session(request):
+    if error_detection(request,1)==False:
+        if request.user.is_staff==False and request.user.is_superuser==False:
+            return redirect('home')
+        try:
+            permissions=StaffPermissions.objects.get(user=request.user)
+            if permissions.can_activate_session==False:
+                return error(request,"You don't have permission to access this page")
+        except:
+            StaffPermissions.objects.create(user=request.user)
+            return redirect('dashboard')
+        if request.method=="POST":
+            users=User.objects.filter(is_staff=False)
+            users=users.exclude(last_name=settings.COMPANY_MESSAGE)
+            for each in users:
+                try:
+                    p=StudentProfile.objects.get(user=each)
+                    p.got_internship=False
+                    p.save()
+                except:
+                    pass
+            return render(request,'dashboard1/activate_session.html',context={"permissions": permissions, "success": "Session Refreshed with success"})
+        return render(request,'dashboard1/activate_session.html',context={"permissions": permissions})
+    return error_detection(request,1)
+
 def create_new_blog(request):
     if error_detection(request,1)==False:
         if request.user.is_staff==False and request.user.is_superuser==False:
@@ -1995,3 +2020,5 @@ def search_users(request):
 
 def error(request, message):
     return render(request,"home/error_page.html",context={"error": message})
+
+

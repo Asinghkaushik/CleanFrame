@@ -19,6 +19,8 @@ class StaffPermissions(models.Model):
     can_manage_staff_accounts=models.BooleanField(default=False)
     can_delete_staff_accounts=models.BooleanField(default=False)
     
+    can_activate_session=models.BooleanField(default=False)
+    
     def __str__(self):
         if self.user:
             return self.user.username
